@@ -1,0 +1,15 @@
+.idea
+*.iml
+
+node/
+**/node_modules/
+
+**/dist/
+
+**/.angular/cache
+/.sass-cache
+
+# System Files
+.DS_Store
+Thumbs.db
+# endregion
