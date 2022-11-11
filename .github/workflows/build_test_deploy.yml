@@ -50,7 +50,7 @@ jobs:
       - name: 'Install npm dependencies'
         run: (cd src/ui && npm install)
       - name: 'Test UI'
-        run: (cd src/ui && npm run test)
+        run: (cd src/ui && npm run test-no-watch)
 
   build_and_synth_cdk:
     name: 'Build and synth cdk'
