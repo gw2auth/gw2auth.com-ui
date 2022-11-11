@@ -1,0 +1,3 @@
+[submodule "src/cdk"]
+	path = src/cdk
+	url = git@github.com:gw2auth/gw2auth.com-cdk.git
