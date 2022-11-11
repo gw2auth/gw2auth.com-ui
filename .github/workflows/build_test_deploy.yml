@@ -83,7 +83,9 @@ jobs:
       - name: 'Build cdk app'
         run: (cd src/cdk && npm run build)
       - name: 'Synth cdk'
-        run: (cd src/cdk && cdk synth Gw2AuthCloudfrontCdkStack-*)
+        env:
+          GW2AUTH_CLOUDFRONT: true
+        run: (cd src/cdk && cdk synth)
       - name: 'Store cdk synth artifact'
         uses: actions/upload-artifact@v3
         with:
