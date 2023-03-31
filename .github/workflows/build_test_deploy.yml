@@ -112,7 +112,7 @@ jobs:
         run: (cdk --app ./cdk.out deploy --require-approval never Gw2AuthCloudfrontCdkStack-Beta Gw2AuthUIResources-Beta)
       - name: 'Deploy prod'
         if: github.ref == 'refs/heads/main'
-        run: (cdk --app ./cdk.out deploy --require-approval never --no-execute Gw2AuthCloudfrontCdkStack-Prod Gw2AuthUIResources-Prod)
+        run: (cdk --app ./cdk.out deploy --require-approval never Gw2AuthCloudfrontCdkStack-Prod Gw2AuthUIResources-Prod)
 
   create_pull_request:
     name: 'Create PR'
