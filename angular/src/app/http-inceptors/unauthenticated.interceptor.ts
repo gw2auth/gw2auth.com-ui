@@ -3,7 +3,7 @@ import {
   HttpRequest,
   HttpHandler,
   HttpEvent,
-  HttpInterceptor, HttpErrorResponse
+  HttpInterceptor,
 } from '@angular/common/http';
 import {Observable, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
@@ -16,9 +16,9 @@ export class UnauthenticatedInterceptor implements HttpInterceptor {
   constructor(@Inject(DOCUMENT) private readonly document: Document, private readonly authService: AuthService) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    return next.handle(request).pipe(catchError((error: HttpErrorResponse) => {
+    return next.handle(request).pipe(catchError((error) => {
       if (error.status == 401 || error.status == 403) {
-        if (error.url != null && this.shouldHandleURL(error.url)) {
+        if ((error.path != null && this.shouldHandlePath(error.path)) || (error.url != null && this.shouldHandleURL(error.url))) {
           this.authService.logout('/login');
         }
       }
@@ -28,14 +28,18 @@ export class UnauthenticatedInterceptor implements HttpInterceptor {
   }
 
   private shouldHandleURL(url: string): boolean {
-    let suffix: string | null = null;
+    let path: string | null = null;
 
     if (url.startsWith('/')) {
-      suffix = url;
+      path = url;
     } else if (url.startsWith(this.document.location.origin)) {
-      suffix = url.substring(this.document.location.origin.length);
+      path = url.substring(this.document.location.origin.length);
     }
 
-    return suffix != null && suffix.startsWith('/api') && !suffix.startsWith('/api/authinfo') && !suffix.startsWith('/api/oauth2/token');
+    return path != null && this.shouldHandlePath(path);
+  }
+
+  private shouldHandlePath(path: string): boolean {
+    return path.startsWith('/api') && !path.startsWith('/api/authinfo') && !path.startsWith('/api/oauth2/token');
   }
 }
