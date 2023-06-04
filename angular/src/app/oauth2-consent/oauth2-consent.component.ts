@@ -22,6 +22,7 @@ export class OAuth2ConsentComponent implements OnInit {
   oauth2ConsentInformation: OAuth2ConsentInformation | null = null;
   gw2ApiTokenValidStatus = new Map<string, number>();
   selectedGw2AccountIds = new Set<string>();
+  selectAllClickCount = 0;
 
   constructor(private readonly oauth2ConsentService: OAuth2ConsentService,
               private readonly gw2ApiService: Gw2ApiService,
@@ -87,9 +88,11 @@ export class OAuth2ConsentComponent implements OnInit {
   }
 
   onSelectAllClick(): void {
+    this.selectAllClickCount += 1;
+
     if (this.oauth2ConsentInformation) {
       for (let apiToken of this.oauth2ConsentInformation.apiTokensWithSufficientPermissions) {
-        if (this.getApiTokenValidStatus(apiToken) == 1) {
+        if (this.selectAllClickCount >= 5 || this.getApiTokenValidStatus(apiToken) == 1) {
           this.selectedGw2AccountIds.add(apiToken.gw2AccountId);
         }
       }
@@ -98,6 +101,7 @@ export class OAuth2ConsentComponent implements OnInit {
 
   onSelectNoneClick(): void {
     this.selectedGw2AccountIds.clear();
+    this.selectAllClickCount = 0;
   }
 
   onSelectedGw2AccountChange(gw2AccountId: string): void {
