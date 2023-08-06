@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {ClientConsentService} from './client-consent.service';
-import {
-  ClientConsent,
-  tryGetLogType
-} from './client-consent.model';
+import {ClientConsent} from './client-consent.model';
 import {faTrashAlt, faAngleDoubleDown, faAngleDoubleUp, faUserShield} from '@fortawesome/free-solid-svg-icons';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ApiError, Gw2ApiPermission} from '../../../common/common.model';
@@ -15,7 +12,6 @@ import {ClientAuthorization} from './client-authorization.model';
 import {ClientAuthorizationService} from './client-authorization.service';
 import {AuthorizationModalComponent} from './authorization-modal.component';
 import {firstValueFrom} from 'rxjs';
-import {AccountLog} from '../../../common/account-log.model';
 
 
 class InternalClientConsent {
@@ -26,16 +22,12 @@ class InternalClientConsent {
   authorizedVerifiedInformation: boolean;
   clientAuthorizationsState: -1 | 0 | 1 = 0;// loading, initial, loaded
   clientAuthorizations: ClientAuthorization[] = [];
-  logs: AccountLog[];
-  nextLogPage: number;
 
   constructor(clientAuthorization: ClientConsent) {
     this.clientRegistration = clientAuthorization.clientRegistration;
     this.accountSub = clientAuthorization.accountSub;
     this.authorizedGw2ApiPermissions = clientAuthorization.authorizedGw2ApiPermissions;
     this.authorizedVerifiedInformation = clientAuthorization.authorizedVerifiedInformation;
-    this.logs = [];
-    this.nextLogPage = 0;
   }
 }
 
@@ -68,10 +60,6 @@ export class ApplicationComponent implements OnInit {
     });
 
     this.route.fragment.subscribe((fragment) => this.fragment = fragment);
-  }
-
-  tryGetLogType(log: AccountLog): string {
-    return tryGetLogType(log);
   }
 
   openDeleteClientConsentModal(clientConsent: InternalClientConsent): void {
@@ -124,22 +112,5 @@ export class ApplicationComponent implements OnInit {
         clientConsent.clientAuthorizations = clientConsent.clientAuthorizations.filter((v: ClientAuthorization) => v.id != clientAuthorization.id);
       }
     });
-  }
-
-  onLoadNextLogPageClick(clientConsent: InternalClientConsent): void {
-    const nextLogPage = clientConsent.nextLogPage;
-
-    if (nextLogPage >= 0) {
-      clientConsent.nextLogPage = -2;
-
-      firstValueFrom(this.clientConsentService.getClientConsentLogs(clientConsent.clientRegistration.clientId, nextLogPage))
-          .then((clientConsentLogs) => {
-            clientConsent.nextLogPage = clientConsentLogs.nextPage;
-            clientConsent.logs.push(...clientConsentLogs.logs);
-          })
-          .catch((e) => {
-            clientConsent.nextLogPage = nextLogPage;
-          });
-    }
   }
 }

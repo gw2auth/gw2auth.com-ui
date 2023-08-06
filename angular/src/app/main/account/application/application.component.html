@@ -74,19 +74,6 @@
                                                         <app-button-loadable *ngSwitchDefault [class]="['btn', 'btn-primary']" [loading]="clientConsent.clientAuthorizationsState == -1" (click)="onLoadClientAuthorizationsClick(clientConsent)">Load authorizations</app-button-loadable>
                                                     </ng-container>
                                                 </div>
-                                                <div class="col">
-                                                    <label [htmlFor]="'logs'" class="form-label">Logs</label>
-                                                    <div class="list-group mb-1" [id]="'logs'">
-                                                        <div *ngFor="let log of clientConsent.logs" class="list-group-item">
-                                                            <div class="d-flex w-100 justify-content-between">
-                                                                <p class="mb-0">{{tryGetLogType(log)}}</p>
-                                                                <small>{{log.timestamp.toLocaleString()}}</small>
-                                                            </div>
-                                                            <span>{{log.message}}</span>
-                                                        </div>
-                                                    </div>
-                                                    <app-button-loadable [class]="['btn', 'btn-primary']" [disabled]="clientConsent.nextLogPage == -1" [loading]="clientConsent.nextLogPage == -2" (click)="onLoadNextLogPageClick(clientConsent)">Load more</app-button-loadable>
-                                                </div>
                                             </div>
                                         </div>
                                     </td>
