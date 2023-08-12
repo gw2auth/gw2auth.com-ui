@@ -1,5 +1,6 @@
 @import 'bootstrap/scss/functions';
 @import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/variables-dark';
 @import 'vars';
 
 $accent: $dark;
@@ -8,6 +9,9 @@ $accent-inner: $secondary;
 
 $body-bg: #0c0f15;
 $body-color: $gray-100;
+
+$body-secondary-color: $gray-600;
+$tooltip-color: $body-color;
 
 // region navbar
 $navbar-light-color:                $navbar-dark-color;
@@ -39,6 +43,7 @@ $modal-footer-border-color: $gray-600;
 // region list-group
 $list-group-bg: $gray-800;
 $list-group-color: $body-color;
+$list-group-border-color: $list-group-bg;
 $list-group-active-bg: $success;
 $list-group-active-border-color: $list-group-active-bg;
 $list-group-disabled-bg: $gray-700;

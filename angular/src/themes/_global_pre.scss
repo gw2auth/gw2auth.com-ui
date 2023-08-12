@@ -1,10 +1,16 @@
 @import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/variables-dark';
+@import 'bootstrap/scss/mixins';
+@import 'bootstrap/scss/maps';
 @import 'vars';
 
 $theme-colors: map-merge($theme-colors, ("accent": $accent, "danger-strong": $danger-strong));
+$theme-colors-bg-subtle: map-merge($theme-colors-bg-subtle, ("danger-strong": $danger-strong-bg-subtle));
+$theme-colors-border-subtle: map-merge($theme-colors-border-subtle, ("danger-strong": $danger-strong-border-subtle));
+$theme-colors-text: map-merge($theme-colors-text, ("danger-strong": $danger-strong-text));
 $table-variants: map-merge($table-variants, ("accent": $accent));
 
-$btn-focus-width:             0px;
+$btn-focus-width: 0px;
 
 // region accordion
 $accordion-bg: $accent;

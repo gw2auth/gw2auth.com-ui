@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { mapToCanActivate, RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import {AuthGuard} from './auth.guard';
 import {NonAuthGuard} from './non-auth.guard';
@@ -33,7 +33,7 @@ const routes: Routes = [
       {
         path: 'account',
         component: AccountComponent,
-        canActivate: [AuthGuard],
+        canActivate: mapToCanActivate([AuthGuard]),
         data: { title: 'Account' },
         children: [
           { path: '', component: OverviewComponent },
@@ -52,8 +52,8 @@ const routes: Routes = [
       },
     ]
   },
-  { path: 'login', component: LoginComponent, canActivate: [NonAuthGuard], data: { title: 'Login' } },
-  { path: 'oauth2-consent', component: OAuth2ConsentComponent, canActivate: [AuthGuard], data: { title: 'Authorize' } }
+  { path: 'login', component: LoginComponent, canActivate: mapToCanActivate([NonAuthGuard]), data: { title: 'Login' } },
+  { path: 'oauth2-consent', component: OAuth2ConsentComponent, canActivate: mapToCanActivate([AuthGuard]), data: { title: 'Authorize' } }
 ];
 
 @NgModule({
