@@ -5,12 +5,23 @@ export interface Token {
     displayName: string;
 }
 
-export interface ClientAuthorization {
+export type ClientAuthorization = ClientAuthorizationOld | ClientAuthorizationNew;
+
+export interface ClientAuthorizationOld {
     id: string;
     creationTime: Date;
     lastUpdateTime: Date;
     displayName: string;
     authorizedGw2ApiPermissions: Gw2ApiPermission[];
     authorizedVerifiedInformation: boolean;
+    tokens: Token[];
+}
+
+export interface ClientAuthorizationNew {
+    id: string;
+    creationTime: Date;
+    lastUpdateTime: Date;
+    displayName: string;
+    authorizedScopes: string[];
     tokens: Token[];
 }

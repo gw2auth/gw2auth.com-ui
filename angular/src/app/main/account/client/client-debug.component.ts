@@ -1,9 +1,10 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {ClientRegistrationPrivate} from './client-registration.model';
+import {
+  ClientRegistrationPrivateNew
+} from './client-registration.model';
 import {ClientRegistrationService} from './client-registration.service';
 import {Gw2ApiPermission} from '../../../common/common.model';
-import {faCheck} from '@fortawesome/free-solid-svg-icons';
 import {DOCUMENT} from "@angular/common";
 
 
@@ -13,13 +14,14 @@ import {DOCUMENT} from "@angular/common";
 })
 export class ClientDebugComponent implements OnInit {
 
-  faCheck = faCheck;
-
-  clientRegistration: ClientRegistrationPrivate | null = null;
+  clientRegistration: ClientRegistrationPrivateNew | null = null;
 
   gw2ApiPermissions: Gw2ApiPermission[] = Object.values(Gw2ApiPermission);
   selectedGw2ApiPermissions = new Set<Gw2ApiPermission>();
   forceConsentPrompt = true;
+  requestId = true;
+  requestName = true;
+  requestDisplayName = true;
   requestVerifiedInformation = true;
   authorizationName = '';
 
@@ -32,7 +34,10 @@ export class ClientDebugComponent implements OnInit {
       this.clientRegistration = null;
 
       if (clientId != null) {
-        this.clientRegistrationService.getClientRegistration(clientId).subscribe((clientRegistration) => this.clientRegistration = clientRegistration);
+        this.clientRegistrationService.getClientRegistration(clientId)
+          .then((clientRegistration) => {
+            this.clientRegistration = clientRegistration;
+          });
       }
     });
   }
@@ -45,7 +50,7 @@ export class ClientDebugComponent implements OnInit {
     }
   }
 
-  getTestAuthorizeUri(clientRegistration: ClientRegistrationPrivate): string {
+  getTestAuthorizeUri(clientRegistration: ClientRegistrationPrivateNew): string {
     let correctRedirectUri = '';
     for (let redirectUri of clientRegistration.redirectUris) {
       if (redirectUri.startsWith(this.document.location.origin) && redirectUri.endsWith('/account/client/debug')) {
@@ -59,8 +64,26 @@ export class ClientDebugComponent implements OnInit {
       scopes.push('gw2:' + gw2ApiPermission);
     }
 
-    if (this.requestVerifiedInformation) {
-      scopes.push('gw2auth:verified');
+    if (clientRegistration.apiVersion === 0) {
+      if (this.requestVerifiedInformation) {
+        scopes.push('gw2auth:verified');
+      }
+    } else if (clientRegistration.apiVersion === 1) {
+      if (this.requestId) {
+        scopes.push('id');
+      }
+
+      if (this.requestName) {
+        scopes.push('gw2acc:name');
+      }
+
+      if (this.requestDisplayName) {
+        scopes.push('gw2acc:display_name');
+      }
+
+      if (this.requestVerifiedInformation) {
+        scopes.push('gw2acc:verified');
+      }
     }
 
     const query = new URLSearchParams();

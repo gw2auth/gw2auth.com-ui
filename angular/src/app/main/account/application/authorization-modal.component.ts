@@ -1,9 +1,9 @@
 import {Component, Input} from '@angular/core';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {faTrashAlt, faTimes} from '@fortawesome/free-solid-svg-icons';
-import {ClientAuthorization} from './client-authorization.model';
+import { ClientAuthorizationNew } from './client-authorization.model';
 import {ApiError, Gw2ApiPermission} from '../../../common/common.model';
-import {ClientRegistrationPublic} from '../client/client-registration.model';
+import { ClientRegistrationPublicNew } from '../client/client-registration.model';
 import {DeleteAuthorizationModalComponent} from './delete-authorization-modal.component';
 import {ClientAuthorizationService} from './client-authorization.service';
 import {ToastService} from '../../../toast/toast.service';
@@ -34,15 +34,25 @@ import { firstValueFrom } from 'rxjs';
                             <div class="row row-cols-2 row-cols-md-3 g-2">
                                 <ng-container *ngFor="let gw2ApiPermission of gw2ApiPermissions">
                                     <div class="col">
-                                        <app-gw2-api-permission-badge [gw2ApiPermission]="gw2ApiPermission" [isPresent]="clientAuthorization.authorizedGw2ApiPermissions.includes(gw2ApiPermission)"></app-gw2-api-permission-badge>
+                                        <app-gw2-api-permission-badge [gw2ApiPermission]="gw2ApiPermission" [isPresent]="clientAuthorization.authorizedScopes.includes('gw2:' + gw2ApiPermission)"></app-gw2-api-permission-badge>
                                     </div>
                                 </ng-container>
                             </div>
                         </div>
                     </div>
                     <div class="col">
+                        <label [htmlFor]="'authorizationAuthorizedName'" class="form-label">Read account name</label>
+                        <input type="text" class="form-control" [id]="'authorizationAuthorizedName'" [value]="hasAuthorizedName(clientRegistration, clientAuthorization) ? 'Yes' : 'No'" [attr.aria-describedby]="'authorizationAuthorizedNameDescription'" disabled />
+                        <div [id]="'authorizationAuthorizedNameDescription'" class="form-text">If yes, the application can read the name you have given on GW2Auth for the linked API Tokens</div>
+                    </div>
+                    <div class="col">
+                        <label [htmlFor]="'authorizationAuthorizedDisplayName'" class="form-label">Read account display name</label>
+                        <input type="text" class="form-control" [id]="'authorizationAuthorizedDisplayName'" [value]="hasAuthorizedDisplayName(clientRegistration, clientAuthorization) ? 'Yes' : 'No'" [attr.aria-describedby]="'authorizationAuthorizedDisplayNameDescription'" disabled />
+                        <div [id]="'authorizationAuthorizedDisplayNameDescription'" class="form-text">If yes, the application can read the GW2 account name for the linked API Tokens</div>
+                    </div>
+                    <div class="col">
                         <label [htmlFor]="'authorizationAuthorizedVerifiedInformation'" class="form-label">Read account verification</label>
-                        <input type="text" class="form-control" [id]="'authorizationAuthorizedVerifiedInformation'" [value]="clientAuthorization.authorizedVerifiedInformation ? 'Yes' : 'No'" [attr.aria-describedby]="'authorizationAuthorizedVerifiedInformationDescription'" disabled />
+                        <input type="text" class="form-control" [id]="'authorizationAuthorizedVerifiedInformation'" [value]="hasAuthorizedVerifiedInformation(clientRegistration, clientAuthorization) ? 'Yes' : 'No'" [attr.aria-describedby]="'authorizationAuthorizedVerifiedInformationDescription'" disabled />
                         <div [id]="'authorizationAuthorizedVerifiedInformationDescription'" class="form-text">If yes, the application can read your account verification status for the linked API Tokens</div>
                     </div>
                     <div class="col">
@@ -70,8 +80,8 @@ export class AuthorizationModalComponent {
 
     gw2ApiPermissions: Gw2ApiPermission[] = Object.values(Gw2ApiPermission);
 
-    @Input('clientRegistration') clientRegistration!: ClientRegistrationPublic;
-    @Input('clientAuthorization') clientAuthorization!: ClientAuthorization;
+    @Input('clientRegistration') clientRegistration!: ClientRegistrationPublicNew;
+    @Input('clientAuthorization') clientAuthorization!: ClientAuthorizationNew;
 
     constructor(private readonly activeModal: NgbActiveModal,
                 private readonly modalService: NgbModal,
@@ -80,6 +90,36 @@ export class AuthorizationModalComponent {
 
     dismiss(): void {
         this.activeModal.dismiss(false);
+    }
+
+    hasAuthorizedVerifiedInformation(clientRegistration: ClientRegistrationPublicNew, clientAuthorization: ClientAuthorizationNew): boolean {
+        if (clientRegistration.apiVersion === 0) {
+            return clientAuthorization.authorizedScopes.includes('gw2auth:verified');
+        } else if (clientRegistration.apiVersion === 1) {
+            return clientAuthorization.authorizedScopes.includes('gw2acc:verified');
+        }
+
+        return false;
+    }
+
+    hasAuthorizedName(clientRegistration: ClientRegistrationPublicNew, clientAuthorization: ClientAuthorizationNew): boolean {
+        if (clientRegistration.apiVersion === 0) {
+            return clientAuthorization.authorizedScopes.includes('gw2:account');
+        } else if (clientRegistration.apiVersion === 1) {
+            return clientAuthorization.authorizedScopes.includes('gw2acc:name') || clientAuthorization.authorizedScopes.includes('gw2:account');
+        }
+
+        return false;
+    }
+
+    hasAuthorizedDisplayName(clientRegistration: ClientRegistrationPublicNew, clientAuthorization: ClientAuthorizationNew): boolean {
+        if (clientRegistration.apiVersion === 0) {
+            return true;
+        } else if (clientRegistration.apiVersion === 1) {
+            return clientAuthorization.authorizedScopes.includes('gw2acc:display_name');
+        }
+
+        return false;
     }
 
     onDeleteClick(): void {

@@ -54,6 +54,16 @@
                                                     </div>
                                                 </div>
                                                 <div class="col">
+                                                    <label [htmlFor]="'authorizedName'" class="form-label">Read account name</label>
+                                                    <input type="text" class="form-control" [id]="'authorizedName'" [value]="clientConsent.authorizedName ? 'Yes' : 'No'" [attr.aria-describedby]="'authorizedNameDescription'" disabled />
+                                                    <div [id]="'authorizedNameDescription'" class="form-text">If yes, the application can read the GW2 account name for the linked API Tokens</div>
+                                                </div>
+                                                <div class="col">
+                                                    <label [htmlFor]="'authorizedDisplayName'" class="form-label">Read account display name</label>
+                                                    <input type="text" class="form-control" [id]="'authorizedDisplayName'" [value]="clientConsent.authorizedDisplayName ? 'Yes' : 'No'" [attr.aria-describedby]="'authorizedDisplayNameDescription'" disabled />
+                                                    <div [id]="'authorizedDisplayNameDescription'" class="form-text">If yes, the application can read the name you have given on GW2Auth for the linked API Tokens</div>
+                                                </div>
+                                                <div class="col">
                                                     <label [htmlFor]="'authorizedVerifiedInformation'" class="form-label">Read account verification</label>
                                                     <input type="text" class="form-control" [id]="'authorizedVerifiedInformation'" [value]="clientConsent.authorizedVerifiedInformation ? 'Yes' : 'No'" [attr.aria-describedby]="'authorizedVerifiedInformationDescription'" disabled />
                                                     <div [id]="'authorizedVerifiedInformationDescription'" class="form-text">If yes, the application can read your account verification status for the linked API Tokens</div>

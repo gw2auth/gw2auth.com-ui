@@ -21,6 +21,18 @@
                         </div>
                     </div>
                 </div>
+                <div class="col" *ngIf="clientRegistration!.apiVersion === 1">
+                    <input class="form-check-input" type="checkbox" value="" [id]="'requestId'" [name]="'requestId'" [(ngModel)]="requestId">
+                    <label class="form-check-label" [htmlFor]="'requestId'">Request User ID</label>
+                </div>
+                <div class="col" *ngIf="clientRegistration!.apiVersion === 1">
+                    <input class="form-check-input" type="checkbox" value="" [id]="'requestName'" [name]="'requestName'" [(ngModel)]="requestName">
+                    <label class="form-check-label" [htmlFor]="'requestName'">Request GW2 Account Name</label>
+                </div>
+                <div class="col" *ngIf="clientRegistration!.apiVersion === 1">
+                    <input class="form-check-input" type="checkbox" value="" [id]="'requestDisplayName'" [name]="'requestDisplayName'" [(ngModel)]="requestDisplayName">
+                    <label class="form-check-label" [htmlFor]="'requestDisplayName'">Request GW2Auth Display Name</label>
+                </div>
                 <div class="col">
                     <input class="form-check-input" type="checkbox" value="" [id]="'requestVerifiedInformation'" [name]="'requestVerifiedInformation'" [(ngModel)]="requestVerifiedInformation">
                     <label class="form-check-label" [htmlFor]="'requestVerifiedInformation'">Request verified info</label>

@@ -1,7 +1,12 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {ClientRegistrationService} from './client-registration.service';
-import {AuthorizationGrantType, ClientRegistrationPrivate, ClientRegistrationPrivateSummary, authorizationGrantTypeDisplayName} from './client-registration.model';
-import {faAngleDoubleDown, faAngleDoubleUp, faTrashAlt, faCopy, faRedo, faPlusSquare} from '@fortawesome/free-solid-svg-icons';
+import {
+  AuthorizationGrantType,
+  ClientRegistrationPrivateSummary,
+  authorizationGrantTypeDisplayName,
+  ClientRegistrationPrivateNew,
+} from './client-registration.model';
+import {faAngleDoubleDown, faTrashAlt, faCopy, faRedo, faPlusSquare} from '@fortawesome/free-solid-svg-icons';
 import {DeleteModalComponent} from '../../../general/delete-modal.component';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToastService} from '../../../toast/toast.service';
@@ -18,13 +23,12 @@ import {RegenerateClientSecretModalComponent} from './regenerate-client-secret-m
 export class ClientComponent implements OnInit {
 
   faAngleDoubleDown = faAngleDoubleDown;
-  faAngleDoubleUp = faAngleDoubleUp;
   faTrashAlt = faTrashAlt;
   faCopy = faCopy;
   faRedo = faRedo;
   faPlusSquare = faPlusSquare;
 
-  clientRegistrations: ClientRegistrationPrivate[] = [];
+  clientRegistrations: ClientRegistrationPrivateNew[] = [];
   clientSecretsByClientId = new Map<string, string>();
   clientRegistrationSummaryByClientId = new Map<string, ClientRegistrationPrivateSummary>();
   clientRegistrationSummaryLoadingByClientId = new Map<string, boolean>();
@@ -35,14 +39,16 @@ export class ClientComponent implements OnInit {
               @Inject(DOCUMENT) private readonly document: Document) { }
 
   ngOnInit(): void {
-    this.clientRegistrationService.getClientRegistrations().subscribe((clientRegistrations) => this.clientRegistrations = clientRegistrations);
+    this.clientRegistrationService.getClientRegistrations().then((clientRegistrations) => {
+      this.clientRegistrations = clientRegistrations;
+    });
   }
 
   authorizationGrantTypeDisplayName(authorizationGrantType: AuthorizationGrantType): string {
     return authorizationGrantTypeDisplayName(authorizationGrantType);
   }
 
-  hasTestRedirectUri(clientRegistration: ClientRegistrationPrivate): boolean {
+  hasTestRedirectUri(clientRegistration: ClientRegistrationPrivateNew): boolean {
       for (let redirectUri of clientRegistration.redirectUris) {
           if (redirectUri.startsWith(this.document.location.origin) && redirectUri.endsWith('/account/client/debug')) {
               return true;
@@ -52,7 +58,7 @@ export class ClientComponent implements OnInit {
       return false;
   }
 
-  getClientSecretSafe(clientRegistration: ClientRegistrationPrivate): string {
+  getClientSecretSafe(clientRegistration: ClientRegistrationPrivateNew): string {
       const clientSecret = this.clientSecretsByClientId.get(clientRegistration.clientId);
       if (clientSecret != undefined) {
           return clientSecret;
@@ -67,8 +73,8 @@ export class ClientComponent implements OnInit {
           .catch(() => tooltip.open({message: 'Copy failed'}));
   }
 
-  onAddRedirectUriClick(clientRegistration: ClientRegistrationPrivate, redirectUriElement: HTMLInputElement): void {
-      firstValueFrom(this.clientRegistrationService.addRedirectUri(clientRegistration.clientId, redirectUriElement.value))
+  onAddRedirectUriClick(clientRegistration: ClientRegistrationPrivateNew, redirectUriElement: HTMLInputElement): void {
+      this.clientRegistrationService.addRedirectUri(clientRegistration.clientId, redirectUriElement.value)
           .then((clientRegistration) => {
               this.toastService.show('Redirect URI added', 'The redirect URI has been added successfully');
 
@@ -86,12 +92,12 @@ export class ClientComponent implements OnInit {
           });
   }
 
-  onLoadSummaryClick(clientRegistration: ClientRegistrationPrivate): void {
+  onLoadSummaryClick(clientRegistration: ClientRegistrationPrivateNew): void {
       const clientId = clientRegistration.clientId;
 
       this.clientRegistrationSummaryLoadingByClientId.set(clientId, true);
 
-      firstValueFrom(this.clientRegistrationService.getClientRegistrationSummary(clientId))
+      this.clientRegistrationService.getClientRegistrationSummary(clientId)
           .then((clientRegistrationSummary) => {
               this.clientRegistrationSummaryByClientId.set(clientId, clientRegistrationSummary);
           })
@@ -103,18 +109,18 @@ export class ClientComponent implements OnInit {
           });
   }
 
-  trackByClientRegistration(idx: number, clientRegistration: ClientRegistrationPrivate): string {
+  trackByClientRegistration(idx: number, clientRegistration: ClientRegistrationPrivateNew): string {
       return clientRegistration.clientId;
   }
 
-  openRegenerateClientSecretModal(clientRegistration: ClientRegistrationPrivate): void {
+  openRegenerateClientSecretModal(clientRegistration: ClientRegistrationPrivateNew): void {
       const modalRef = this.modalService.open(RegenerateClientSecretModalComponent);
       modalRef.componentInstance.clientRegistration = clientRegistration;
 
       modalRef.result
           .then((confirmed: boolean) => {
               if (confirmed) {
-                  firstValueFrom(this.clientRegistrationService.regenerateClientSecret(clientRegistration.clientId))
+                  this.clientRegistrationService.regenerateClientSecret(clientRegistration.clientId)
                       .then((clientRegistrationCreation) => {
                           this.toastService.show('Client Secret generated', 'The client secret has been generated successfully');
                           this.clientSecretsByClientId.set(clientRegistrationCreation.clientRegistration.clientId, clientRegistrationCreation.clientSecret);
@@ -127,7 +133,7 @@ export class ClientComponent implements OnInit {
           .catch(() => {});
   }
 
-  openDeleteRedirectUriModal(clientRegistration: ClientRegistrationPrivate, redirectUri: string): void {
+  openDeleteRedirectUriModal(clientRegistration: ClientRegistrationPrivateNew, redirectUri: string): void {
       const modalRef = this.modalService.open(DeleteModalComponent);
       modalRef.componentInstance.entityType = 'Redirect URI';
       modalRef.componentInstance.entityName = redirectUri;
@@ -137,7 +143,7 @@ export class ClientComponent implements OnInit {
       modalRef.result
           .then((confirmed: boolean) => {
               if (confirmed) {
-                  firstValueFrom(this.clientRegistrationService.removeRedirectUri(clientId, redirectUri))
+                  this.clientRegistrationService.removeRedirectUri(clientId, redirectUri)
                       .then((clientRegistration) => {
                           this.toastService.show('Redirect URI deleted', 'The redirect URI has been deleted successfully');
 
@@ -157,7 +163,7 @@ export class ClientComponent implements OnInit {
           .catch(() => {});
   }
 
-  openDeleteClientModal(clientRegistration: ClientRegistrationPrivate): void {
+  openDeleteClientModal(clientRegistration: ClientRegistrationPrivateNew): void {
     const modalRef = this.modalService.open(DeleteModalComponent);
     modalRef.componentInstance.entityType = 'Client';
     modalRef.componentInstance.entityName = clientRegistration.displayName;
@@ -170,7 +176,7 @@ export class ClientComponent implements OnInit {
                 firstValueFrom(this.clientRegistrationService.deleteClientRegistration(clientId))
                     .then(() => {
                         this.toastService.show('Client deleted', 'The client has been deleted successfully');
-                        this.clientRegistrations = this.clientRegistrations.filter((v: ClientRegistrationPrivate) => v.clientId != clientId);
+                        this.clientRegistrations = this.clientRegistrations.filter((v: ClientRegistrationPrivateNew) => v.clientId != clientId);
                     })
                     .catch((apiError: ApiError) => {
                         this.toastService.show('Client deletion failed', 'The client deletion failed: ' + apiError.message);

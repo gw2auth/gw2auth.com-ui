@@ -2,7 +2,6 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ClientRegistrationPrivate} from './client-registration.model';
 import {ClientRegistrationService} from './client-registration.service';
-import {faCheck} from '@fortawesome/free-solid-svg-icons';
 import {Oauth2ClientService, GrantType} from './oauth2-client.service';
 import {HttpErrorResponse, HttpResponse} from '@angular/common/http';
 import {DOCUMENT} from "@angular/common";
@@ -13,8 +12,6 @@ import {DOCUMENT} from "@angular/common";
   templateUrl: './client-debug-response.component.html'
 })
 export class ClientDebugResponseComponent implements OnInit {
-
-  faCheck = faCheck;
 
   clientRegistration: ClientRegistrationPrivate | null = null;
   error: string | null = null;
@@ -46,7 +43,7 @@ export class ClientDebugResponseComponent implements OnInit {
       this.clientRegistration = null;
 
       if (clientId != null) {
-        this.clientRegistrationService.getClientRegistration(clientId).subscribe((clientRegistration) => this.clientRegistration = clientRegistration);
+        this.clientRegistrationService.getClientRegistration(clientId).then((clientRegistration) => this.clientRegistration = clientRegistration);
       }
     });
   }

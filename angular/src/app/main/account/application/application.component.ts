@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import {ClientConsentService} from './client-consent.service';
-import {ClientConsent} from './client-consent.model';
-import {faTrashAlt, faAngleDoubleDown, faAngleDoubleUp, faUserShield} from '@fortawesome/free-solid-svg-icons';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {ApiError, Gw2ApiPermission} from '../../../common/common.model';
-import {ToastService} from '../../../toast/toast.service';
-import {ClientRegistrationPublic} from '../client/client-registration.model';
-import {ActivatedRoute} from '@angular/router';
-import {DeleteApplicationModalComponent} from './delete-application-modal.component';
-import {ClientAuthorization} from './client-authorization.model';
-import {ClientAuthorizationService} from './client-authorization.service';
-import {AuthorizationModalComponent} from './authorization-modal.component';
-import {firstValueFrom} from 'rxjs';
+import { ClientConsentService } from './client-consent.service';
+import { ClientConsent, ClientConsentNew, ClientConsentOld } from './client-consent.model';
+import { faAngleDoubleDown, faAngleDoubleUp, faTrashAlt, faUserShield } from '@fortawesome/free-solid-svg-icons';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ApiError, Gw2ApiPermission } from '../../../common/common.model';
+import { ToastService } from '../../../toast/toast.service';
+import { ClientRegistrationPublic } from '../client/client-registration.model';
+import { ActivatedRoute } from '@angular/router';
+import { DeleteApplicationModalComponent } from './delete-application-modal.component';
+import { ClientAuthorization } from './client-authorization.model';
+import { ClientAuthorizationService } from './client-authorization.service';
+import { AuthorizationModalComponent } from './authorization-modal.component';
+import { firstValueFrom } from 'rxjs';
 
 
 class InternalClientConsent {
@@ -20,14 +20,44 @@ class InternalClientConsent {
   accountSub: string;
   authorizedGw2ApiPermissions: Gw2ApiPermission[];
   authorizedVerifiedInformation: boolean;
+  authorizedName: boolean;
+  authorizedDisplayName: boolean;
   clientAuthorizationsState: -1 | 0 | 1 = 0;// loading, initial, loaded
   clientAuthorizations: ClientAuthorization[] = [];
 
   constructor(clientAuthorization: ClientConsent) {
     this.clientRegistration = clientAuthorization.clientRegistration;
     this.accountSub = clientAuthorization.accountSub;
-    this.authorizedGw2ApiPermissions = clientAuthorization.authorizedGw2ApiPermissions;
-    this.authorizedVerifiedInformation = clientAuthorization.authorizedVerifiedInformation;
+
+    if ((<ClientConsentNew> clientAuthorization).authorizedScopes) {
+      const clientConsent = <ClientConsentNew> clientAuthorization;
+      const authorizedGw2ApiPermissions: Gw2ApiPermission[] = [];
+
+      for (let scope of clientConsent.authorizedScopes) {
+        if (scope.startsWith('gw2:')) {
+          authorizedGw2ApiPermissions.push(<Gw2ApiPermission> scope.substring(4));
+        }
+      }
+
+      this.authorizedGw2ApiPermissions = authorizedGw2ApiPermissions;
+
+      if (clientConsent.clientRegistration.apiVersion === 1) {
+        this.authorizedName = clientConsent.authorizedScopes.includes('gw2acc:name') || this.authorizedGw2ApiPermissions.includes(Gw2ApiPermission.ACCOUNT);
+        this.authorizedDisplayName = clientConsent.authorizedScopes.includes('gw2acc:display_name');
+        this.authorizedVerifiedInformation = clientConsent.authorizedScopes.includes('gw2acc:verified');
+
+      } else {
+        this.authorizedName = this.authorizedGw2ApiPermissions.includes(Gw2ApiPermission.ACCOUNT);
+        this.authorizedDisplayName = true;
+        this.authorizedVerifiedInformation = clientConsent.authorizedScopes.includes('gw2auth:verified');
+      }
+    } else {
+      const clientConsent = <ClientConsentOld> clientAuthorization;
+      this.authorizedGw2ApiPermissions = clientConsent.authorizedGw2ApiPermissions;
+      this.authorizedVerifiedInformation = clientConsent.authorizedVerifiedInformation;
+      this.authorizedName = true;
+      this.authorizedDisplayName = true;
+    }
   }
 }
 

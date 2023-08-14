@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import {ClientRegistrationService} from './client-registration.service';
-import {AuthorizationGrantType, authorizationGrantTypeDisplayName} from './client-registration.model';
+import {
+  AuthorizationGrantType,
+  authorizationGrantTypeDisplayName,
+  ClientRegistrationPrivateNew
+} from './client-registration.model';
 import {ToastService} from '../../../toast/toast.service';
 import {ApiError} from '../../../common/common.model';
-import {firstValueFrom} from 'rxjs';
 
 @Component({
   selector: 'app-client-create',
@@ -18,6 +21,7 @@ export class ClientCreateComponent implements OnInit {
   createInProgress = false;
   showCreateButton = true;
 
+  apiVersion: number | null = null;
   creationTime: Date | null = null;
   clientId: string | null = null;
   clientSecret: string | null = null;
@@ -34,9 +38,15 @@ export class ClientCreateComponent implements OnInit {
   onCreateClientClick(): void {
     this.createInProgress = true;
 
-    firstValueFrom(this.clientRegistrationService.createClientRegistration({displayName: this.displayName, authorizationGrantTypes: this.authorizationGrantTypes, redirectUris: [this.redirectUri]}))
+    this.clientRegistrationService.createClientRegistration({displayName: this.displayName, authorizationGrantTypes: this.authorizationGrantTypes, redirectUris: [this.redirectUri]})
         .then((response) => {
             this.showCreateButton = false;
+
+            if ((<ClientRegistrationPrivateNew> response.clientRegistration).apiVersion !== undefined) {
+              this.apiVersion = (<ClientRegistrationPrivateNew> response.clientRegistration).apiVersion;
+            } else {
+              this.apiVersion = 0;
+            }
 
             this.displayName = response.clientRegistration.displayName;
             this.authorizationGrantTypes = response.clientRegistration.authorizationGrantTypes;

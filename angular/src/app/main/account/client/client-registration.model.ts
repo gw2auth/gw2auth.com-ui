@@ -10,18 +10,38 @@ export function authorizationGrantTypeDisplayName(authorizationGrantType: Author
     }
 }
 
-export interface ClientRegistrationPublic {
+export type ClientRegistrationPublic = ClientRegistrationPublicOld | ClientRegistrationPublicNew;
+
+export interface ClientRegistrationPublicOld {
     creationTime: Date;
     displayName: string;
     clientId: string;
 }
 
-export interface ClientRegistrationPrivate {
+export interface ClientRegistrationPublicNew {
+    creationTime: Date;
+    displayName: string;
+    clientId: string;
+    apiVersion: number;
+}
+
+export type ClientRegistrationPrivate = ClientRegistrationPrivateOld | ClientRegistrationPrivateNew;
+
+export interface ClientRegistrationPrivateOld {
     creationTime: Date;
     displayName: string;
     clientId: string;
     authorizationGrantTypes: AuthorizationGrantType[];
     redirectUris: string[];
+}
+
+export interface ClientRegistrationPrivateNew {
+    creationTime: Date;
+    displayName: string;
+    clientId: string;
+    authorizationGrantTypes: AuthorizationGrantType[];
+    redirectUris: string[];
+    apiVersion: number;
 }
 
 export interface ClientRegistrationPrivateSummary {
@@ -33,8 +53,15 @@ export interface ClientRegistrationPrivateSummary {
     authPast30d: number;
 }
 
-export interface ClientRegistrationCreation {
-    clientRegistration: ClientRegistrationPrivate;
+export type ClientRegistrationCreation = ClientRegistrationCreationOld | ClientRegistrationCreationNew;
+
+export interface ClientRegistrationCreationOld {
+    clientRegistration: ClientRegistrationPrivateOld;
+    clientSecret: string;
+}
+
+export interface ClientRegistrationCreationNew {
+    clientRegistration: ClientRegistrationPrivateNew;
     clientSecret: string;
 }
 
