@@ -6,23 +6,8 @@ on:
       - main
 
 jobs:
-  create_monorepo_cr:
+  trigger_monorepo_workflow:
     name: 'Trigger monorepo workflow'
-    runs-on: ubuntu-latest
-    steps:
-      - name: 'Trigger monorepo workflow'
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.MONOREPO_DISPATCH_PAT }}
-          script: |
-            const { owner, repo } = context.repo;
-            await github.rest.actions.createWorkflowDispatch({
-              owner: owner,
-              repo: 'gw2auth.com-monorepo',
-              workflow_id: 'create_pr_for_submodule.yml',
-              ref: 'beta',
-              inputs: {
-                submodule: repo,
-                submodule_ref: context.sha,
-              },
-            });
+    uses: gw2auth/gw2auth.com-monorepo/.github/workflows/trigger_monorepo_workflow.yml@beta
+    secrets:
+      token: ${{ secrets.MONOREPO_DISPATCH_PAT }}
