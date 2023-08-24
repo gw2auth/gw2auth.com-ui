@@ -6,17 +6,6 @@
     <div class="offcanvas-body">
         <div class="container">
             <div class="row row-cols-1">
-                <div class="col alert alert-danger-strong" *ngIf="showSotoReleaseBanner">
-                    <p class="mb-0">The official Guild Wars 2 API <strong>will be offline</strong> around the release of Guild Wars 2: Secrets of the Obscure (SotO).</p>
-                    <p>SotO will be released at <strong>{{sotoReleaseDate}}</strong>. The API will be offline from <strong>{{sotoApiDowntimeFromDate}}</strong> until <strong>{{sotoApiDowntimeUntilDate}}</strong>.</p>
-                    <p class="mb-0">While the API is offline, <strong>the following will not work</strong>:</p>
-                    <ul class="mb-0">
-                        <li>Add or update API Tokens</li>
-                        <li>Verify your Guild Wars 2 Accounts</li>
-                        <li>Login to external websites using GW2Auth</li>
-                    </ul>
-                </div>
-
                 <div class="col alert alert-danger-strong" *ngIf="showApiIssuesBanner">
                     <p class="mb-0">We are seeing issues with the official Guild Wars 2 API at the moment.</p>
                     <p class="mb-0">Please note that this <strong>might impact GW2Auth</strong>. There is nothing you or we can do about it.</p>
