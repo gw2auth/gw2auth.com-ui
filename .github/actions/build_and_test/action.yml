@@ -1,0 +1,29 @@
+name: 'Build, Test'
+description: 'Build, Test'
+
+inputs:
+  working-directory:
+    description: 'working directory'
+    required: true
+
+outputs:
+  output_dir:
+    description: 'output directory'
+    value: 'dist'
+
+
+runs:
+  using: 'composite'
+  steps:
+    - name: 'Setup node'
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+    - name: 'Install npm dependencies'
+      working-directory: ${{ inputs.working-directory }}
+      run: 'npm install'
+      shell: bash
+    - name: 'Build'
+      working-directory: ${{ inputs.working-directory }}
+      run: 'npm run build'
+      shell: bash

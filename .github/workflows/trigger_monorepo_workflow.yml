@@ -3,7 +3,7 @@ name: 'Trigger monorepo workflow'
 on:
   push:
     branches:
-      - main
+      - '*'
 
 jobs:
   trigger_monorepo_workflow:
