@@ -5,6 +5,7 @@ node/
 **/node_modules/
 
 **/dist/
+**/out/
 
 **/.angular/cache
 /.sass-cache
