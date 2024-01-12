@@ -149,20 +149,8 @@ export function Tradingpost({
 
   return (
     <svg style={responsiveStyle} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 991 731'>
-      <defs>
-        <image id='background1' href='/assets/tp_background1.png' width='27' height='18' />
-        <image id='background2' href='/assets/tp_background2.png' width='103' height='24' />
-        <image id='background3' href='/assets/tp_background3.png' width='174' height='32' />
-      </defs>
-
       <image href={href} width='991' height='731' />
       <image href={iconHref} width='57' height='57' x='272' y='138' />
-
-      <use href='#background1' x='415' y='270' />
-      <use href='#background1' x='490' y='270' />
-      <use href='#background1' x='565' y='270' />
-      <use href='#background2' x='335' y='144' />
-      <use href='#background3' x='380' y='310' />
 
       <text x='335' y='160' fontSize='1.7em' fill='#b222ff'>{name}</text>
 
@@ -170,9 +158,9 @@ export function Tradingpost({
       <text x='495' y='286' fontSize='1.2em' fill={silverColor}>{silver}</text>
       <text x='570' y='286' fontSize='1.2em' fill={copperColor}>{copper}</text>
 
-      <text x='382' y='333' fontSize='1.5em' fill={goldColor}>{gold}</text>
-      <text x='439' y='333' fontSize='1.5em' fill={silverColor}>{silver}</text>
-      <text x='497' y='333' fontSize='1.5em' fill={copperColor}>{copper}</text>
+      <text x='384' y='332' fontSize='1.5em' fill={goldColor}>{gold}</text>
+      <text x='439' y='332' fontSize='1.5em' fill={silverColor}>{silver}</text>
+      <text x='497' y='332' fontSize='1.5em' fill={copperColor}>{copper}</text>
 
       <line x1='425' y1='270' x2='600' y2='200' stroke='red' strokeWidth='3px' />
       <line x1='505' y1='270' x2='600' y2='200' stroke='red' strokeWidth='3px' />
