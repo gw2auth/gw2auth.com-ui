@@ -6,17 +6,47 @@ export interface AssetProps {
   lang: 'en' | 'de';
 }
 
-const responsiveStyle = {
-  height: 'auto',
-  width: '100%',
-} satisfies React.CSSProperties;
+function responsiveStyle(width: number): React.CSSProperties {
+  return {
+    height: 'auto',
+    width: '100%',
+    maxWidth: `${width * 1.2}px`,
+  };
+}
+
+export function Gw2Login({ lang }: { lang: string }) {
+  const href = useMemo(() => `/assets/${lang}/login.png`, [lang]);
+  return (
+    <svg style={responsiveStyle(500)} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 661'>
+      <image href={href} width='500' height='661' />
+
+      <Arrow x1={90} y1={260} x2={70} y2={100} rotate={-70} xCorr={10} yCorr={10} />
+      <foreignObject x='10' y='70' width='230' height='100%' color='black' fontSize='1.2em'>
+        <div style={{ backgroundColor: 'red', padding: '5px' }}>
+          <span>ArenaNet GW2 Account?</span>
+          <br />
+          <span>Login via E-Mail & Password</span>
+        </div>
+      </foreignObject>
+
+      <Arrow x1={240} y1={429} x2={330} y2={260} xCorr={4} />
+      <foreignObject x='290' y='230' width='180' height='100%' color='black' fontSize='1.2em'>
+        <div style={{ backgroundColor: 'red', padding: '5px' }}>
+          <span>Steam GW2 Account?</span>
+          <br />
+          <span>Login via Steam</span>
+        </div>
+      </foreignObject>
+    </svg>
+  );
+}
 
 export function CreateAPIToken1({ variant, lang }: AssetProps) {
   const href = useMemo(() => `/assets/${lang}/${variant}/create_api_token_01.png`, [variant, lang]);
 
   if (lang === 'de') {
     return (
-      <svg style={responsiveStyle} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1106 661'>
+      <svg style={responsiveStyle(1106)} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1106 661'>
         <image href={href} width='1106' height='661' />
 
         <Arrow x1={990} y1={475} x2={1000} y2={260} />
@@ -27,7 +57,7 @@ export function CreateAPIToken1({ variant, lang }: AssetProps) {
   }
 
   return (
-    <svg style={responsiveStyle} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1106 661'>
+    <svg style={responsiveStyle(1106)} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1106 661'>
       <image href={href} width='1106' height='661' />
 
       <Arrow x1={990} y1={460} x2={1000} y2={260} />
@@ -77,7 +107,7 @@ export function CreateAPIToken2({
   const textBgStroke = useMemo(() => (variant === 'dark' ? 'black' : 'white'), [variant]);
 
   return (
-    <svg style={responsiveStyle} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1106 1105'>
+    <svg style={responsiveStyle(1106)} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1106 1105'>
       <defs>
         <image id='checkbox' href='/assets/checkbox.png' width='13' height='13' />
       </defs>
@@ -117,7 +147,7 @@ export function CreateAPIToken3({ variant, lang }: AssetProps) {
   })[lang] ?? 0;
 
   return (
-    <svg style={responsiveStyle} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1106 729'>
+    <svg style={responsiveStyle(1006)} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1106 729'>
       <image href={href} width='1106' height='729' />
 
       <Arrow x1={985} y1={550 + yAdd} x2={900} y2={360} />
@@ -148,7 +178,7 @@ export function Tradingpost({
   const copperColor = '#da854b';
 
   return (
-    <svg style={responsiveStyle} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 991 731'>
+    <svg style={responsiveStyle(991)} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 991 731'>
       <image href={href} width='991' height='731' />
       <image href={iconHref} width='57' height='57' x='272' y='138' />
 

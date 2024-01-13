@@ -3,7 +3,9 @@ import {
 } from '@cloudscape-design/components';
 import React, { useState } from 'react';
 import { AllGw2ApiPermissions } from '../../lib/api/api.model';
-import { CreateAPIToken1, CreateAPIToken2, CreateAPIToken3 } from '../common/assets';
+import {
+  CreateAPIToken1, CreateAPIToken2, CreateAPIToken3, Gw2Login, 
+} from '../common/assets';
 import { catchNotify, useAppControls } from '../util/context/app-controls';
 import { useHttpClient } from '../util/context/http-client';
 import { usePreferences } from '../util/state/use-preferences';
@@ -54,7 +56,7 @@ export function AddApiTokenWizard({ onDismiss }: { onDismiss: () => void }) {
           content: (
             <ColumnLayout columns={1}>
               <Box>Visit the <Link href={'https://account.arena.net/applications'} external={true}>Guild Wars 2 Account Page</Link> and login using the Guild Wars 2 Account you wish to add.</Box>
-              <img style={{ height: 'auto', width: '100%', maxWidth: 'min-content' }} src={`/assets/${preferences.effectiveLocale}/login.png`} alt={'Login to your GW2 Account'} />
+              <Gw2Login lang={preferences.effectiveLocale} />
             </ColumnLayout>
           ),
           isOptional: true,

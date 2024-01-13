@@ -23,7 +23,7 @@ import {
 } from '../../lib/api/api.model';
 import { EffectivePreferences } from '../../lib/preferences.model';
 import {
-  CreateAPIToken1, CreateAPIToken2, CreateAPIToken3, Tradingpost, 
+  CreateAPIToken1, CreateAPIToken2, CreateAPIToken3, Gw2Login, Tradingpost,
 } from '../common/assets';
 import { Copy } from '../common/copy';
 import { Gw2ApiPermissions } from '../common/gw2-api-permissions';
@@ -458,7 +458,7 @@ function addApiTokenSteps(preferences: EffectivePreferences, permissions: Readon
       content: (
         <ColumnLayout columns={1}>
           <Box>Visit the <Link href={'https://account.arena.net/applications'} external={true}>Guild Wars 2 Account Page</Link> and login using the Guild Wars 2 Account you wish to verify.</Box>
-          <img style={{ height: 'auto', width: '100%', maxWidth: 'min-content' }} src={`/assets/${preferences.effectiveLocale}/login.png`} alt={'Login to your GW2 Account'} />
+          <Gw2Login lang={preferences.effectiveLocale} />
         </ColumnLayout>
       ),
       isOptional: optional,
