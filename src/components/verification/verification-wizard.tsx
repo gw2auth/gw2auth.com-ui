@@ -25,7 +25,7 @@ import { EffectivePreferences } from '../../lib/preferences.model';
 import {
   CreateAPIToken1, CreateAPIToken2, CreateAPIToken3, Gw2Login, Tradingpost,
 } from '../common/assets';
-import { Copy } from '../common/copy';
+import { Copy, CopyButton } from '../common/copy';
 import { Gw2ApiPermissions } from '../common/gw2-api-permissions';
 import { catchNotify, useAppControls } from '../util/context/app-controls';
 import { useHttpClient } from '../util/context/http-client';
@@ -178,6 +178,8 @@ function InternalVerificationWizard({ activeChallenge, onDismiss }: { activeChal
   const [apiToken, setApiToken] = useState('');
   const [tpBuyOrderState, setTpBuyOrderState] = useState<TPBuyOrderStateFull>();
 
+  const isExistingApiToken = useMemo(() => activeChallenge.availableGw2Accounts.find((v) => v.apiToken === apiToken) !== undefined, [apiToken, activeChallenge]);
+
   useEffect(() => {
     if (activeChallenge.challengeId !== 2) {
       setTpBuyOrderState(undefined);
@@ -225,7 +227,7 @@ function InternalVerificationWizard({ activeChallenge, onDismiss }: { activeChal
     steps.push(
       ...addApiTokenSteps(preferences, requiredPermissions(1), activeChallenge.state, false),
       {
-        title: 'Add API Token',
+        title: 'Enter API Token',
         description: 'Paste the newly generated API Token to submit the verification',
         content: <AddChallengeApiToken value={apiToken} onChange={setApiToken} disabled={isLoading} />,
       },
@@ -253,21 +255,22 @@ function InternalVerificationWizard({ activeChallenge, onDismiss }: { activeChal
         description: 'Place the buy-order as stated below to let GW2Auth verify you are the legitimate owner of this Guild Wars 2 Account',
         content: (
           <ColumnLayout columns={1}>
-            <Box>Using the ingame tradingpost, search for</Box>
-            <Box variant={'h2'}>
-              <ImgText src={iconSrc} alt={tpBuyOrderState.item.name} />
-              {tpBuyOrderState.item.name}
-            </Box>
+            <Alert type={'info'}>
+              <ColumnLayout columns={1}>
+                <Box>Using the ingame tradingpost, search for</Box>
+                <CopyButton copyText={tpBuyOrderState.item.name} iconUrl={iconSrc}>{tpBuyOrderState.item.name}</CopyButton>
 
-            <Box>And place a buy-order with <Box variant={'strong'}>exactly</Box></Box>
-            <Box variant={'h2'}>
-              {coins}
-              <ImgText src={'/assets/gold_coin.png'} alt={'Gold Coin'} />
-              {silver}
-              <ImgText src={'/assets/silver_coin.png'} alt={'Silver Coin'} />
-              {copper}
-              <ImgText src={'/assets/copper_coin.png'} alt={'Copper Coin'} />
-            </Box>
+                <Box>And place a buy-order with <Box variant={'strong'}>exactly</Box></Box>
+                <Box variant={'h2'}>
+                  {coins}
+                  <ImgText src={'/assets/gold_coin.png'} alt={'Gold Coin'} />
+                  {silver}
+                  <ImgText src={'/assets/silver_coin.png'} alt={'Silver Coin'} />
+                  {copper}
+                  <ImgText src={'/assets/copper_coin.png'} alt={'Copper Coin'} />
+                </Box>
+              </ColumnLayout>
+            </Alert>
 
             <Tradingpost
               lang={preferences.effectiveLocale}
@@ -287,11 +290,13 @@ function InternalVerificationWizard({ activeChallenge, onDismiss }: { activeChal
         title: 'Create a verification Character',
         description: 'Create a character as stated below to let GW2Auth verify you are the legitimate owner of this Guild Wars 2 Account',
         content: (
-          <ColumnLayout columns={1}>
-            <Box>Create a new character using the name</Box>
-            <Copy copyText={activeChallenge.state}>{activeChallenge.state}</Copy>
-            <Box variant={'small'}>The character can be deleted once the verification succeeded</Box>
-          </ColumnLayout>
+          <Alert type={'info'}>
+            <ColumnLayout columns={1}>
+              <Box>Create a new character using the name</Box>
+              <CopyButton copyText={activeChallenge.state}>{activeChallenge.state}</CopyButton>
+              <Box variant={'small'}>The character can be deleted once the verification succeeded</Box>
+            </ColumnLayout>
+          </Alert>
         ),
       });
     }
@@ -324,12 +329,18 @@ function InternalVerificationWizard({ activeChallenge, onDismiss }: { activeChal
     );
 
     steps.push({
-      title: 'Select or add API Token',
+      title: 'Select or enter API Token',
       description: 'Select an existing API Token or paste the newly generated one to submit the verification',
       content: (
         <ColumnLayout columns={1}>
           <SelectChallengeApiToken availableGw2Accounts={activeChallenge.availableGw2Accounts} value={apiToken} onChange={setApiToken} disabled={isLoading} />
           <AddChallengeApiToken value={apiToken} onChange={setApiToken} disabled={isLoading} />
+          {
+            apiToken !== '' && !isExistingApiToken
+            && <Alert type={'info'}>
+              <Box>The API Token entered here <Box variant={'strong'}>will only be used for the purpose of the verification</Box>.</Box>
+            </Alert>
+          }
         </ColumnLayout>
       ),
     });
@@ -476,17 +487,20 @@ function addApiTokenSteps(preferences: EffectivePreferences, permissions: Readon
       description: 'Assign name and permissions',
       content: (
         <ColumnLayout columns={1}>
-          <SpaceBetween size={'xxs'} direction={'vertical'}>
-            <Header variant={'h3'}>Name</Header>
-            {
-              (tokenName !== undefined && <Copy copyText={tokenName}><Box variant={'samp'}>{tokenName}</Box></Copy>)
-              || <Box>Choose any name you like</Box>
-            }
-          </SpaceBetween>
-          <SpaceBetween size={'xxs'} direction={'vertical'}>
-            <Header variant={'h3'}>Required Permissions</Header>
-            <Gw2ApiPermissions permissions={permissions} />
-          </SpaceBetween>
+          <Alert type={'info'}>
+            <ColumnLayout columns={1}>
+              <FormField label={<Header variant={'h3'}>Name</Header>} description={tokenName !== undefined ? 'Use this exact name for the API Token' : ''}>
+                {
+                  (tokenName !== undefined && <Copy copyText={tokenName}><Box variant={'samp'}>{tokenName}</Box></Copy>)
+                  || <Box>Choose any name you like</Box>
+                }
+              </FormField>
+
+              <FormField label={<Header variant={'h3'}>Required Permissions</Header>} description={'At least these permissions must be granted'}>
+                <Gw2ApiPermissions permissions={permissions} />
+              </FormField>
+            </ColumnLayout>
+          </Alert>
           <CreateAPIToken2 name={tokenName ?? 'GW2Auth'} variant={preferences.effectiveColorScheme} lang={preferences.effectiveLocale} permissions={permissions} />
         </ColumnLayout>
       ),

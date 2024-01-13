@@ -50,6 +50,7 @@ export function CopyButton({ copyText, position, ...buttonProps }: CopyButtonPro
       <Button
         iconName={'copy'}
         onClick={() => copy(copyText)}
+        loading={loading}
         {...buttonProps}
       />
     </Popover>
