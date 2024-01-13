@@ -9,7 +9,7 @@ import {
   Header,
   Multiselect,
   MultiselectProps, SpaceBetween,
-  Spinner,
+  Spinner, TextContent,
 } from '@cloudscape-design/components';
 import React, {
   useCallback, useEffect, useMemo, useState, 
@@ -137,6 +137,13 @@ function ConsentForm({ consentInfo, setActiveWindow }: { consentInfo: OAuth2Cons
     ];
   }, [selectedOptions]);
 
+  const redirectBase = useMemo(() => {
+    const url = new URL(consentInfo.redirectUri);
+    url.search = '';
+    url.pathname = '';
+    return url.toString();
+  }, [consentInfo]);
+
   return (
     <>
       <Container header={<Header variant={'h1'}>Authorize {consentInfo.clientRegistration.displayName}</Header>} variant={'stacked'}>
@@ -180,6 +187,13 @@ function ConsentForm({ consentInfo, setActiveWindow }: { consentInfo: OAuth2Cons
             </SpaceBetween>
           </Form>
         </form>
+      </Container>
+      <Container variant={'stacked'} disableContentPaddings={true}>
+        <TextContent>
+          <Box textAlign={'center'} padding={'xs'}>
+            <small>You will be redirected to <b>{redirectBase}</b></small>
+          </Box>
+        </TextContent>
       </Container>
     </>
   );

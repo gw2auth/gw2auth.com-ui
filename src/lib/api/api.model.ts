@@ -218,6 +218,7 @@ export interface OAuth2ConsentInfo {
   apiTokensWithInsufficientPermissions: ReadonlyArray<MinimalApiToken>;
   previouslyConsentedGw2AccountIds: ReadonlyArray<string>;
   containsAnyGw2AccountRelatedScopes: boolean;
+  redirectUri: string;
 }
 
 export interface MinimalApiToken {
