@@ -30,9 +30,15 @@ const KindSuccess = 0;
 const KindApiError = 1;
 const KindError = 2;
 
+interface SimpleHeaders {
+  get(name: string): string | null;
+  has(name: string): boolean;
+}
+
 interface BaseResponse<T> {
   kind: typeof KindSuccess | typeof KindApiError | typeof KindError;
   status: number;
+  headers: SimpleHeaders;
   body?: T;
   error?: ApiErrorBody | Error;
 }
@@ -368,17 +374,21 @@ export class ApiClient {
 
 async function transform<T>(resPromise: Promise<Response>, parseFn: (status: number, body: string) => T = (_, body) => JSON.parse(body) as T, successCode = 200, ...successCodes: Array<number>): Promise<ApiResponse<T>> {
   let status = 999;
+  let headers = EMPTY_HEADERS;
   let bodyRaw = '';
   let errorCause: unknown;
   try {
     const res = await resPromise;
     status = res.status;
+    headers = new ResponseHeaders(res.headers);
     bodyRaw = await res.text();
+    // res.headers
 
     if (status === successCode || successCodes.includes(status)) {
       return {
         kind: KindSuccess,
         status: status,
+        headers: headers,
         body: parseFn(status, bodyRaw),
         error: undefined,
       };
@@ -389,6 +399,7 @@ async function transform<T>(resPromise: Promise<Response>, parseFn: (status: num
       return {
         kind: KindApiError,
         status: status,
+        headers: headers,
         body: undefined,
         error: {
           message: body.message,
@@ -401,6 +412,7 @@ async function transform<T>(resPromise: Promise<Response>, parseFn: (status: num
       return {
         kind: KindError,
         status: status,
+        headers: headers,
         body: undefined,
         error: e,
       };
@@ -410,6 +422,7 @@ async function transform<T>(resPromise: Promise<Response>, parseFn: (status: num
   return {
     kind: KindError,
     status: status,
+    headers: headers,
     body: undefined,
     error: new Error(`unknown error: ${bodyRaw}`, { cause: errorCause }),
   };
@@ -436,4 +449,26 @@ export function expectSuccess<T>(resp: ApiResponse<T>): SuccessResponse<T> {
   }
 
   return resp;
+}
+
+const EMPTY_HEADERS = {
+  get(_: string): string | null {
+    return null;
+  },
+  has(_: string): boolean {
+    return false;
+  },
+} satisfies SimpleHeaders;
+
+class ResponseHeaders implements SimpleHeaders {
+  constructor(private readonly headers: Headers) {
+  }
+
+  get(name: string): string | null {
+    return this.headers.get(name);
+  }
+
+  has(name: string): boolean {
+    return this.headers.has(name);
+  }
 }

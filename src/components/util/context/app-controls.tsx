@@ -5,6 +5,8 @@ import React, {
   createContext, Dispatch, SetStateAction, useCallback, useContext, useEffect, useMemo,
 } from 'react';
 import { ApiError } from '../../../lib/api/api';
+import { Copy } from '../../common/copy';
+import { KeyValuePairs, ValueWithLabel } from '../../common/key-value-pairs';
 
 export interface AppControls {
   readonly tools: {
@@ -167,18 +169,37 @@ export function catchNotify(notifications: AppControls['notification'] | Dispatc
     if (e instanceof ApiError) {
       errMessage = e.message;
 
-      if (e.response.kind === 1) {
-        errDetails = <Box>Status: {e.response.status}</Box>;
-      } else {
-        errDetails = (
-          <SpaceBetween size={'s'} direction={'vertical'}>
-            <Box>Status: {e.response.status}</Box>
+      const requestId = e.response.headers.get('X-Amzn-Requestid');
+      const parts: Array<React.ReactNode> = [
+        (
+          <KeyValuePairs columns={requestId !== null ? 2 : 1}>
+            <ValueWithLabel label={'Status'}>{e.response.status}</ValueWithLabel>
+            <ValueWithLabel label={'Request ID'}>
+              {
+                requestId !== null
+                  ? <Copy copyText={requestId}><Box variant={'samp'}>{requestId}</Box></Copy>
+                  : <Box variant={'samp'}>unknown</Box>
+              }
+            </ValueWithLabel>
+          </KeyValuePairs>
+        ),
+      ];
+
+      if (e.response.kind === 2) {
+        parts.push(
+          (
             <Box variant={'code'}>
               <Box variant={'pre'}>{getErrorDetails(e.response.error)}</Box>
             </Box>
-          </SpaceBetween>
+          ),
         );
       }
+
+      errDetails = (
+        <SpaceBetween size={'s'} direction={'vertical'}>
+          {...parts}
+        </SpaceBetween>
+      );
     } else if (e instanceof Error) {
       errMessage = e.message;
       errDetails = (
