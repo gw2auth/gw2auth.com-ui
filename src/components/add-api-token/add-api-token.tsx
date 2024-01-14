@@ -52,7 +52,7 @@ export function AddApiTokenWizard({ onDismiss }: { onDismiss: () => void }) {
       } else {
         notification.add({
           type: 'info',
-          content: 'Your API Token was added successfully and the account ownership was verified!',
+          content: 'Your API Token was added successfully. The account ownership was not verified.',
           dismissible: true,
         });
       }
