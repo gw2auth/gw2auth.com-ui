@@ -489,10 +489,11 @@ function addApiTokenSteps(preferences: EffectivePreferences, permissions: Readon
         <ColumnLayout columns={1}>
           <Alert type={'info'}>
             <ColumnLayout columns={1}>
-              <FormField label={<Header variant={'h3'}>Name</Header>} description={tokenName !== undefined ? 'Use this exact name for the API Token' : ''}>
+              <FormField label={<Header variant={'h3'}>Token Name</Header>} description={tokenName !== undefined ? 'Use this exact name for the API Token' : ''}>
                 {
-                  (tokenName !== undefined && <Copy copyText={tokenName}><Box variant={'samp'}>{tokenName}</Box></Copy>)
-                  || <Box>Choose any name you like</Box>
+                  tokenName !== undefined
+                    ? <Copy copyText={tokenName}><Box variant={'samp'}>{tokenName}</Box></Copy>
+                    : <Box>Choose any name you like</Box>
                 }
               </FormField>
 

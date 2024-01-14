@@ -83,20 +83,20 @@ export function CreateAPIToken2({
 
     for (const perm of permissions) {
       const y = ({
-        account: 508,
-        inventories: 553,
-        characters: 598,
-        tradingpost: 642,
-        wallet: 688,
-        unlocks: 733,
-        pvp: 778,
-        builds: 823,
-        progression: 868,
-        guilds: 913,
+        account: 458,
+        inventories: 503,
+        characters: 548,
+        tradingpost: 592,
+        wallet: 638,
+        unlocks: 683,
+        pvp: 728,
+        builds: 773,
+        progression: 818,
+        guilds: 863,
       })[perm];
 
       if (y !== undefined) {
-        p.push(<line x1='135' y1={y} x2='730' y2='450' stroke='red' strokeWidth='3px' />);
+        p.push(<line x1='135' y1={y} x2='730' y2='400' stroke='red' strokeWidth='3px' />);
         c.push(<use href='#checkbox' x='125' y={y - 5} />);
       }
     }
@@ -107,34 +107,34 @@ export function CreateAPIToken2({
   const textBgStroke = useMemo(() => (variant === 'dark' ? 'black' : 'white'), [variant]);
 
   return (
-    <svg style={responsiveStyle(1106)} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1106 1105'>
+    <svg style={responsiveStyle(1106)} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1106 1005'>
       <defs>
         <image id='checkbox' href='/assets/checkbox.png' width='13' height='13' />
       </defs>
 
-      <image href={href} width='1106' height='1105' />
+      <image href={href} width='1106' height='1005' />
 
-      <foreignObject x='104' y='458' width='150' height='100%' color='red' fontSize='1.2em'>
+      <foreignObject x='104' y='408' width='800' height='100%' color='red' fontSize='1.2em'>
         <div style={{ backgroundColor: textBgStroke, padding: '5px' }}>
           <span>{name}</span>
         </div>
       </foreignObject>
 
-      <Arrow x1={140} y1={450} x2={250} y2={350} xCorr={7} yCorr={5} />
-      <line x1='195' y1='345' x2='570' y2='345' stroke='red' strokeWidth='40px' />
-      <text x='200' y='350' fontSize='1.5em' fill='black'>Assign a name for the new API Token</text>
+      <Arrow x1={140} y1={400} x2={250} y2={300} xCorr={7} yCorr={5} />
+      <line x1='195' y1='295' x2='570' y2='295' stroke='red' strokeWidth='40px' />
+      <text x='200' y='300' fontSize='1.5em' fill='black'>Assign a name for the new API Token</text>
 
       {...permissionLines}
       {...checkboxes}
-      <foreignObject x='730' y='440' width='350' height='100%' fontSize='1.5em'>
+      <foreignObject x='730' y='390' width='350' height='100%' fontSize='1.5em'>
         <div style={{ backgroundColor: 'red', padding: '5px', color: 'black' }}>
           {permissionsText ?? <span>Grant required permissions</span>}
         </div>
       </foreignObject>
 
-      <Arrow x1={180} y1={960} x2={800} y2={800} yCorr={10} />
-      <line x1='800' y1='800' x2='1015' y2='800' stroke='red' strokeWidth='40px' />
-      <text x='805' y='805' fontSize='1.5em' fill='black'>Create the API Token</text>
+      <Arrow x1={180} y1={910} x2={800} y2={750} yCorr={10} />
+      <line x1='800' y1='750' x2='1015' y2='750' stroke='red' strokeWidth='40px' />
+      <text x='805' y='755' fontSize='1.5em' fill='black'>Create the API Token</text>
     </svg>
   );
 }

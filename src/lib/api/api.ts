@@ -2,9 +2,9 @@ import { PropertyFilterProps } from '@cloudscape-design/components';
 import { HTTPClient } from '../http';
 import { OAuth2ParamNames, OAuth2Params } from '../oauth2.model';
 import {
-  isJsonObject, JsonType,
+  isJsonObject,
+  JsonType,
   ApiErrorBody,
-  ApiToken,
   Application,
   ApplicationListItem,
   ApprovalStatus,
@@ -23,7 +23,12 @@ import {
   OAuth2TokenResponse,
   PagedResponse,
   VerificationStart,
-  VerificationSubmit, VerificationPendingChallenge, VerificationStartedChallenge, Account, ApplicationSummary,
+  VerificationSubmit,
+  VerificationPendingChallenge,
+  VerificationStartedChallenge,
+  Account,
+  ApplicationSummary,
+  ApiTokenAddOrUpdate, ApiTokenAddVerification,
 } from './api.model';
 
 const KindSuccess = 0;
@@ -124,7 +129,7 @@ export class ApiClient {
     ));
   }
 
-  addApiToken(expectGw2AccountId: string | null, apiToken: string): Promise<ApiResponse<ApiToken>> {
+  addApiToken(expectGw2AccountId: string | null, apiToken: string): Promise<ApiResponse<ApiTokenAddOrUpdate>> {
     let url = '/api-v2/gw2apitoken';
     if (expectGw2AccountId !== null) {
       url += `/${encodeURIComponent(expectGw2AccountId)}`;
@@ -139,7 +144,7 @@ export class ApiClient {
     ));
   }
 
-  updateApiToken(expectGw2AccountId: string, apiToken: string): Promise<ApiResponse<ApiToken>> {
+  updateApiToken(expectGw2AccountId: string, apiToken: string): Promise<ApiResponse<ApiTokenAddOrUpdate>> {
     return transform(this.httpClient.fetch(
       `/api-v2/gw2apitoken/${encodeURIComponent(expectGw2AccountId)}`,
       {
@@ -154,6 +159,10 @@ export class ApiClient {
       `/api-v2/gw2apitoken/${encodeURIComponent(gw2AccountId)}`,
       { method: 'DELETE' },
     ));
+  }
+
+  getApiTokenAddVerification(): Promise<ApiResponse<ApiTokenAddVerification>> {
+    return transform(this.httpClient.fetch('/api-v2/gw2apitoken/verification'));
   }
   
   getApplications(): Promise<ApiResponse<Array<ApplicationListItem>>> {

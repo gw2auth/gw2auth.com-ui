@@ -94,6 +94,17 @@ export interface ApiToken {
   permissions: ReadonlyArray<Gw2ApiPermission>;
 }
 
+export interface ApiTokenAddOrUpdate {
+  value: string;
+  creationTime: string;
+  permissions: ReadonlyArray<Gw2ApiPermission>;
+  verified: boolean;
+}
+
+export interface ApiTokenAddVerification {
+  tokenName: string;
+}
+
 export interface ApplicationListItem {
   id: string;
   displayName: string;
