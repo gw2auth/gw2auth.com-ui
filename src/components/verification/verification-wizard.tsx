@@ -212,11 +212,8 @@ function InternalVerificationWizard({ activeChallenge, onDismiss }: { activeChal
       title: 'Video Guide',
       description: 'You may follow the Video Guide below',
       content: (
-        <ColumnLayout columns={1}>
-          <Box>The video guides have not been updated for the new website yet. The overall workflow remains the same.</Box>
-          <ColumnLayout columns={embeds.length}>
-            {...(embeds.map((src) => <YouTubeEmbed src={src} />))}
-          </ColumnLayout>
+        <ColumnLayout columns={embeds.length}>
+          {...(embeds.map((src) => <YouTubeEmbed src={src} />))}
         </ColumnLayout>
       ),
       isOptional: true,
@@ -535,13 +532,13 @@ function requiredPermissions(challengeId: number): ReadonlyArray<Gw2ApiPermissio
 function youTubeVideoEmbeds(challengeId: number): ReadonlyArray<string> {
   switch (challengeId) {
     case 1:
-      return ['https://www.youtube.com/embed/xgaG9ysH3is?si=kKGqIzz5CNzEPTM0'];
+      return ['https://www.youtube.com/embed/4pQGPGwowds?si=gieSgTfNm1pQecZa'];
 
     case 2:
-      return ['https://www.youtube.com/embed/W1Gu4kCLx0g?si=RdM5GFGZlfxL1hzU', 'https://www.youtube.com/embed/Lt50s84D2b4?si=X0LPp3SOL46HTURM'];
+      return ['https://www.youtube.com/embed/0ICy3JmEZUU?si=T1cLucSvcOzMvLeL'];
 
     case 3:
-      return ['https://www.youtube.com/embed/MJMdTtlId1Y?si=66Cu5WUgE5cZcYxs', 'https://www.youtube.com/embed/SD7FqZC9zwA?si=bqbIDqpHUDSI42XA'];
+      return ['https://www.youtube.com/embed/r6P4AWRNcZs?si=bBB974kPoy7WFDDI'];
 
     default:
       throw new Error('invalid challenge');
