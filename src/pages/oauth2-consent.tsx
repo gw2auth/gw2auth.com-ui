@@ -107,6 +107,9 @@ export function OAuth2Consent() {
 
 function ConsentForm({ consentInfo, setActiveWindow }: { consentInfo: OAuth2ConsentInfo, setActiveWindow: (v: ActiveWindow) => void }) {
   const i18n = useI18n();
+
+  const [cancelLoading, setCancelLoading] = useState(false);
+  const [authorizeLoading, setAuthorizeLoading] = useState(false);
   const [options, selectedOptions, setSelectedOptions] = buildOptions(consentInfo);
 
   const verifiedScopeRequest = consentInfo.requestedScopes.includes('gw2auth:verified');
@@ -163,8 +166,22 @@ function ConsentForm({ consentInfo, setActiveWindow }: { consentInfo: OAuth2Cons
             header={<Header variant={'h3'} counter={`(${selectedOptions.length})`}>Authorize Guild Wars 2 Accounts</Header>}
             actions={
               <SpaceBetween direction={'horizontal'} size={'xs'}>
-                <Button variant={'link'} formAction={'none'} href={consentInfo.cancelUri}>Cancel</Button>
-                <Button variant={'primary'} formAction={'submit'} disabled={errorText !== ''}>Authorize</Button>
+                <Button
+                  variant={'link'}
+                  formAction={'none'}
+                  href={consentInfo.cancelUri}
+                  disabled={authorizeLoading}
+                  loading={cancelLoading}
+                  onFollow={() => setCancelLoading(true)}
+                >Cancel</Button>
+
+                <Button
+                  variant={'primary'}
+                  formAction={'submit'}
+                  disabled={errorText !== '' || cancelLoading}
+                  loading={authorizeLoading}
+                  onClick={() => setAuthorizeLoading(true)}
+                >Authorize</Button>
               </SpaceBetween>
             }
             secondaryActions={
