@@ -19,7 +19,7 @@ import { AddApiTokenWizard } from '../components/add-api-token/add-api-token';
 import { Scopes } from '../components/scopes/scopes';
 import { catchNotify, useAppControls } from '../components/util/context/app-controls';
 import { useHttpClient } from '../components/util/context/http-client';
-import { useI18n } from '../components/util/context/i18n';
+import { useDateFormat } from '../components/util/state/use-dateformat';
 import { VerificationSelection, VerificationWizard } from '../components/verification/verification-wizard';
 import { expectSuccess } from '../lib/api/api';
 import { OAuth2ConsentInfo } from '../lib/api/api.model';
@@ -106,7 +106,7 @@ export function OAuth2Consent() {
 }
 
 function ConsentForm({ consentInfo, setActiveWindow }: { consentInfo: OAuth2ConsentInfo, setActiveWindow: (v: ActiveWindow) => void }) {
-  const i18n = useI18n();
+  const { formatDate } = useDateFormat();
 
   const [cancelLoading, setCancelLoading] = useState(false);
   const [authorizeLoading, setAuthorizeLoading] = useState(false);
@@ -150,7 +150,7 @@ function ConsentForm({ consentInfo, setActiveWindow }: { consentInfo: OAuth2Cons
   return (
     <>
       <Container header={<Header variant={'h1'}>Authorize {consentInfo.clientRegistration.displayName}</Header>} variant={'stacked'}>
-        <Box variant={'small'}>Active since {i18n.date(new Date(consentInfo.clientRegistration.creationTime))}</Box>
+        <Box variant={'small'}>Active since {formatDate(consentInfo.clientRegistration.creationTime)}</Box>
       </Container>
       <Container header={<Header variant={'h3'} counter={`(${consentInfo.requestedScopes.length})`}>Requested Permissions</Header>} variant={'stacked'}>
         <Scopes scopes={consentInfo.requestedScopes} />

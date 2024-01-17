@@ -8,12 +8,14 @@ import { RouterInlineLink } from '../../components/common/router-link';
 import { catchNotify, useAppControls } from '../../components/util/context/app-controls';
 import { useHttpClient } from '../../components/util/context/http-client';
 import { useI18n } from '../../components/util/context/i18n';
+import { useDateFormat } from '../../components/util/state/use-dateformat';
 import { expectSuccess } from '../../lib/api/api';
 import { DevApplicationListItem } from '../../lib/api/api.model';
-import { I18nFormats } from '../../lib/i18n/i18n-strings';
 
-function buildColumnDefinitions(i18n: I18nFormats) {
+function buildColumnDefinitions() {
+  const { formatDateTime } = useDateFormat();
   const applicationDetailBaseHref = useHref('/dev/applications');
+
   return [
     {
       id: 'id',
@@ -30,7 +32,7 @@ function buildColumnDefinitions(i18n: I18nFormats) {
     {
       id: 'creation_time',
       header: 'Created',
-      cell: (v) => i18n.dateTime(new Date(v.creationTime)),
+      cell: (v) => formatDateTime(v.creationTime),
       sortingField: 'creationTime',
     },
     {
@@ -66,7 +68,7 @@ export function DevApplications() {
   const [isLoading, setLoading] = useState(true);
   const [items, setItems] = useState<Array<DevApplicationListItem>>([]);
 
-  const columnDefinitions = buildColumnDefinitions(i18n);
+  const columnDefinitions = buildColumnDefinitions();
   const visibleColumns = columnDefinitions.map((v) => v.id).filter(visibleByDefault);
 
   useEffect(() => {

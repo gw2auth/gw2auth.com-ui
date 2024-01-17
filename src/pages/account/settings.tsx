@@ -13,7 +13,7 @@ import { Hidden } from '../../components/common/hidden';
 import { catchNotify, useAppControls } from '../../components/util/context/app-controls';
 import { useAuthInfo, useMustAuthInfo } from '../../components/util/context/auth-info';
 import { useHttpClient } from '../../components/util/context/http-client';
-import { useI18n } from '../../components/util/context/i18n';
+import { useDateFormat } from '../../components/util/state/use-dateformat';
 import { expectSuccess } from '../../lib/api/api';
 import {
   AccountFederation, AccountFederationSession, Issuer,
@@ -145,7 +145,7 @@ function FederationsTable({ isLoading, federations, onUpdate }: { isLoading: boo
 }
 
 function SessionsTable({ isLoading, sessions, onUpdate }: { isLoading: boolean, sessions: ReadonlyArray<AccountFederationSession>, onUpdate: React.Dispatch<React.SetStateAction<ReadonlyArray<AccountFederationSession>>> }) {
-  const i18n = useI18n();
+  const { formatDateTime } = useDateFormat();
   const { notification } = useAppControls();
   const { apiClient } = useHttpClient();
   const authInfo = useMustAuthInfo();
@@ -236,7 +236,7 @@ function SessionsTable({ isLoading, sessions, onUpdate }: { isLoading: boolean, 
           {
             id: 'creation_time',
             header: 'Created At',
-            cell: (v) => i18n.dateTime(new Date(v.creationTime)),
+            cell: (v) => formatDateTime(v.creationTime),
             sortingField: 'creationTime',
           },
           {

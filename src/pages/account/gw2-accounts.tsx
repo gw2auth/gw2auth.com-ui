@@ -10,16 +10,18 @@ import { VerificationStatusIndicator } from '../../components/common/verificatio
 import { catchNotify, useAppControls } from '../../components/util/context/app-controls';
 import { useHttpClient } from '../../components/util/context/http-client';
 import { useI18n } from '../../components/util/context/i18n';
+import { useDateFormat } from '../../components/util/state/use-dateformat';
 import { expectSuccess } from '../../lib/api/api';
 import { Gw2AccountListItem } from '../../lib/api/api.model';
-import { I18nFormats } from '../../lib/i18n/i18n-strings';
 
 function visibleByDefault(id: string): boolean {
   return id !== 'id' && id !== 'name' && id !== 'api_token';
 }
 
-function buildColumnDefinitions(i18n: I18nFormats) {
+function buildColumnDefinitions() {
   const accountDetailBaseHref = useHref('/accounts');
+  const { formatDateTime } = useDateFormat();
+
   const displayNameColumn = {
     id: 'display_name',
     header: 'Display Name',
@@ -75,7 +77,7 @@ function buildColumnDefinitions(i18n: I18nFormats) {
     {
       id: 'creation_time',
       header: 'Created',
-      cell: (v) => i18n.dateTime(new Date(v.creationTime)),
+      cell: (v) => formatDateTime(v.creationTime),
       sortingField: 'creationTime',
     },
     {
@@ -95,7 +97,7 @@ function buildColumnDefinitions(i18n: I18nFormats) {
 
 export function Gw2Accounts() {
   const i18n = useI18n();
-  const { displayNameColumn, columnDefinitions } = buildColumnDefinitions(i18n);
+  const { displayNameColumn, columnDefinitions } = buildColumnDefinitions();
   const visibleColumns = columnDefinitions.map((v) => v.id).filter(visibleByDefault);
 
   const { apiClient } = useHttpClient();

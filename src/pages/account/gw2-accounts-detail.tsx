@@ -24,7 +24,7 @@ import { RouterInlineLink } from '../../components/common/router-link';
 import { VerificationStatusIndicator } from '../../components/common/verification-status';
 import { catchNotify, useAppControls } from '../../components/util/context/app-controls';
 import { useHttpClient } from '../../components/util/context/http-client';
-import { useI18n } from '../../components/util/context/i18n';
+import { useDateFormat } from '../../components/util/state/use-dateformat';
 import { useDependentState } from '../../components/util/state/use-dependent-state';
 import { expectSuccess } from '../../lib/api/api';
 import {
@@ -141,7 +141,7 @@ export function Gw2AccountsDetail() {
 }
 
 function Overview({ id, gw2Account }: { id: string, gw2Account: Gw2Account }) {
-  const i18n = useI18n();
+  const { formatDateTime } = useDateFormat();
 
   return (
     <KeyValuePairs columns={3}>
@@ -149,7 +149,7 @@ function Overview({ id, gw2Account }: { id: string, gw2Account: Gw2Account }) {
         <Copy copyText={id}><Box variant={'samp'} fontSize={'body-s'}>{id}</Box></Copy>
       </ValueWithLabel>
       <ValueWithLabel label={'Created'}>
-        <Box>{i18n.dateTime(new Date(gw2Account.creationTime))}</Box>
+        <Box>{formatDateTime(gw2Account.creationTime)}</Box>
       </ValueWithLabel>
       <VerificationStatusValueWithLabel verificationStatus={gw2Account.verificationStatus} />
     </KeyValuePairs>
@@ -372,7 +372,7 @@ function NonExistingApiToken({ gw2AccountId, onUpdate }: { gw2AccountId: string,
 }
 
 function ApplicationsTable({ gw2Account }: { gw2Account: Gw2Account }) {
-  const i18n = useI18n();
+  const { formatDateTime } = useDateFormat();
   const baseHref = useHref('/applications');
 
   return (
@@ -387,7 +387,7 @@ function ApplicationsTable({ gw2Account }: { gw2Account: Gw2Account }) {
         {
           id: 'last_used',
           header: 'Last Used',
-          cell: (v) => i18n.dateTime(new Date(v.lastUsed)),
+          cell: (v) => formatDateTime(v.lastUsed),
           sortingField: 'lastUsed',
         },
         {

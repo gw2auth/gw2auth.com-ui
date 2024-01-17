@@ -28,7 +28,7 @@ import { ApprovalType } from '../../components/dev-application/approval-type';
 import { RedirectURIsEditor } from '../../components/dev-application/redirect-uris-editor';
 import { catchNotify, useAppControls } from '../../components/util/context/app-controls';
 import { useHttpClient } from '../../components/util/context/http-client';
-import { useI18n } from '../../components/util/context/i18n';
+import { useDateFormat } from '../../components/util/state/use-dateformat';
 import { expectSuccess } from '../../lib/api/api';
 import { DevApplicationClient } from '../../lib/api/api.model';
 
@@ -137,7 +137,7 @@ export function DevApplicationsClientsDetail() {
 }
 
 function Overview({ id, devApplicationClient }: { id: string; devApplicationClient: DevApplicationClient }) {
-  const i18n = useI18n();
+  const { formatDateTime } = useDateFormat();
 
   return (
     <KeyValuePairs columns={3}>
@@ -148,7 +148,7 @@ function Overview({ id, devApplicationClient }: { id: string; devApplicationClie
         <Box>{devApplicationClient.displayName}</Box>
       </ValueWithLabel>
       <ValueWithLabel label={'Created'}>
-        <Box>{i18n.dateTime(new Date(devApplicationClient.creationTime))}</Box>
+        <Box>{formatDateTime(devApplicationClient.creationTime)}</Box>
       </ValueWithLabel>
       <ValueWithLabel label={'API Version'}>
         <Box variant={'samp'} fontSize={'body-s'}>{devApplicationClient.apiVersion}</Box>

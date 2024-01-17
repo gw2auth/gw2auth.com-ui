@@ -6,25 +6,27 @@ import {
   Header,
   Modal,
   ModalProps,
-  Select,
-  SelectProps,
   SpaceBetween,
   Tiles,
 } from '@cloudscape-design/components';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ConsentLevel } from '../../lib/consent.model';
+import { I18N_GW2AUTH } from '../../lib/i18n/i18n-strings';
 import {
-  ColorScheme, Locale, Preferences, UIDensity, 
+  ColorScheme, DateFormat, Locale, Preferences, UIDensity,
 } from '../../lib/preferences.model';
 import { useI18n } from '../util/context/i18n';
 import { useConsent } from '../util/state/use-consent';
-import { usePreferences } from '../util/state/use-preferences';
+import { ISO8601DateFormatter, localeDateFormatter, SystemDateFormatter } from '../util/state/use-dateformat';
+import { resolveEffectiveLocale, usePreferences, useSystemLocale } from '../util/state/use-preferences';
 
 export default function PreferencesModal(props: ModalProps) {
   const i18n = useI18n();
   const [consentLevels] = useConsent();
+  const systemLocale = useSystemLocale();
   const [preferences, setPreferences] = usePreferences();
   const [tempPreferences, setTempPreferences] = useState<Preferences>(preferences);
+  const date = useMemo(() => new Date(), []);
 
   useEffect(() => {
     setTempPreferences(preferences);
@@ -64,15 +66,18 @@ export default function PreferencesModal(props: ModalProps) {
       <ColumnLayout columns={1}>
         {
           !consentLevels.has(ConsentLevel.FUNCTIONALITY) && <Alert type={'warning'}>
-            <Box>You have not given permission for <Box variant={'strong'}>functional cookies</Box>. Your choice <Box variant={'strong'}>will not persist</Box> across page loads.</Box>
+            <Box>You have not given permission for <Box variant={'strong'}>functional cookies</Box>. Your choice <Box
+              variant={'strong'}>will not persist</Box> across page loads.</Box>
           </Alert>
         }
         <div>
           <Header variant={'h3'}>{i18n.header.preferencesLocale}</Header>
-          <CustomSelect
+          <Tiles
             value={tempPreferences.locale}
-            onChange={(e) => setTempPreferences((prev) => ({ ...prev, locale: e.detail.selectedOption.value as Locale }))}
-            options={[
+            onChange={(e) => {
+              setTempPreferences((prev) => ({ ...prev, locale: e.detail.value as Locale }));
+            }}
+            items={[
               {
                 label: i18n.header.preferencesLocaleSystem,
                 value: Locale.SYSTEM,
@@ -84,6 +89,32 @@ export default function PreferencesModal(props: ModalProps) {
               {
                 label: i18n.header.preferencesLocaleDE,
                 value: Locale.DE,
+              },
+            ]}
+          />
+        </div>
+        <div>
+          <Header variant={'h3'}>Date and Time Format</Header>
+          <Tiles
+            value={tempPreferences.dateFormat}
+            onChange={(e) => {
+              setTempPreferences((prev) => ({ ...prev, dateFormat: e.detail.value as DateFormat }));
+            }}
+            items={[
+              {
+                label: 'System',
+                description: SystemDateFormatter.formatDateTime(date),
+                value: DateFormat.SYSTEM,
+              },
+              {
+                label: 'Locale',
+                description: localeDateFormatter(I18N_GW2AUTH[resolveEffectiveLocale(tempPreferences.locale, systemLocale)]).formatDateTime(date),
+                value: DateFormat.LOCALE,
+              },
+              {
+                label: 'ISO',
+                description: ISO8601DateFormatter.formatDateTime(date),
+                value: DateFormat.ISO_8601,
               },
             ]}
           />
@@ -137,26 +168,5 @@ export default function PreferencesModal(props: ModalProps) {
         </div>
       </ColumnLayout>
     </Modal>
-  );
-}
-
-interface CustomSelectProps extends Omit<SelectProps, 'selectedOption' | 'options'> {
-  value: string;
-  options: ReadonlyArray<SelectProps.Option>;
-}
-
-function CustomSelect(props: CustomSelectProps) {
-  const [selectedOption, setSelectedOption] = useState<SelectProps.Option | null>(null);
-  useEffect(() => {
-    const index = props.options.findIndex((v) => v.value === props.value);
-    if (index === -1) {
-      setSelectedOption(null);
-    } else {
-      setSelectedOption(props.options[index]);
-    }
-  }, [props]);
-
-  return (
-    <Select selectedOption={selectedOption} {...props} />
   );
 }

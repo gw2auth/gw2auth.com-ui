@@ -11,7 +11,7 @@ import { RouterInlineLink } from '../../components/common/router-link';
 import { Scopes } from '../../components/scopes/scopes';
 import { catchNotify, useAppControls } from '../../components/util/context/app-controls';
 import { useHttpClient } from '../../components/util/context/http-client';
-import { useI18n } from '../../components/util/context/i18n';
+import { useDateFormat } from '../../components/util/state/use-dateformat';
 import { expectSuccess } from '../../lib/api/api';
 import { Application } from '../../lib/api/api.model';
 
@@ -111,7 +111,7 @@ export function ApplicationsDetail() {
 }
 
 function Overview({ id, application }: { id: string, application: Application }) {
-  const i18n = useI18n();
+  const { formatDateTime } = useDateFormat();
 
   return (
     <KeyValuePairs columns={2}>
@@ -119,7 +119,7 @@ function Overview({ id, application }: { id: string, application: Application })
         <Copy copyText={id}><Box variant={'samp'} fontSize={'body-s'}>{application.userId}</Box></Copy>
       </ValueWithLabel>
       <ValueWithLabel label={'Last Used'}>
-        <Box>{application.lastUsed !== undefined ? i18n.dateTime(new Date(application.lastUsed)) : <StatusIndicator type={'info'}>Never</StatusIndicator>}</Box>
+        <Box>{application.lastUsed !== undefined ? formatDateTime(application.lastUsed) : <StatusIndicator type={'info'}>Never</StatusIndicator>}</Box>
       </ValueWithLabel>
     </KeyValuePairs>
   );

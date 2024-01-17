@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { ConsentLevel } from '../../../lib/consent.model';
 import {
   ColorScheme,
+  DateFormat,
   EffectiveLocale,
   EffectivePreferences,
   Locale,
@@ -26,17 +27,27 @@ function getSystemLocale(): EffectiveLocale {
   return systemPreferredLocale;
 }
 
-export function usePreferences() {
-  const [storeValue, setStoreValue] = useBrowserStore(STORE_CONSENT_LEVEL, STORE_KEY);
+export function resolveEffectiveLocale(loc: Locale, systemLocale: EffectiveLocale): EffectiveLocale {
+  return loc === Locale.SYSTEM ? systemLocale : loc;
+}
+
+export function useSystemLocale() {
   const [systemLocale, setSystemLocale] = useState<EffectiveLocale>(getSystemLocale());
-  const prefersLightScheme = useMediaQuery('(prefers-color-scheme: light)');
 
   useEffect(() => {
     const onLanguageChange = () => setSystemLocale(getSystemLocale());
     window.addEventListener('languagechange', onLanguageChange);
-    
+
     return () => window.removeEventListener('languagechange', onLanguageChange);
   }, []);
+
+  return systemLocale;
+}
+
+export function usePreferences() {
+  const [storeValue, setStoreValue] = useBrowserStore(STORE_CONSENT_LEVEL, STORE_KEY);
+  const systemLocale = useSystemLocale();
+  const prefersLightScheme = useMediaQuery('(prefers-color-scheme: light)');
 
   const value = useMemo<EffectivePreferences>(() => {
     let preferences: Partial<Preferences> = {};
@@ -45,14 +56,16 @@ export function usePreferences() {
     }
 
     const locale = preferences.locale ?? Locale.SYSTEM;
+    const dateFormat = preferences.dateFormat ?? DateFormat.LOCALE;
     const colorScheme = preferences.colorScheme ?? ColorScheme.SYSTEM;
     const systemColorScheme = prefersLightScheme ? ColorScheme.LIGHT : ColorScheme.DARK;
 
     return {
       locale: locale,
+      dateFormat: dateFormat,
       colorScheme: colorScheme,
       uiDensity: preferences.uiDensity ?? UIDensity.COMFORTABLE,
-      effectiveLocale: locale === Locale.SYSTEM ? systemLocale : locale,
+      effectiveLocale: resolveEffectiveLocale(locale, systemLocale),
       effectiveColorScheme: colorScheme === ColorScheme.SYSTEM ? systemColorScheme : colorScheme,
     };
   }, [storeValue, systemLocale, prefersLightScheme]);
@@ -60,6 +73,7 @@ export function usePreferences() {
   function handleValueChange(newValue: Partial<Preferences>) {
     const pref: Preferences = {
       locale: newValue.locale ?? value.locale,
+      dateFormat: newValue.dateFormat ?? value.dateFormat,
       colorScheme: newValue.colorScheme ?? value.colorScheme,
       uiDensity: newValue.uiDensity ?? value.uiDensity,
     };

@@ -6,7 +6,7 @@ import { useHref, useNavigate } from 'react-router-dom';
 import { CustomTable } from '../../components/common/custom-table';
 import { catchNotify, useAppControls } from '../../components/util/context/app-controls';
 import { useHttpClient } from '../../components/util/context/http-client';
-import { useI18n } from '../../components/util/context/i18n';
+import { useDateFormat } from '../../components/util/state/use-dateformat';
 import { VerificationSelection } from '../../components/verification/verification-wizard';
 import { expectSuccess } from '../../lib/api/api';
 import { VerificationPendingChallenge } from '../../lib/api/api.model';
@@ -28,7 +28,7 @@ export function Gw2AccountVerification() {
 }
 
 function PendingChallengesTable() {
-  const i18n = useI18n();
+  const { formatDateTime } = useDateFormat();
   const { notification } = useAppControls();
   const { apiClient } = useHttpClient();
 
@@ -86,19 +86,19 @@ function PendingChallengesTable() {
         {
           id: 'creation_time',
           header: 'Created At',
-          cell: (v) => i18n.dateTime(new Date(v.creationTime)),
+          cell: (v) => formatDateTime(v.creationTime),
           sortingField: 'creationTime',
         },
         {
           id: 'submit_time',
           header: 'Submitted At',
-          cell: (v) => i18n.dateTime(new Date(v.submitTime)),
+          cell: (v) => formatDateTime(v.submitTime),
           sortingField: 'submitTime',
         },
         {
           id: 'timeout_time',
           header: 'Timeout At',
-          cell: (v) => i18n.dateTime(new Date(v.timeoutTime)),
+          cell: (v) => formatDateTime(v.timeoutTime),
           sortingField: 'timeoutTime',
         },
         {

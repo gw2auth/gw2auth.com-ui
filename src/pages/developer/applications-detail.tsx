@@ -28,12 +28,12 @@ import { ApprovalType } from '../../components/dev-application/approval-type';
 import { catchNotify, useAppControls, useTools } from '../../components/util/context/app-controls';
 import { useHttpClient } from '../../components/util/context/http-client';
 import { useI18n } from '../../components/util/context/i18n';
+import { useDateFormat } from '../../components/util/state/use-dateformat';
 import { usePreferences } from '../../components/util/state/use-preferences';
 import { expectSuccess } from '../../lib/api/api';
 import {
   ApprovalStatus, DevApplication, DevApplicationClientListItem, DevApplicationUser, PagedResponse,
 } from '../../lib/api/api.model';
-import { I18nFormats } from '../../lib/i18n/i18n-strings';
 import { OAUTH2_SCOPES } from '../../lib/oauth2.model';
 import { EffectiveLocale } from '../../lib/preferences.model';
 
@@ -166,7 +166,7 @@ export function DevApplicationsDetail() {
 }
 
 function Overview({ id, devApplication }: { id: string, devApplication: DevApplication }) {
-  const i18n = useI18n();
+  const { formatDateTime } = useDateFormat();
 
   return (
     <KeyValuePairs columns={3}>
@@ -177,14 +177,14 @@ function Overview({ id, devApplication }: { id: string, devApplication: DevAppli
         <Box>{devApplication.displayName}</Box>
       </ValueWithLabel>
       <ValueWithLabel label={'Created'}>
-        <Box>{i18n.dateTime(new Date(devApplication.creationTime))}</Box>
+        <Box>{formatDateTime(devApplication.creationTime)}</Box>
       </ValueWithLabel>
     </KeyValuePairs>
   );
 }
 
 function ClientTable({ id, devApplication }: { id: string, devApplication: DevApplication }) {
-  const i18n = useI18n();
+  const { formatDateTime } = useDateFormat();
   const baseHref = useHref(`/dev/applications/${encodeURIComponent(id)}`);
 
   return (
@@ -200,7 +200,7 @@ function ClientTable({ id, devApplication }: { id: string, devApplication: DevAp
         {
           id: 'creation_time',
           header: 'Created',
-          cell: (v) => i18n.dateTime(new Date(v.creationTime)),
+          cell: (v) => formatDateTime(v.creationTime),
           sortingField: 'creationTime',
         },
         {
@@ -254,7 +254,7 @@ function ClientTable({ id, devApplication }: { id: string, devApplication: DevAp
 }
 
 function APIKeyTable({ id, devApplication, onUpdate }: { id: string, devApplication: DevApplication, onUpdate: React.Dispatch<React.SetStateAction<DevApplication | undefined>> }) {
-  const i18n = useI18n();
+  const { formatDateTime } = useDateFormat();
   const { notification } = useAppControls();
   const { apiClient } = useHttpClient();
   const baseHref = useHref(`/dev/applications/${encodeURIComponent(id)}`);
@@ -326,13 +326,13 @@ function APIKeyTable({ id, devApplication, onUpdate }: { id: string, devApplicat
           {
             id: 'not_before',
             header: 'Not Before',
-            cell: (v) => i18n.dateTime(new Date(v.notBefore)),
+            cell: (v) => formatDateTime(v.notBefore),
             sortingField: 'notBefore',
           },
           {
             id: 'expires_at',
             header: 'Expires At',
-            cell: (v) => i18n.dateTime(new Date(v.expiresAt)),
+            cell: (v) => formatDateTime(v.expiresAt),
             sortingField: 'expiresAt',
           },
           {
@@ -371,7 +371,7 @@ interface QueryState {
   pages: ReadonlyArray<PagedResponse<DevApplicationUser>>;
 }
 
-function buildColumnDefinitions(i18n: I18nFormats, onActionClick: (clientId: string, userId: string, status: ApprovalStatus) => void) {
+function buildColumnDefinitions(formatDateTime: (v: string) => string, onActionClick: (clientId: string, userId: string, status: ApprovalStatus) => void) {
   return [
     {
       id: 'user_id',
@@ -381,7 +381,7 @@ function buildColumnDefinitions(i18n: I18nFormats, onActionClick: (clientId: str
     {
       id: 'creation_time',
       header: 'Created',
-      cell: (v) => i18n.dateTime(new Date(v.creationTime)),
+      cell: (v) => formatDateTime(v.creationTime),
     },
     {
       id: 'client_id',
@@ -462,6 +462,7 @@ function visibleByDefault(id: string): boolean {
 
 function UserTable({ id, clients }: { id: string; clients: ReadonlyArray<DevApplicationClientListItem> }) {
   const i18n = useI18n();
+  const { formatDateTime } = useDateFormat();
   const { apiClient } = useHttpClient();
   const { notification } = useAppControls();
   const [isLoading, setLoading] = useState(true);
@@ -477,7 +478,7 @@ function UserTable({ id, clients }: { id: string; clients: ReadonlyArray<DevAppl
   });
 
   const [columnDefinitions, visibleColumns] = useMemo(() => {
-    const colDefs = buildColumnDefinitions(i18n, (clientId, userId, status) => {
+    const colDefs = buildColumnDefinitions(formatDateTime, (clientId, userId, status) => {
       setLoading(true);
       (async () => {
         const { body } = expectSuccess(await apiClient.updateDevApplicationUserApproval(id, clientId, userId, status));
@@ -503,7 +504,7 @@ function UserTable({ id, clients }: { id: string; clients: ReadonlyArray<DevAppl
       colDefs,
       colDefs.map((v) => v.id).filter(visibleByDefault),
     ];
-  }, [i18n, id, apiClient]);
+  }, [formatDateTime, id, apiClient]);
 
   const [totalItemCount, isOpenEnd] = useMemo(() => {
     const totalItems = queryState.pages.map((v) => v.items.length).reduce((p, v) => p + v, 0);

@@ -12,12 +12,14 @@ import { RouterInlineLink } from '../../components/common/router-link';
 import { catchNotify, useAppControls } from '../../components/util/context/app-controls';
 import { useHttpClient } from '../../components/util/context/http-client';
 import { useI18n } from '../../components/util/context/i18n';
+import { useDateFormat } from '../../components/util/state/use-dateformat';
 import { expectSuccess } from '../../lib/api/api';
 import { ApplicationListItem } from '../../lib/api/api.model';
-import { I18nFormats } from '../../lib/i18n/i18n-strings';
 
-function buildColumnDefinitions(i18n: I18nFormats) {
+function buildColumnDefinitions() {
   const applicationDetailBaseHref = useHref('/applications');
+  const { formatDateTime } = useDateFormat();
+
   return [
     {
       id: 'id',
@@ -45,7 +47,7 @@ function buildColumnDefinitions(i18n: I18nFormats) {
           return <StatusIndicator type={'info'}>Never</StatusIndicator>;
         }
         
-        return i18n.dateTime(new Date(v.lastUsed));
+        return formatDateTime(v.lastUsed);
       },
       sortingField: 'lastUsed',
     },
@@ -76,7 +78,7 @@ export function Applications() {
   const [isLoading, setLoading] = useState(false);
   const [items, setItems] = useState<Array<ApplicationListItem>>([]);
 
-  const columnDefinitions = buildColumnDefinitions(i18n);
+  const columnDefinitions = buildColumnDefinitions();
   const visibleColumns = columnDefinitions.map((v) => v.id).filter(visibleByDefault);
 
   useEffect(() => {

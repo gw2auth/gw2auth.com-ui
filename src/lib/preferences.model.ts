@@ -4,6 +4,12 @@ export enum Locale {
   DE = 'de',
 }
 
+export enum DateFormat {
+  SYSTEM = 'system',
+  LOCALE = 'locale',
+  ISO_8601 = 'iso',
+}
+
 export enum ColorScheme {
   SYSTEM = 'system',
   LIGHT = 'light',
@@ -17,6 +23,7 @@ export enum UIDensity {
 
 export interface Preferences {
   locale: Locale;
+  dateFormat: DateFormat;
   colorScheme: ColorScheme;
   uiDensity: UIDensity;
 }
