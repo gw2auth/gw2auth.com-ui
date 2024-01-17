@@ -62,12 +62,10 @@ export default function Home() {
         </Box>
 
         <Box variant={'h5'}>Get started now!</Box>
-        <Box variant={'p'}>
-          {authInfo
-            ? (<Box>Create your first application on the <RouterLink to={'/dev/applications'}>Developer Page</RouterLink> and get started right away.</Box>)
-            : (<Box>Login or create an account and create your first application.</Box>)
-          }
-        </Box>
+        {authInfo
+          ? (<Box variant={'p'}>Create your first application on the <RouterLink to={'/dev/applications'}>Developer Page</RouterLink> and get started right away.</Box>)
+          : (<Box variant={'p'}>Login or create an account and create your first application.</Box>)
+        }
       </Container>
 
       <Container variant={'stacked'} header={<Header variant={'h2'}>Many users trust GW2Auth</Header>}>
