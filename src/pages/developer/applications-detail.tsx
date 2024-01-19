@@ -616,7 +616,7 @@ function Filter({
         },
         {
           key: 'creation_time',
-          operators: ['>=', '>', '<=', '<'].map((op) => buildDateOperator(op, preferences.effectiveLocale)),
+          operators: ['=', '>=', '>', '<=', '<'].map((op) => buildDateOperator(op, preferences.effectiveLocale)),
           propertyLabel: 'Created',
           groupValuesLabel: 'Created values',
         },
