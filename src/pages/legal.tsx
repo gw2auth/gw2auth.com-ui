@@ -5,14 +5,16 @@ import {
 import React from 'react';
 import { Contact } from '../components/contact/contact';
 import { useI18n } from '../components/util/context/i18n';
+import { useDateFormat } from '../components/util/state/use-dateformat';
 
 const LAST_UPDATED = new Date('2024-01-08');
 
 export default function Legal() {
   const i18n = useI18n();
+  const { formatDate } = useDateFormat();
 
   return (
-    <ContentLayout header={<Header variant={'h1'} description={i18n.legal.lastUpdated(LAST_UPDATED)}>Privacy Policy</Header>}>
+    <ContentLayout header={<Header variant={'h1'} description={`${i18n.legal.lastUpdated}: ${formatDate(LAST_UPDATED)}`}>Privacy Policy</Header>}>
       <Container variant={'stacked'}>
         <ColumnLayout columns={1}>
           {...i18n.footer.copyrightGw2.map((v) => <Box variant={'strong'}>{v}</Box>)}

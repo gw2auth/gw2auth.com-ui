@@ -40,7 +40,7 @@ export interface I18nFormats {
     copyrightGw2: Array<string>;
   };
   legal: {
-    lastUpdated: (date: Date) => string;
+    lastUpdated: string;
   };
   gw2ApiPermissionDescription: (permission: Gw2ApiPermission) => string;
 }
@@ -104,7 +104,7 @@ export const I18N_GW2AUTH: I18n = {
       ],
     },
     legal: {
-      lastUpdated: (date) => `Last updated: ${date.toLocaleDateString('en-US')}`,
+      lastUpdated: 'Last updated',
     },
     gw2ApiPermissionDescription: (permission) => ({
       account: 'Your account display name, ID, home world, and list of guilds',
@@ -158,7 +158,7 @@ export const I18N_GW2AUTH: I18n = {
       ],
     },
     legal: {
-      lastUpdated: (date) => `Zuletzt aktualisiert: ${date.toLocaleDateString('de-DE')}`,
+      lastUpdated: 'Zuletzt aktualisiert',
     },
     gw2ApiPermissionDescription: (permission) => ({
       account: 'Anzeigename des Accounts, ID, Heimatwelt und Gilden-Liste',
