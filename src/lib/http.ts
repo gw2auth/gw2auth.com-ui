@@ -6,7 +6,9 @@ export class HTTPClient {
   private readonly baseRequestConfig: RequestConfig;
 
   constructor() {
-    this.baseRequestConfig = {};
+    this.baseRequestConfig = {
+      credentials: 'same-origin',
+    };
   }
 
   fetch(url: RequestInfo | URL, config?: RequestConfig): Promise<Response> {
