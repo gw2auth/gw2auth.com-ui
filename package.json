@@ -12,31 +12,31 @@
     "lint": "eslint . --ignore-path .gitignore"
   },
   "dependencies": {
-    "@cloudscape-design/collection-hooks": "^1.0.32",
-    "@cloudscape-design/components": "^3.0.473",
-    "@cloudscape-design/design-tokens": "^3.0.31",
-    "@cloudscape-design/global-styles": "^1.0.20",
+    "@cloudscape-design/collection-hooks": "^1.0.35",
+    "@cloudscape-design/components": "^3.0.515",
+    "@cloudscape-design/design-tokens": "^3.0.33",
+    "@cloudscape-design/global-styles": "^1.0.22",
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
     "@fortawesome/free-brands-svg-icons": "^6.5.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.21.1"
+    "react-router-dom": "^6.22.0"
   },
   "devDependencies": {
-    "@types/node": "^20.10.6",
-    "@types/react": "^18.2.46",
+    "@types/node": "^20.11.6",
+    "@types/react": "^18.2.52",
     "@types/react-dom": "^18.2.18",
-    "@typescript-eslint/eslint-plugin": "^5.57.0",
-    "@typescript-eslint/parser": "^5.57.0",
+    "@typescript-eslint/eslint-plugin": "^6.20.0",
+    "@typescript-eslint/parser": "^6.20.0",
     "@vitejs/plugin-react": "^4.2.1",
     "eslint": "^8.56.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-airbnb-typescript-base": "^4.0.2",
+    "eslint-config-airbnb-typescript-base": "^5.0.1",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "sass": "^1.69.6",
+    "sass": "^1.70.0",
     "typescript": "^5.3.3",
-    "vite": "^4.5.1"
+    "vite": "^5.0.12"
   }
 }
