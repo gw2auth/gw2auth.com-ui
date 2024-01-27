@@ -113,6 +113,8 @@ function ConsentForm({ consentInfo, setActiveWindow }: { consentInfo: OAuth2Cons
   const [options, selectedOptions, setSelectedOptions] = buildOptions(consentInfo);
 
   const verifiedScopeRequest = consentInfo.requestedScopes.includes('gw2auth:verified');
+  const hasUnverifiedGw2Account = consentInfo.apiTokensWithSufficientPermissions.some((v) => !v.isVerified) || consentInfo.apiTokensWithInsufficientPermissions.some((v) => !v.isVerified);
+
   const formInputsAlways = useMemo(() => {
     const elems: Array<React.ReactNode> = [];
     for (const [key, values] of Object.entries(consentInfo.submitFormParameters)) {
@@ -187,7 +189,7 @@ function ConsentForm({ consentInfo, setActiveWindow }: { consentInfo: OAuth2Cons
             secondaryActions={
               <SpaceBetween direction={'horizontal'} size={'xs'}>
                 <Button onClick={() => setActiveWindow('add-api-token')}>Add API Token</Button>
-                {verifiedScopeRequest && <Button onClick={() => setActiveWindow('verification-select')}>Verify Guild Wars 2 Account</Button>}
+                {verifiedScopeRequest && hasUnverifiedGw2Account && <Button onClick={() => setActiveWindow('verification-select')}>Verify Guild Wars 2 Account</Button>}
               </SpaceBetween>
             }
           >
