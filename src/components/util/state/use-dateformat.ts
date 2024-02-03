@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { I18nFormats } from '../../../lib/i18n/i18n-strings';
+import { I18nFormats } from '../../../lib/i18n/i18n.model';
 import { DateFormat } from '../../../lib/preferences.model';
 import { useI18n } from '../context/i18n';
 import { usePreferences } from './use-preferences';
@@ -12,9 +12,9 @@ interface DateFormatter {
 
 export function localeDateFormatter(i18n: I18nFormats): DateFormatter {
   return {
-    formatDate: (v) => i18n.date(safeDate(v)),
-    formatTime: (v) => i18n.time(safeDate(v)),
-    formatDateTime: (v) => i18n.dateTime(safeDate(v)),
+    formatDate: (v) => i18n.general.date(safeDate(v)),
+    formatTime: (v) => i18n.general.time(safeDate(v)),
+    formatDateTime: (v) => i18n.general.dateTime(safeDate(v)),
   } as const;
 }
 

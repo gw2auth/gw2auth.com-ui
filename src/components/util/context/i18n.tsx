@@ -1,8 +1,9 @@
 import React, { createContext, useContext } from 'react';
-import { I18n, I18N_GW2AUTH } from '../../../lib/i18n/i18n-strings';
+import { I18N_GW2AUTH } from '../../../lib/i18n/i18n-strings';
+import { I18n, I18nFormats } from '../../../lib/i18n/i18n.model';
 import { EffectiveLocale, Locale } from '../../../lib/preferences.model';
 
-const I18nContext = createContext(I18N_GW2AUTH[Locale.EN]);
+const I18nContext = createContext<I18nFormats>(I18N_GW2AUTH[Locale.EN]);
 
 export function I18nProvider({ locale, messages, children }: React.PropsWithChildren<{ locale: EffectiveLocale; messages: I18n }>) {
   return (

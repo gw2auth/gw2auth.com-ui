@@ -86,7 +86,7 @@ export function DevApplications() {
       <CustomTable
         items={items}
         loading={isLoading}
-        loadingText={i18n.loading}
+        loadingText={i18n.general.loading}
         variant={'container'}
         columnDefinitions={columnDefinitions}
         visibleColumns={visibleColumns}

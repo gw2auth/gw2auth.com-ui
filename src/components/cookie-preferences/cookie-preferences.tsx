@@ -13,6 +13,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import { ConsentLevel } from '../../lib/consent.model';
 import { RouterLink } from '../common/router-link';
+import { useI18n } from '../util/context/i18n';
 import { useConsent, useHasConsent } from '../util/state/use-consent';
 
 interface CategoryProps {
@@ -21,24 +22,27 @@ interface CategoryProps {
   checkbox: CheckboxProps;
 }
 
-function Category(props: CategoryProps) {
+function Category({ name, description, checkbox }: CategoryProps) {
+  const i18n = useI18n();
+
   return (
     <>
-      <Header variant={'h3'}>{props.name}</Header>
+      <Header variant={'h3'}>{name}</Header>
       <Grid
         gridDefinition={[
           { colspan: { default: 12, xxs: 10 } },
           { colspan: { default: 12, xxs: 2 } },
         ]}
       >
-        <Box variant={'span'}>{props.description}</Box>
-        <Checkbox {...props.checkbox}>Allowed</Checkbox>
+        <Box variant={'span'}>{description}</Box>
+        <Checkbox {...checkbox}>{i18n.components.cookiePreferences.allowed}</Checkbox>
       </Grid>
     </>
   );
 }
 
 export default function CookiePreferences({ onDismiss, ...modalProps }: ModalProps) {
+  const i18n = useI18n();
   const hasConsent = useHasConsent();
   const [consentLevels, setConsentLevels] = useConsent();
   const [consent, setConsent] = useState({
@@ -85,31 +89,31 @@ export default function CookiePreferences({ onDismiss, ...modalProps }: ModalPro
     <Modal
       onDismiss={onDismiss}
       {...modalProps}
-      header={'Customize cookie preferences'}
+      header={i18n.components.cookiePreferences.header}
       size={'large'}
       footer={
         <Box float={'right'}>
           <SpaceBetween direction={'horizontal'} size={'xs'}>
             {
               hasConsent
-                ? <Button variant={'link'} onClick={onCancelClick}>Cancel</Button>
-                : <Button variant={'link'} onClick={onDenyAllClick}>Deny optional</Button>
+                ? <Button variant={'link'} onClick={onCancelClick}>{i18n.general.cancel}</Button>
+                : <Button variant={'link'} onClick={onDenyAllClick}>{i18n.components.cookiePreferences.denyOptional}</Button>
             }
-            <Button variant={'primary'} onClick={onSaveClick}>Save preferences</Button>
+            <Button variant={'primary'} onClick={onSaveClick}>{i18n.general.save}</Button>
           </SpaceBetween>
         </Box>
       }
     >
       <ColumnLayout columns={1} borders={'horizontal'}>
-        <Box variant={'span'}>We use cookies and local storage for the following purposes.</Box>
+        <Box variant={'span'}>{i18n.components.cookiePreferences.subTitle}</Box>
         <Category
-          name={'Essential'}
-          description={'Essential cookies are necessary to provide our site and services and cannot be deactivated. They are usually set in response to your actions on the site, such as setting your privacy preferences, signing in, or filling in forms.'}
+          name={i18n.components.cookiePreferences.essential.name}
+          description={i18n.components.cookiePreferences.essential.description}
           checkbox={ { checked: true, disabled: true } }
         ></Category>
         <Category
-          name={'Functional'}
-          description={'Functional cookies help us provide useful site features and remember your preferences. If you do not allow these cookies, then some or all of these services may not function properly.'}
+          name={i18n.components.cookiePreferences.functional.name}
+          description={i18n.components.cookiePreferences.functional.description}
           checkbox={
             {
               checked: consent.functional,
@@ -118,7 +122,7 @@ export default function CookiePreferences({ onDismiss, ...modalProps }: ModalPro
             }
           }
         ></Category>
-        <Box variant={'small'}>Learn more about the cookies and local storage we use by reading our <RouterLink to={'/privacy-policy'} fontSize={'inherit'}>Privacy Policy</RouterLink>.</Box>
+        {i18n.components.cookiePreferences.learnMore(({ children }) => <RouterLink to={'/privacy-policy'} fontSize={'inherit'}>{children}</RouterLink>)}
       </ColumnLayout>
     </Modal>
   );

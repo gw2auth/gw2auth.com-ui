@@ -21,6 +21,7 @@ import {
   VerificationAvailableGw2Account,
   VerificationStartedChallenge,
 } from '../../lib/api/api.model';
+import { I18nFormats } from '../../lib/i18n/i18n.model';
 import { EffectivePreferences } from '../../lib/preferences.model';
 import {
   CreateAPIToken1, CreateAPIToken2, CreateAPIToken3, Gw2Login, Tradingpost,
@@ -29,6 +30,7 @@ import { Copy, CopyButton } from '../common/copy';
 import { Gw2ApiPermissions } from '../common/gw2-api-permissions';
 import { catchNotify, useAppControls } from '../util/context/app-controls';
 import { useHttpClient } from '../util/context/http-client';
+import { useI18n } from '../util/context/i18n';
 import { usePreferences } from '../util/state/use-preferences';
 
 interface Gw2Item {
@@ -47,6 +49,7 @@ interface TPBuyOrderStateFull {
 }
 
 export function VerificationSelection({ onCancel, onContinue }: { onCancel?: () => void, onContinue: (id: number) => void }) {
+  const i18n = useI18n();
   const { notification } = useAppControls();
   const { apiClient } = useHttpClient();
 
@@ -64,7 +67,7 @@ export function VerificationSelection({ onCancel, onContinue }: { onCancel?: () 
         setChallenge(body.challengeId.toString());
       }
     })()
-      .catch(catchNotify(notification, 'Failed to load active challenge'))
+      .catch(catchNotify(notification, i18n.general.failedToLoad(i18n.components.verification.activeChallenge)))
       .finally(() => setLoading(false));
   }, [notification, apiClient]);
 
@@ -77,7 +80,7 @@ export function VerificationSelection({ onCancel, onContinue }: { onCancel?: () 
         const { body } = expectSuccess(await apiClient.startVerificationChallenge(challengeId));
         onContinue(body.challengeId);
       })()
-        .catch(catchNotify(notification, 'Failed to start new challenge'))
+        .catch(catchNotify(notification, i18n.general.failedToLoad(i18n.components.verification.newChallenge)))
         .finally(() => setLoading(false));
     } else {
       onContinue(activeChallenge.challengeId);
@@ -93,31 +96,31 @@ export function VerificationSelection({ onCancel, onContinue }: { onCancel?: () 
   return (
     <Form
       actions={<SpaceBetween direction={'horizontal'} size={'xs'}>
-        {onCancel !== undefined && <Button variant={'link'} disabled={isLoading} onClick={onCancel}>Cancel</Button>}
-        <Button variant={'primary'} loading={isLoading} onClick={onContinueClick}>Continue</Button>
+        {onCancel !== undefined && <Button variant={'link'} disabled={isLoading} onClick={onCancel}>{i18n.general.cancel}</Button>}
+        <Button variant={'primary'} loading={isLoading} onClick={onContinueClick}>{i18n.general.continue}</Button>
       </SpaceBetween>}
     >
-      <FormField label={'Challenge'} stretch={true}>
+      <FormField label={i18n.components.verification.challenge} stretch={true}>
         <Tiles
           onChange={(e) => setChallenge(e.detail.value)}
           value={challenge}
           items={[
             {
               value: '1',
-              label: <ChallengeLabel name={'API Token Name'} recommended={false} />,
-              description: 'Create a new API Token using a name provided in the next step',
+              label: <ChallengeLabel name={i18n.components.verification.challenges.tokenName.label} recommended={false} />,
+              description: i18n.components.verification.challenges.tokenName.description,
               image: <Gw2ApiPermissions permissions={requiredPermissions(1)} />,
             },
             {
               value: '2',
-              label: <ChallengeLabel name={'TP Buy-Order'} recommended={true} />,
-              description: 'Place a buy-order in the ingame tradingpost. Requires 1-30 Gold. The placed gold can be gained back by dropping the buy-order upon successful verification.',
+              label: <ChallengeLabel name={i18n.components.verification.challenges.tpBuyOrder.label} recommended={true} />,
+              description: i18n.components.verification.challenges.tpBuyOrder.description,
               image: <Gw2ApiPermissions permissions={requiredPermissions(2)} />,
             },
             {
               value: '3',
-              label: <ChallengeLabel name={'Character Name'} recommended={false} />,
-              description: 'Create a new character using a name provided in the next step. Requires one free character slot. The character can be deleted upon successful verification.',
+              label: <ChallengeLabel name={i18n.components.verification.challenges.characterName.label} recommended={false} />,
+              description: i18n.components.verification.challenges.characterName.description,
               image: <Gw2ApiPermissions permissions={requiredPermissions(3)} />,
             },
           ]}
@@ -128,6 +131,7 @@ export function VerificationSelection({ onCancel, onContinue }: { onCancel?: () 
 }
 
 export function VerificationWizard({ onDismiss }: { onDismiss: () => void }) {
+  const i18n = useI18n();
   const { notification } = useAppControls();
   const { apiClient } = useHttpClient();
 
@@ -140,14 +144,14 @@ export function VerificationWizard({ onDismiss }: { onDismiss: () => void }) {
       const { body } = expectSuccess(await apiClient.getVerificationActiveChallenge());
       setActiveChallenge(body ?? undefined);
     })()
-      .catch(catchNotify(notification, 'Failed to load active challenge'))
+      .catch(catchNotify(notification, i18n.general.failedToLoad(i18n.components.verification.activeChallenge)))
       .finally(() => setLoading(false));
   }, [notification, apiClient]);
 
   if (isLoading) {
     return (
       <Wizard
-        submitButtonText={'Submit'}
+        submitButtonText={i18n.general.submit}
         isLoadingNextStep={isLoading}
         onCancel={onDismiss}
         steps={[]}
@@ -157,7 +161,7 @@ export function VerificationWizard({ onDismiss }: { onDismiss: () => void }) {
     return (
       <ContentLayout>
         <Container>
-          <Box>Failed to load</Box>
+          <Box>{i18n.general.failedToLoad('')}</Box>
         </Container>
       </ContentLayout>
     );
@@ -169,6 +173,7 @@ export function VerificationWizard({ onDismiss }: { onDismiss: () => void }) {
 }
 
 function InternalVerificationWizard({ activeChallenge, onDismiss }: { activeChallenge: VerificationStartedChallenge, onDismiss: () => void }) {
+  const i18n = useI18n();
   const [preferences] = usePreferences();
   const { notification } = useAppControls();
   const { httpClient, apiClient } = useHttpClient();
@@ -190,7 +195,7 @@ function InternalVerificationWizard({ activeChallenge, onDismiss }: { activeChal
       const state = JSON.parse(activeChallenge.state) as TPBuyOrderState;
       const params = new URLSearchParams();
       params.set('v', '2024-01-06');
-      params.set('lang', preferences.effectiveLocale);
+      params.set('lang', i18n.gw2.lang);
 
       const itemRes = await httpClient.fetch(`https://api.guildwars2.com/v2/items/${encodeURIComponent(state.itemId)}?${params.toString()}`);
       if (itemRes.status !== 200) {
@@ -202,15 +207,15 @@ function InternalVerificationWizard({ activeChallenge, onDismiss }: { activeChal
         state: state,
       });
     })()
-      .catch(catchNotify(notification, 'Failed to load item info'));
-  }, [preferences, httpClient, activeChallenge]);
+      .catch(catchNotify(notification, i18n.general.failedToLoad(i18n.components.verification.itemInfo)));
+  }, [i18n, httpClient, activeChallenge]);
 
   const steps: Array<WizardProps.Step> = [];
   const embeds = youTubeVideoEmbeds(activeChallenge.challengeId);
   if (embeds.length > 0) {
     steps.push({
-      title: 'Video Guide',
-      description: 'You may follow the Video Guide below',
+      title: i18n.components.verification.wizard.videoGuide.title,
+      description: i18n.components.verification.wizard.videoGuide.description,
       content: (
         <ColumnLayout columns={embeds.length}>
           {...(embeds.map((src) => <YouTubeEmbed src={src} />))}
@@ -222,18 +227,18 @@ function InternalVerificationWizard({ activeChallenge, onDismiss }: { activeChal
 
   if (activeChallenge.challengeId === 1) {
     steps.push(
-      ...addApiTokenSteps(preferences, requiredPermissions(1), activeChallenge.state, false),
+      ...addApiTokenSteps(i18n, preferences, requiredPermissions(1), activeChallenge.state, false),
       {
-        title: 'Enter API Token',
-        description: 'Paste the newly generated API Token to submit the verification',
+        title: i18n.components.verification.wizard.enterApiToken.title,
+        description: i18n.components.verification.wizard.enterApiToken.description,
         content: <AddChallengeApiToken value={apiToken} onChange={setApiToken} disabled={isLoading} />,
       },
     );
   } else {
     steps.push({
-      title: 'Login to Guild Wars 2',
-      description: 'Login to Guild Wars 2 using the Account you wish to verify',
-      content: 'Login to Guild Wars 2 using the Account you wish to verify and follow the next steps',
+      title: i18n.components.verification.wizard.gw2GameLogin.title,
+      description: i18n.components.verification.wizard.gw2GameLogin.description,
+      content: i18n.components.verification.wizard.gw2GameLogin.content,
     });
 
     if (activeChallenge.challengeId === 2 && tpBuyOrderState !== undefined) {
@@ -248,29 +253,31 @@ function InternalVerificationWizard({ activeChallenge, onDismiss }: { activeChal
         .replace('.png', '-64px.png');
 
       steps.push({
-        title: `Place a Buy-Order for ${tpBuyOrderState.item.name}`,
-        description: 'Place the buy-order as stated below to let GW2Auth verify you are the legitimate owner of this Guild Wars 2 Account',
+        title: i18n.components.verification.wizard.placeBuyOrder.title(tpBuyOrderState.item.name),
+        description: i18n.components.verification.wizard.placeBuyOrder.description(tpBuyOrderState.item.name),
         content: (
           <ColumnLayout columns={1}>
             <Alert type={'info'}>
               <ColumnLayout columns={1}>
-                <Box>Using the ingame tradingpost, search for</Box>
-                <CopyButton copyText={tpBuyOrderState.item.name} iconUrl={iconSrc}>{tpBuyOrderState.item.name}</CopyButton>
-
-                <Box>And place a buy-order with <Box variant={'strong'}>exactly</Box></Box>
-                <Box variant={'h2'}>
-                  {coins}
-                  <ImgText src={'/assets/gold_coin.png'} alt={'Gold Coin'} />
-                  {silver}
-                  <ImgText src={'/assets/silver_coin.png'} alt={'Silver Coin'} />
-                  {copper}
-                  <ImgText src={'/assets/copper_coin.png'} alt={'Copper Coin'} />
-                </Box>
+                {
+                  i18n.components.verification.wizard.placeBuyOrder.content(
+                    () => <CopyButton copyText={tpBuyOrderState.item.name} iconUrl={iconSrc}>{tpBuyOrderState.item.name}</CopyButton>,
+                    () => (
+                      <Box variant={'h2'}>
+                        {coins}
+                        <ImgText src={'/assets/gold_coin.png'} alt={'Gold Coin'} />
+                        {silver}
+                        <ImgText src={'/assets/silver_coin.png'} alt={'Silver Coin'} />
+                        {copper}
+                        <ImgText src={'/assets/copper_coin.png'} alt={'Copper Coin'} />
+                      </Box>
+                    ),
+                  )
+                }
               </ColumnLayout>
             </Alert>
 
             <Tradingpost
-              lang={preferences.effectiveLocale}
               iconHref={iconSrc}
               name={tpBuyOrderState.item.name}
               gold={coins}
@@ -278,20 +285,19 @@ function InternalVerificationWizard({ activeChallenge, onDismiss }: { activeChal
               copper={copper}
             />
 
-            <Box variant={'small'}>The buy-order can be removed once the verification succeeded</Box>
+            <Box variant={'small'}>{i18n.components.verification.wizard.placeBuyOrder.footNode}</Box>
           </ColumnLayout>
         ),
       });
     } else if (activeChallenge.challengeId === 3) {
       steps.push({
-        title: 'Create a verification Character',
-        description: 'Create a character as stated below to let GW2Auth verify you are the legitimate owner of this Guild Wars 2 Account',
+        title: i18n.components.verification.wizard.createCharacter.title(activeChallenge.state),
+        description: i18n.components.verification.wizard.createCharacter.description(activeChallenge.state),
         content: (
           <Alert type={'info'}>
             <ColumnLayout columns={1}>
-              <Box>Create a new character using the name</Box>
-              <CopyButton copyText={activeChallenge.state}>{activeChallenge.state}</CopyButton>
-              <Box variant={'small'}>The character can be deleted once the verification succeeded</Box>
+              {i18n.components.verification.wizard.createCharacter.content(() => <CopyButton copyText={activeChallenge.state}>{activeChallenge.state}</CopyButton>)}
+              <Box variant={'small'}>{i18n.components.verification.wizard.createCharacter.footNode}</Box>
             </ColumnLayout>
           </Alert>
         ),
@@ -300,12 +306,12 @@ function InternalVerificationWizard({ activeChallenge, onDismiss }: { activeChal
 
     if (activeChallenge.availableGw2Accounts.length > 0) {
       steps.push({
-        title: 'Create new API Token - Info',
-        description: 'The following steps may be skipped',
+        title: i18n.components.verification.wizard.createApiTokenInfo.title,
+        description: i18n.components.verification.wizard.createApiTokenInfo.description,
         content: (
           <ColumnLayout columns={1}>
             <Alert type={'info'}>
-              <Box>If the Guild Wars 2 Account you performed the previous steps with appears in the list below, <Box variant={'strong'}>you may skip the steps to create a new API Token</Box>.</Box>
+              {i18n.components.verification.wizard.createApiTokenInfo.content}
             </Alert>
             <SelectChallengeApiToken
               availableGw2Accounts={activeChallenge.availableGw2Accounts}
@@ -322,21 +328,20 @@ function InternalVerificationWizard({ activeChallenge, onDismiss }: { activeChal
     }
 
     steps.push(
-      ...addApiTokenSteps(preferences, requiredPermissions(activeChallenge.challengeId), undefined, activeChallenge.availableGw2Accounts.length > 0),
+      ...addApiTokenSteps(i18n, preferences, requiredPermissions(activeChallenge.challengeId), undefined, activeChallenge.availableGw2Accounts.length > 0),
     );
 
     steps.push({
-      title: 'Select or enter API Token',
-      description: 'Select an existing API Token or paste the newly generated one to submit the verification',
+      title: i18n.components.verification.wizard.selectOrEnterApiToken.title,
+      description: i18n.components.verification.wizard.selectOrEnterApiToken.description,
       content: (
         <ColumnLayout columns={1}>
           <SelectChallengeApiToken availableGw2Accounts={activeChallenge.availableGw2Accounts} value={apiToken} onChange={setApiToken} disabled={isLoading} />
           <AddChallengeApiToken value={apiToken} onChange={setApiToken} disabled={isLoading} />
           {
-            apiToken !== '' && !isExistingApiToken
-            && <Alert type={'info'}>
-              <Box>The API Token entered here <Box variant={'strong'}>will only be used for the purpose of the verification</Box>.</Box>
-            </Alert>
+            !isExistingApiToken
+              ? <Alert type={'info'}>{i18n.components.verification.wizard.selectOrEnterApiToken.infoWillOnlyBeUsedForVerification}</Alert>
+              : undefined
           }
         </ColumnLayout>
       ),
@@ -346,7 +351,7 @@ function InternalVerificationWizard({ activeChallenge, onDismiss }: { activeChal
   function onSubmit() {
     const updateNotification = notification.add({
       type: 'in-progress',
-      content: 'Submitting challenge...',
+      content: i18n.components.verification.wizard.actions.submitInProgress,
       dismissible: false,
     });
 
@@ -356,26 +361,26 @@ function InternalVerificationWizard({ activeChallenge, onDismiss }: { activeChal
       if (body.isSuccess) {
         updateNotification({
           type: 'success',
-          content: 'Verification succeeded! Your Guild Wars 2 Account is now verified.',
+          content: i18n.components.verification.wizard.actions.succeeded,
           dismissible: true,
         });
       } else {
         updateNotification({
           type: 'in-progress',
-          content: 'The verification was submitted, but it could not be verified yet. This may happen due to the Guild Wars 2 API not showing the latest data. Please watch the status of this verification on the verification page.',
+          content: i18n.components.verification.wizard.actions.inProgress,
           dismissible: true,
         });
       }
 
       onDismiss();
     })()
-      .catch(catchNotify(updateNotification, 'Failed to submit verification challenge'))
+      .catch(catchNotify(updateNotification, i18n.components.verification.wizard.actions.failedToSubmit))
       .finally(() => setLoading(false));
   }
 
   return (
     <Wizard
-      submitButtonText={'Submit'}
+      submitButtonText={i18n.general.submit}
       onCancel={onDismiss}
       onSubmit={onSubmit}
       isLoadingNextStep={isLoading}
@@ -388,9 +393,10 @@ function InternalVerificationWizard({ activeChallenge, onDismiss }: { activeChal
 }
 
 function ChallengeLabel({ name, recommended }: { name: string, recommended: boolean }) {
+  const i18n = useI18n();
   const badges: Array<React.ReactNode> = [];
   if (recommended) {
-    badges.push(<Badge color={'green'}>Recommended</Badge>);
+    badges.push(<Badge color={'green'}>{i18n.components.verification.recommended}</Badge>);
   }
 
   return (
@@ -401,6 +407,7 @@ function ChallengeLabel({ name, recommended }: { name: string, recommended: bool
 function SelectChallengeApiToken({
   availableGw2Accounts, value, onChange, disabled, 
 }: { availableGw2Accounts: ReadonlyArray<VerificationAvailableGw2Account>, value: string, onChange: (v: string) => void, disabled: boolean }) {
+  const i18n = useI18n();
   const options = availableGw2Accounts.map((acc) => ({
     value: acc.apiToken,
     label: acc.displayName,
@@ -418,23 +425,25 @@ function SelectChallengeApiToken({
   }, [value]);
 
   return (
-    <FormField label={'Existing API Token'} description={'Use an existing API Token'} stretch={true}>
+    <FormField label={i18n.components.verification.wizard.selectApiToken.formFieldName} description={i18n.components.verification.wizard.selectApiToken.formFieldDescription} stretch={true}>
       <Select
         onChange={(e) => onChange(e.detail.selectedOption.value!)}
         selectedOption={selectedOption}
         options={options}
         filteringType={'auto'}
         disabled={disabled}
-        empty={'No existing API Tokens available'}
+        empty={i18n.components.verification.wizard.selectApiToken.noneAvailable}
       />
     </FormField>
   );
 }
 
 function AddChallengeApiToken({ value, onChange, disabled }: { value: string, onChange: (v: string) => void, disabled: boolean }) {
+  const i18n = useI18n();
+
   return (
-    <FormField label={'API Token'} description={'Paste the API Token here'} stretch={true}>
-      <Input value={value} type={'text'} onChange={(e) => onChange(e.detail.value)} disabled={disabled} />
+    <FormField label={i18n.components.verification.wizard.enterApiToken.formFieldName} description={i18n.components.verification.wizard.enterApiToken.formFieldDescription} stretch={true}>
+      <Input value={value} type={'text'} disableBrowserAutocorrect={true} spellcheck={false} onChange={(e) => onChange(e.detail.value)} disabled={disabled} />
     </FormField>
   );
 }
@@ -458,56 +467,56 @@ function YouTubeEmbed({ src }: { src: string }) {
   );
 }
 
-function addApiTokenSteps(preferences: EffectivePreferences, permissions: ReadonlyArray<Gw2ApiPermission>, tokenName: string | undefined, optional: boolean): ReadonlyArray<WizardProps.Step> {
+function addApiTokenSteps(i18n: I18nFormats, preferences: EffectivePreferences, permissions: ReadonlyArray<Gw2ApiPermission>, tokenName: string | undefined, optional: boolean): ReadonlyArray<WizardProps.Step> {
   return [
     {
-      title: 'Login on the GW2 Website',
-      description: 'Login on the official website of Guild Wars 2 using the Guild Wars 2 Account you wish to verify',
+      title: i18n.components.verification.wizard.createApiToken.gw2Login.title,
+      description: i18n.components.verification.wizard.createApiToken.gw2Login.description,
       content: (
         <ColumnLayout columns={1}>
-          <Box>Visit the <Link href={'https://account.arena.net/applications'} external={true}>Guild Wars 2 Account Page</Link> and login using the Guild Wars 2 Account you wish to verify.</Box>
-          <Gw2Login lang={preferences.effectiveLocale} />
+          {i18n.components.verification.wizard.createApiToken.gw2Login.content(({ children }) => <Link href={'https://account.arena.net/applications'} external={true}>{children}</Link>)}
+          <Gw2Login />
         </ColumnLayout>
       ),
       isOptional: optional,
     },
     {
-      title: 'Create a new API Token',
-      description: 'Click the button to create a new API Token',
+      title: i18n.components.verification.wizard.createApiToken.createToken.title,
+      description: i18n.components.verification.wizard.createApiToken.createToken.description,
       content: (
-        <CreateAPIToken1 variant={preferences.effectiveColorScheme} lang={preferences.effectiveLocale} />
+        <CreateAPIToken1 variant={preferences.effectiveColorScheme} />
       ),
       isOptional: optional,
     },
     {
-      title: 'Assign name and permissions',
-      description: 'Assign name and permissions',
+      title: i18n.components.verification.wizard.createApiToken.assignNameAndPermissions.title,
+      description: i18n.components.verification.wizard.createApiToken.assignNameAndPermissions.description,
       content: (
         <ColumnLayout columns={1}>
           <Alert type={'info'}>
             <ColumnLayout columns={1}>
-              <FormField label={<Header variant={'h3'}>Token Name</Header>} description={tokenName !== undefined ? 'Use this exact name for the API Token' : ''}>
+              <FormField label={<Header variant={'h3'}>{i18n.components.verification.wizard.createApiToken.assignNameAndPermissions.nameFormFieldName}</Header>} description={tokenName !== undefined ? i18n.components.verification.wizard.createApiToken.assignNameAndPermissions.nameFormFieldDescription : ''}>
                 {
                   tokenName !== undefined
                     ? <Copy copyText={tokenName}><Box variant={'samp'}>{tokenName}</Box></Copy>
-                    : <Box>Choose any name you like</Box>
+                    : <Box>{i18n.components.verification.wizard.createApiToken.assignNameAndPermissions.anyName}</Box>
                 }
               </FormField>
 
-              <FormField label={<Header variant={'h3'}>Required Permissions</Header>} description={'At least these permissions must be granted'}>
+              <FormField label={<Header variant={'h3'}>{i18n.components.verification.wizard.createApiToken.assignNameAndPermissions.permissionsFormFieldName}</Header>} description={i18n.components.verification.wizard.createApiToken.assignNameAndPermissions.permissionsFieldDescription}>
                 <Gw2ApiPermissions permissions={permissions} />
               </FormField>
             </ColumnLayout>
           </Alert>
-          <CreateAPIToken2 name={tokenName ?? 'GW2Auth'} variant={preferences.effectiveColorScheme} lang={preferences.effectiveLocale} permissions={permissions} />
+          <CreateAPIToken2 name={tokenName ?? 'GW2Auth'} variant={preferences.effectiveColorScheme} permissions={permissions} />
         </ColumnLayout>
       ),
       isOptional: optional,
     },
     {
-      title: 'Copy the API Token',
-      description: 'Click the button shown below to copy your newly created API Token',
-      content: <CreateAPIToken3 variant={preferences.effectiveColorScheme} lang={preferences.effectiveLocale} />,
+      title: i18n.components.verification.wizard.createApiToken.copyToken.title,
+      description: i18n.components.verification.wizard.createApiToken.copyToken.description,
+      content: <CreateAPIToken3 variant={preferences.effectiveColorScheme} />,
       isOptional: optional,
     },
   ];

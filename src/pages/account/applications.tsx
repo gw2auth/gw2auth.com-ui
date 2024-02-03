@@ -15,36 +15,37 @@ import { useI18n } from '../../components/util/context/i18n';
 import { useDateFormat } from '../../components/util/state/use-dateformat';
 import { expectSuccess } from '../../lib/api/api';
 import { ApplicationListItem } from '../../lib/api/api.model';
+import { I18nFormats } from '../../lib/i18n/i18n.model';
 
-function buildColumnDefinitions() {
+function buildColumnDefinitions(i18n: I18nFormats) {
   const applicationDetailBaseHref = useHref('/applications');
   const { formatDateTime } = useDateFormat();
 
   return [
     {
       id: 'id',
-      header: 'ID',
+      header: i18n.pages.applications.tableColumns.id,
       cell: (v) => <Box fontSize={'body-s'} variant={'samp'}>{v.id}</Box>,
       sortingField: 'id',
     },
     {
       id: 'name',
-      header: 'Name',
+      header: i18n.pages.applications.tableColumns.name,
       cell: (v) => v.displayName,
       sortingField: 'displayName',
     },
     {
       id: 'user_id',
-      header: 'User ID',
+      header: i18n.pages.applications.tableColumns.userId,
       cell: (v) => <Copy copyText={v.userId}><Hidden>{v.userId}</Hidden></Copy>,
       sortingField: 'userId',
     },
     {
       id: 'last_used',
-      header: 'Last Used',
+      header: i18n.pages.applications.tableColumns.lastUsed,
       cell: (v) => {
         if (v.lastUsed === undefined) {
-          return <StatusIndicator type={'info'}>Never</StatusIndicator>;
+          return <StatusIndicator type={'info'}>{i18n.pages.applications.never}</StatusIndicator>;
         }
         
         return formatDateTime(v.lastUsed);
@@ -53,12 +54,12 @@ function buildColumnDefinitions() {
     },
     {
       id: 'authorized_scopes',
-      header: 'Authorized Scopes',
+      header: i18n.pages.applications.tableColumns.authorizedScopes,
       cell: (v) => <Box fontSize={'body-s'} variant={'samp'}>{JSON.stringify(v.authorizedScopes)}</Box>,
     },
     {
       id: 'actions',
-      header: 'Actions',
+      header: i18n.general.actions,
       cell: (v) => <RouterInlineLink to={`${applicationDetailBaseHref}/${encodeURIComponent(v.id)}`}>Details</RouterInlineLink>,
       alwaysVisible: true,
       preferencesDisable: true,
@@ -78,7 +79,7 @@ export function Applications() {
   const [isLoading, setLoading] = useState(false);
   const [items, setItems] = useState<Array<ApplicationListItem>>([]);
 
-  const columnDefinitions = buildColumnDefinitions();
+  const columnDefinitions = buildColumnDefinitions(i18n);
   const visibleColumns = columnDefinitions.map((v) => v.id).filter(visibleByDefault);
 
   useEffect(() => {
@@ -87,22 +88,22 @@ export function Applications() {
       const resp = expectSuccess(await apiClient.getApplications());
       setItems(resp.body);
     })()
-      .catch(catchNotify(notification, 'Failed to load your applications'))
+      .catch(catchNotify(notification, i18n.general.failedToLoad(i18n.pages.applications.pageHeader)))
       .finally(() => setLoading(false));
   }, [apiClient, notification]);
 
   return (
-    <ContentLayout header={<Header variant={'h1'}>Authorized Applications</Header>}>
+    <ContentLayout header={<Header variant={'h1'}>{i18n.pages.applications.pageHeader}</Header>}>
       <CustomTable
         items={items}
         loading={isLoading}
-        loadingText={i18n.loading}
+        loadingText={i18n.general.loading}
         variant={'container'}
         columnDefinitions={columnDefinitions}
         visibleColumns={visibleColumns}
         stickyColumns={{ first: 0, last: 1 }}
-        filter={<Header counter={`(${items.length})`}>Applications</Header>}// slot usually used for filter
-        empty={<Box variant={'h5'} textAlign={'center'}>No applications authorized yet</Box>}
+        filter={<Header counter={`(${items.length})`}>{i18n.pages.applications.tableHeader}</Header>}// slot usually used for filter
+        empty={<Box variant={'h5'} textAlign={'center'}>{i18n.pages.applications.noApplicationsAuthorized}</Box>}
       />
     </ContentLayout>
   );

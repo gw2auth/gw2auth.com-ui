@@ -13,7 +13,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { ConsentLevel } from '../../lib/consent.model';
 import { I18N_GW2AUTH } from '../../lib/i18n/i18n-strings';
 import {
-  ColorScheme, DateFormat, Locale, Preferences, UIDensity,
+  ColorScheme, DateFormat, Locale, Preferences, UIDensity, 
 } from '../../lib/preferences.model';
 import { useI18n } from '../util/context/i18n';
 import { useConsent } from '../util/state/use-consent';
@@ -52,26 +52,23 @@ export default function PreferencesModal(props: ModalProps) {
   return (
     <Modal
       {...props}
-      header={'Customize preferences'}
+      header={i18n.components.preferences.header}
       size={'large'}
       footer={
         <Box float={'right'}>
           <SpaceBetween direction={'horizontal'} size={'xs'}>
-            <Button variant={'link'} onClick={onCancelClick}>Cancel</Button>
-            <Button variant={'primary'} onClick={onSaveClick}>Save preferences</Button>
+            <Button variant={'link'} onClick={onCancelClick}>{i18n.general.cancel}</Button>
+            <Button variant={'primary'} onClick={onSaveClick}>{i18n.general.save}</Button>
           </SpaceBetween>
         </Box>
       }
     >
       <ColumnLayout columns={1}>
         {
-          !consentLevels.has(ConsentLevel.FUNCTIONALITY) && <Alert type={'warning'}>
-            <Box>You have not given permission for <Box variant={'strong'}>functional cookies</Box>. Your choice <Box
-              variant={'strong'}>will not persist</Box> across page loads.</Box>
-          </Alert>
+          !consentLevels.has(ConsentLevel.FUNCTIONALITY) && <Alert type={'warning'}>{i18n.components.preferences.functionalCookieWarning}</Alert>
         }
         <div>
-          <Header variant={'h3'}>{i18n.header.preferencesLocale}</Header>
+          <Header variant={'h3'}>{i18n.components.preferences.locale.category}</Header>
           <Tiles
             value={tempPreferences.locale}
             onChange={(e) => {
@@ -79,22 +76,22 @@ export default function PreferencesModal(props: ModalProps) {
             }}
             items={[
               {
-                label: i18n.header.preferencesLocaleSystem,
+                label: i18n.components.preferences.locale.name(Locale.SYSTEM),
                 value: Locale.SYSTEM,
               },
               {
-                label: i18n.header.preferencesLocaleEN,
+                label: i18n.components.preferences.locale.name(Locale.EN),
                 value: Locale.EN,
               },
               {
-                label: i18n.header.preferencesLocaleDE,
+                label: i18n.components.preferences.locale.name(Locale.DE),
                 value: Locale.DE,
               },
             ]}
           />
         </div>
         <div>
-          <Header variant={'h3'}>Date and Time Format</Header>
+          <Header variant={'h3'}>{i18n.components.preferences.dateAndTime.category}</Header>
           <Tiles
             value={tempPreferences.dateFormat}
             onChange={(e) => {
@@ -102,17 +99,17 @@ export default function PreferencesModal(props: ModalProps) {
             }}
             items={[
               {
-                label: 'System',
+                label: i18n.components.preferences.dateAndTime.name(DateFormat.SYSTEM),
                 description: SystemDateFormatter.formatDateTime(date),
                 value: DateFormat.SYSTEM,
               },
               {
-                label: 'Locale',
+                label: i18n.components.preferences.dateAndTime.name(DateFormat.LOCALE),
                 description: localeDateFormatter(I18N_GW2AUTH[resolveEffectiveLocale(tempPreferences.locale, systemLocale)]).formatDateTime(date),
                 value: DateFormat.LOCALE,
               },
               {
-                label: 'ISO',
+                label: i18n.components.preferences.dateAndTime.name(DateFormat.ISO_8601),
                 description: ISO8601DateFormatter.formatDateTime(date),
                 value: DateFormat.ISO_8601,
               },
@@ -120,7 +117,7 @@ export default function PreferencesModal(props: ModalProps) {
           />
         </div>
         <div>
-          <Header variant={'h3'}>{i18n.header.preferencesTheme}</Header>
+          <Header variant={'h3'}>{i18n.components.preferences.theme.category}</Header>
           <Tiles
             value={tempPreferences.colorScheme}
             onChange={(e) => {
@@ -128,25 +125,25 @@ export default function PreferencesModal(props: ModalProps) {
             }}
             items={[
               {
-                label: i18n.header.preferencesThemeSystem,
-                description: 'Use your system default theme',
+                label: i18n.components.preferences.theme.name(ColorScheme.SYSTEM),
+                description: i18n.components.preferences.theme.description(ColorScheme.SYSTEM),
                 value: ColorScheme.SYSTEM,
               },
               {
-                label: i18n.header.preferencesThemeLight,
-                description: 'Classic light theme',
+                label: i18n.components.preferences.theme.name(ColorScheme.LIGHT),
+                description: i18n.components.preferences.theme.description(ColorScheme.LIGHT),
                 value: ColorScheme.LIGHT,
               },
               {
-                label: i18n.header.preferencesThemeDark,
-                description: 'Classic dark theme',
+                label: i18n.components.preferences.theme.name(ColorScheme.DARK),
+                description: i18n.components.preferences.theme.description(ColorScheme.DARK),
                 value: ColorScheme.DARK,
               },
             ]}
           />
         </div>
         <div>
-          <Header variant={'h3'}>{i18n.header.preferencesDensity}</Header>
+          <Header variant={'h3'}>{i18n.components.preferences.density.category}</Header>
           <Tiles
             value={tempPreferences.uiDensity}
             onChange={(e) => {
@@ -154,13 +151,13 @@ export default function PreferencesModal(props: ModalProps) {
             }}
             items={[
               {
-                label: i18n.header.preferencesDensityComfortable,
-                description: 'Standard spacing',
+                label: i18n.components.preferences.density.name(UIDensity.COMFORTABLE),
+                description: i18n.components.preferences.density.description(UIDensity.COMFORTABLE),
                 value: UIDensity.COMFORTABLE,
               },
               {
-                label: i18n.header.preferencesDensityCompact,
-                description: 'Reducing spacing',
+                label: i18n.components.preferences.density.name(UIDensity.COMPACT),
+                description: i18n.components.preferences.density.description(UIDensity.COMPACT),
                 value: UIDensity.COMPACT,
               },
             ]}

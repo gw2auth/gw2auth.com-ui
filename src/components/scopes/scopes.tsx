@@ -3,8 +3,10 @@ import React, { useMemo } from 'react';
 import { Gw2ApiPermission } from '../../lib/api/api.model';
 import { Gw2ApiPermissions } from '../common/gw2-api-permissions';
 import { KeyValuePairs, ValueWithLabel } from '../common/key-value-pairs';
+import { useI18n } from '../util/context/i18n';
 
 export function Scopes({ scopes }: { scopes: ReadonlyArray<string> }) {
+  const i18n = useI18n();
   const sections = useMemo(() => {
     const requestedGw2ApiPermissions = scopes
       .filter((v) => v.startsWith('gw2:'))
@@ -12,22 +14,22 @@ export function Scopes({ scopes }: { scopes: ReadonlyArray<string> }) {
 
     const gw2AuthGroup: Array<React.ReactNode> = [(
       <Popover
-        header={'Display Name'}
-        content={'The custom name you have given a Guild Wars 2 Account at GW2Auth'}
+        header={i18n.components.scopes.displayName.label}
+        content={i18n.components.scopes.displayName.description}
         dismissButton={false}
       >
-        <StatusIndicator type={'info'}>Display Name</StatusIndicator>
+        <StatusIndicator type={'info'}>{i18n.components.scopes.displayName.label}</StatusIndicator>
       </Popover>
     )];
 
     if (scopes.includes('gw2auth:verified')) {
       gw2AuthGroup.push((
         <Popover
-          header={'Verification Status'}
-          content={'The information whether a Guild Wars 2 Account is verified or not'}
+          header={i18n.components.scopes.verificationStatus.label}
+          content={i18n.components.scopes.verificationStatus.description}
           dismissButton={false}
         >
-          <StatusIndicator type={'info'}>Verification Status</StatusIndicator>
+          <StatusIndicator type={'info'}>{i18n.components.scopes.verificationStatus.label}</StatusIndicator>
         </Popover>
       ));
     }
@@ -41,7 +43,7 @@ export function Scopes({ scopes }: { scopes: ReadonlyArray<string> }) {
         </ValueWithLabel>
       ),
       (
-        <ValueWithLabel label={'Guild Wars 2 API Access'}>
+        <ValueWithLabel label={i18n.components.scopes.gw2ApiAccess.label}>
           <Gw2ApiPermissions permissions={requestedGw2ApiPermissions} />
         </ValueWithLabel>
       ),

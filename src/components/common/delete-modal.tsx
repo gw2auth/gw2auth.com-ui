@@ -2,6 +2,7 @@ import {
   Box, Button, Checkbox, ColumnLayout, Modal, SpaceBetween,
 } from '@cloudscape-design/components';
 import React, { useEffect, useState } from 'react';
+import { useI18n } from '../util/context/i18n';
 
 export interface DeleteModalDismissDetail<T> {
   item: T;
@@ -15,17 +16,17 @@ export interface DeleteModalProps<T> {
   onDismiss: (e: CustomEvent<DeleteModalDismissDetail<T>>) => void;
 }
 
-export function DeleteModal<T>(props: React.PropsWithChildren<DeleteModalProps<T>>) {
-  const {
-    item, entityType, loading, onDismiss, children,
-  } = props;
+export function DeleteModal<T>({
+  item, entityType, loading, onDismiss, children,
+}: React.PropsWithChildren<DeleteModalProps<T>>) {
+  const i18n = useI18n();
 
   return (
     <ConfirmationModal
       item={item}
-      header={`Confirm ${entityType} deletion`}
-      confirmLong={`Please confirm the deletion of this ${entityType}`}
-      confirmShort={'Delete'}
+      header={i18n.components.confirmationModal.confirmDeletionHeader(entityType)}
+      confirmLong={i18n.components.confirmationModal.confirmDeletionLong(entityType)}
+      confirmShort={i18n.components.confirmationModal.confirmDeletionShort(entityType)}
       loading={loading}
       onDismiss={(e) => {
         if (e.detail.reason !== 'confirm') {
@@ -53,11 +54,10 @@ export interface ConfirmationModalProps<T> {
   onDismiss: (e: CustomEvent<ConfirmationModalDismissDetail<T>>) => void;
 }
 
-export function ConfirmationModal<T>(props: React.PropsWithChildren<ConfirmationModalProps<T>>) {
-  const {
-    item, header, confirmLong, confirmShort, loading, onDismiss, children,
-  } = props;
-
+export function ConfirmationModal<T>({
+  item, header, confirmLong, confirmShort, loading, onDismiss, children,
+}: React.PropsWithChildren<ConfirmationModalProps<T>>) {
+  const i18n = useI18n();
   const [deleteDisabled, setDeleteDisabled] = useState(true);
   useEffect(() => {
     if (item === undefined) {
@@ -91,7 +91,7 @@ export function ConfirmationModal<T>(props: React.PropsWithChildren<Confirmation
       footer={
         <Box float={'right'}>
           <SpaceBetween direction={'horizontal'} size={'xs'}>
-            <Button disabled={loading} variant={'link'} onClick={onCancelClick}>Cancel</Button>
+            <Button disabled={loading} variant={'link'} onClick={onCancelClick}>{i18n.general.cancel}</Button>
             <Button disabled={deleteDisabled} loading={loading} variant={'primary'} onClick={onConfirmClick}>{confirmShort}</Button>
           </SpaceBetween>
         </Box>

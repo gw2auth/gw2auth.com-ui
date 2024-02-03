@@ -15,7 +15,6 @@ import {
 import React, {
   createContext, useContext, useEffect, useMemo, useState,
 } from 'react';
-import { Location, useLocation } from 'react-router-dom';
 import { AuthInfo } from '../lib/api/api.model';
 import { customI18nMessages, I18N_GW2AUTH } from '../lib/i18n/i18n-strings';
 import { ColorScheme, UIDensity } from '../lib/preferences.model';
@@ -34,6 +33,7 @@ import { useHasConsent } from './util/state/use-consent';
 import { useDependentState } from './util/state/use-dependent-state';
 import { usePreferences } from './util/state/use-preferences';
 import { usePreviousIssuer } from './util/state/use-previous-issuer';
+import { useDocumentTitle } from './util/state/use-route-context';
 
 interface AppControlsState {
   tools: {
@@ -57,32 +57,15 @@ const AppControlsStateContext = createContext<AppControlsState>({
   },
 });
 
-function documentTitle(location: Location): string {
-  const prefix = ({
-    '/profile': 'Profile',
-    '/accounts': 'GW2 Accounts',
-    '/applications': 'Applications',
-    '/settings': 'Settings',
-  })[location.pathname];
-
-  if (prefix === undefined) {
-    return 'GW2Auth';
-  }
-
-  return `${prefix} • GW2Auth`;
-}
-
 export interface RootLayoutProps extends Omit<AppLayoutProps, 'content'> {
   headerHide: boolean;
   breadcrumbsHide: boolean;
 }
 
-export function RootLayout(props: React.PropsWithChildren<RootLayoutProps>) {
-  const {
-    headerHide, breadcrumbsHide, children, ...appLayoutProps 
-  } = props;
-
-  const location = useLocation();
+export function RootLayout({
+  headerHide, breadcrumbsHide, children, ...appLayoutProps 
+}: React.PropsWithChildren<RootLayoutProps>) {
+  const documentTitle = useDocumentTitle();
   const [authInfo] = useAuthInfo();
   const hasConsent = useHasConsent();
   const [cookiePrefVisible, setCookiePrefVisible] = useDependentState(!hasConsent);
@@ -92,9 +75,9 @@ export function RootLayout(props: React.PropsWithChildren<RootLayoutProps>) {
 
   useEffect(() => {
     const restore = document.title;
-    document.title = documentTitle(location);
+    document.title = documentTitle;
     return () => { document.title = restore; };
-  }, [location]);
+  }, [documentTitle]);
 
   useEffect(() => {
     setNavigationOpen(!isMobile && (authInfo !== undefined && authInfo !== null));

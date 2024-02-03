@@ -7,7 +7,7 @@ import {
   ContentLayout,
   FormField,
   Header,
-  Input, Link,
+  Input,
   Modal,
   SpaceBetween,
   Spinner,
@@ -24,12 +24,11 @@ import { RouterInlineLink } from '../../components/common/router-link';
 import { VerificationStatusIndicator } from '../../components/common/verification-status';
 import { catchNotify, useAppControls } from '../../components/util/context/app-controls';
 import { useHttpClient } from '../../components/util/context/http-client';
+import { useI18n } from '../../components/util/context/i18n';
 import { useDateFormat } from '../../components/util/state/use-dateformat';
 import { useDependentState } from '../../components/util/state/use-dependent-state';
 import { expectSuccess } from '../../lib/api/api';
-import {
-  ApiToken, Gw2Account, Gw2ApiPermission, VerificationStatus,
-} from '../../lib/api/api.model';
+import { ApiToken, Gw2Account, Gw2ApiPermission } from '../../lib/api/api.model';
 
 interface Gw2ApiTokenInfo {
   id: string;
@@ -47,6 +46,7 @@ export function Gw2AccountsDetail() {
     throw new Error();
   }
 
+  const i18n = useI18n();
   const { apiClient } = useHttpClient();
   const { notification } = useAppControls();
 
@@ -61,7 +61,7 @@ export function Gw2AccountsDetail() {
       const resp = expectSuccess(await apiClient.getGw2Account(id));
       setGw2Account(resp.body);
     })()
-      .catch(catchNotify(notification, 'Failed to load your Guild Wars 2 Account'))
+      .catch(catchNotify(notification, i18n.general.failedToLoad('Guild Wars 2 Account')))
       .finally(() => setLoading(false));
   }, [id, apiClient]);
 
@@ -73,9 +73,9 @@ export function Gw2AccountsDetail() {
     content = <Spinner size={'large'} />;
     applications = <Container variant={'stacked'}><Spinner size={'large'} /></Container>;
   } else if (gw2Account === undefined) {
-    overview = <Box>Failed to load</Box>;
-    content = <Box>Failed to load</Box>;
-    applications = <Container variant={'stacked'}><Box>Failed to load</Box></Container>;
+    overview = <Box>{i18n.general.failedToLoad('')}</Box>;
+    content = <Box>{i18n.general.failedToLoad('')}</Box>;
+    applications = <Container variant={'stacked'}><Box>{i18n.general.failedToLoad('')}</Box></Container>;
   } else {
     overview = <Overview id={id} gw2Account={gw2Account} />;
     content = <Gw2AccountDetailContent id={id} gw2Account={gw2Account} />;
@@ -95,7 +95,7 @@ export function Gw2AccountsDetail() {
 
           const updateNotification = notification.add({
             type: 'in-progress',
-            content: 'Deleting your API Token...',
+            content: i18n.pages.gw2AccountsDetail.deleteApiTokenInProgress,
             dismissible: false,
           });
 
@@ -105,11 +105,11 @@ export function Gw2AccountsDetail() {
             setGw2Account((prev) => (prev !== undefined ? { ...prev, apiToken: undefined } : undefined));
             updateNotification({
               type: 'success',
-              content: 'Your API Token was deleted',
+              content: i18n.pages.gw2AccountsDetail.deleteApiTokenSuccess,
               dismissible: true,
             });
           })()
-            .catch(catchNotify(updateNotification, 'Failed to delete API Token'))
+            .catch(catchNotify(updateNotification, i18n.pages.gw2AccountsDetail.deleteApiTokenFailed))
             .finally(() => {
               setApiTokenDeleteLoading(false);
               setShowTokenDeleteModal(false);
@@ -125,7 +125,7 @@ export function Gw2AccountsDetail() {
                 disabled={gw2Account?.apiToken === undefined}
                 loading={apiTokenDeleteLoading}
                 onClick={() => setShowTokenDeleteModal(true)}
-              >Delete API Token</Button>
+              >{i18n.pages.gw2AccountsDetail.deleteApiToken}</Button>
           }
           >{gw2Account?.name ?? id}</Header>
         }
@@ -141,22 +141,26 @@ export function Gw2AccountsDetail() {
 }
 
 function Overview({ id, gw2Account }: { id: string, gw2Account: Gw2Account }) {
+  const i18n = useI18n();
   const { formatDateTime } = useDateFormat();
 
   return (
     <KeyValuePairs columns={3}>
-      <ValueWithLabel label={'ID'}>
+      <ValueWithLabel label={i18n.pages.gw2AccountsDetail.id}>
         <Copy copyText={id}><Box variant={'samp'} fontSize={'body-s'}>{id}</Box></Copy>
       </ValueWithLabel>
-      <ValueWithLabel label={'Created'}>
+      <ValueWithLabel label={i18n.pages.gw2AccountsDetail.created}>
         <Box>{formatDateTime(gw2Account.creationTime)}</Box>
       </ValueWithLabel>
-      <VerificationStatusValueWithLabel verificationStatus={gw2Account.verificationStatus} />
+      <ValueWithLabel label={i18n.pages.gw2AccountsDetail.verificationStatus}>
+        <VerificationStatusIndicator status={gw2Account.verificationStatus} />
+      </ValueWithLabel>
     </KeyValuePairs>
   );
 }
 
 function Gw2AccountDetailContent({ id, gw2Account: _gw2Account }: { id: string, gw2Account: Gw2Account }) {
+  const i18n = useI18n();
   const { apiClient } = useHttpClient();
   const { notification } = useAppControls();
   const [gw2Account, setGw2Account] = useDependentState(_gw2Account);
@@ -165,13 +169,13 @@ function Gw2AccountDetailContent({ id, gw2Account: _gw2Account }: { id: string, 
 
   const displayNameError = useMemo(() => {
     if (displayName.length < 1) {
-      return 'Can not be empty';
+      return i18n.pages.gw2AccountsDetail.formErrors.canNotBeEmpty;
     } if (displayName.length > 100) {
-      return 'Can not be longer than 100 characters';
+      return i18n.pages.gw2AccountsDetail.formErrors.canNotBeLongerThan(100);
     }
 
     return '';
-  }, [displayName]);
+  }, [i18n, displayName]);
 
   function undoDisplayName() {
     setDisplayName(gw2Account.displayName);
@@ -191,8 +195,8 @@ function Gw2AccountDetailContent({ id, gw2Account: _gw2Account }: { id: string, 
     <SpaceBetween size={'xxl'} direction={'vertical'}>
       <SpaceBetween size={'s'} direction={'vertical'}>
         <FormField
-          label={<Header variant={'h2'}>Display Name</Header>}
-          description={'A custom name for this GW2 Account, can be shared with applications'}
+          label={<Header variant={'h2'}>{i18n.pages.gw2AccountsDetail.displayName.label}</Header>}
+          description={i18n.pages.gw2AccountsDetail.displayName.description}
           secondaryControl={<Button iconName={'undo'} onClick={undoDisplayName} disabled={displayName === gw2Account.displayName} />}
           errorText={displayNameError}
         >
@@ -216,6 +220,7 @@ function Gw2AccountDetailContent({ id, gw2Account: _gw2Account }: { id: string, 
 }
 
 function ExistingApiToken({ gw2AccountId, apiToken, onUpdate }: { gw2AccountId: string, apiToken: ApiToken, onUpdate: (v: ApiToken | undefined) => void }) {
+  const i18n = useI18n();
   const { httpClient, apiClient } = useHttpClient();
   const { notification } = useAppControls();
 
@@ -229,13 +234,16 @@ function ExistingApiToken({ gw2AccountId, apiToken, onUpdate }: { gw2AccountId: 
   function saveApiToken() {
     setApiTokenLoading(true);
     (async () => {
+      const params = new URLSearchParams();
+      params.set('access_token', apiTokenValue);
+
       const [tokenInfoRes, accountRes] = await Promise.all([
-        httpClient.fetch(`https://api.guildwars2.com/v2/tokeninfo?access_token=${encodeURIComponent(apiTokenValue)}`),
-        httpClient.fetch(`https://api.guildwars2.com/v2/account?access_token=${encodeURIComponent(apiTokenValue)}`),
+        httpClient.fetch(`https://api.guildwars2.com/v2/tokeninfo?${params.toString()}`),
+        httpClient.fetch(`https://api.guildwars2.com/v2/account?${params.toString()}`),
       ]);
 
       if (tokenInfoRes.status !== 200 || accountRes.status !== 200) {
-        setApiTokenError('The provided API Token is invalid');
+        setApiTokenError(i18n.pages.gw2AccountsDetail.submitErrors.apiTokenInvalid);
         return;
       }
 
@@ -243,7 +251,7 @@ function ExistingApiToken({ gw2AccountId, apiToken, onUpdate }: { gw2AccountId: 
       const account = (await accountRes.json()) as Gw2ApiAccount;
 
       if (account.id.toLowerCase() !== gw2AccountId.toLowerCase()) {
-        setApiTokenError('The provided API Token belongs to a different Guild Wars 2 Account');
+        setApiTokenError(i18n.pages.gw2AccountsDetail.submitErrors.apiTokenForDifferentGw2Account);
         return;
       }
 
@@ -308,7 +316,8 @@ function ExistingApiToken({ gw2AccountId, apiToken, onUpdate }: { gw2AccountId: 
       />
       <SpaceBetween size={'s'} direction={'vertical'}>
         <FormField
-          label={<Header variant={'h2'}>API Token</Header>}
+          label={<Header variant={'h2'}>{i18n.pages.gw2AccountsDetail.apiToken.label}</Header>}
+          description={i18n.pages.gw2AccountsDetail.apiToken.description}
           secondaryControl={<Button iconName={showApiToken ? 'lock-private' : 'unlocked'} onClick={() => setShowApiToken((v) => !v)} />}
           errorText={apiTokenError}
         >
@@ -322,6 +331,7 @@ function ExistingApiToken({ gw2AccountId, apiToken, onUpdate }: { gw2AccountId: 
 }
 
 function NonExistingApiToken({ gw2AccountId, onUpdate }: { gw2AccountId: string, onUpdate: (v: ApiToken | undefined) => void }) {
+  const i18n = useI18n();
   const { httpClient, apiClient } = useHttpClient();
   const { notification } = useAppControls();
 
@@ -335,13 +345,13 @@ function NonExistingApiToken({ gw2AccountId, onUpdate }: { gw2AccountId: string,
     (async () => {
       const accountRes = await httpClient.fetch(`https://api.guildwars2.com/v2/account?access_token=${encodeURIComponent(apiTokenValue)}`);
       if (accountRes.status !== 200) {
-        setApiTokenError('The provided API Token is invalid');
+        setApiTokenError(i18n.pages.gw2AccountsDetail.submitErrors.apiTokenInvalid);
         return;
       }
 
       const account = (await accountRes.json()) as Gw2ApiAccount;
       if (account.id.toLowerCase() !== gw2AccountId.toLowerCase()) {
-        setApiTokenError('The provided API Token belongs to a different Guild Wars 2 Account');
+        setApiTokenError(i18n.pages.gw2AccountsDetail.submitErrors.apiTokenForDifferentGw2Account);
         return;
       }
 
@@ -360,7 +370,8 @@ function NonExistingApiToken({ gw2AccountId, onUpdate }: { gw2AccountId: string,
   return (
     <SpaceBetween size={'s'} direction={'vertical'}>
       <FormField
-        label={<Header variant={'h2'}>API Token</Header>}
+        label={<Header variant={'h2'}>{i18n.pages.gw2AccountsDetail.apiToken.label}</Header>}
+        description={i18n.pages.gw2AccountsDetail.apiToken.description}
         secondaryControl={<Button iconName={showApiToken ? 'lock-private' : 'unlocked'} onClick={() => setShowApiToken((v) => !v)} />}
         errorText={apiTokenError}
       >
@@ -372,6 +383,7 @@ function NonExistingApiToken({ gw2AccountId, onUpdate }: { gw2AccountId: string,
 }
 
 function ApplicationsTable({ gw2Account }: { gw2Account: Gw2Account }) {
+  const i18n = useI18n();
   const { formatDateTime } = useDateFormat();
   const baseHref = useHref('/applications');
 
@@ -380,20 +392,20 @@ function ApplicationsTable({ gw2Account }: { gw2Account: Gw2Account }) {
       columnDefinitions={[
         {
           id: 'name',
-          header: 'Name',
+          header: i18n.pages.gw2AccountsDetail.authorizedApplicationsTableColumns.name,
           cell: (v) => v.name,
           sortingField: 'name',
         },
         {
           id: 'last_used',
-          header: 'Last Used',
+          header: i18n.pages.gw2AccountsDetail.authorizedApplicationsTableColumns.lastUsed,
           cell: (v) => formatDateTime(v.lastUsed),
           sortingField: 'lastUsed',
         },
         {
           id: 'actions',
-          header: 'Actions',
-          cell: (v) => <RouterInlineLink to={`${baseHref}/${encodeURIComponent(v.id)}`}>View</RouterInlineLink>,
+          header: i18n.general.actions,
+          cell: (v) => <RouterInlineLink to={`${baseHref}/${encodeURIComponent(v.id)}`}>{i18n.general.view}</RouterInlineLink>,
           alwaysVisible: true,
           preferencesDisable: true,
         },
@@ -401,21 +413,13 @@ function ApplicationsTable({ gw2Account }: { gw2Account: Gw2Account }) {
       stickyColumns={{ first: 0, last: 1 }}
       items={gw2Account.authorizedApps}
       variant={'stacked'}
-      filter={<Header variant={'h2'} counter={`(${gw2Account.authorizedApps.length})`}>Authorized Applications</Header>}
+      filter={<Header variant={'h2'} counter={`(${gw2Account.authorizedApps.length})`}>{i18n.pages.gw2AccountsDetail.authorizedApplications}</Header>}
       empty={
         <SpaceBetween size={'m'} direction={'vertical'} alignItems={'center'}>
-          <Box variant={'h5'}>No applications authorized for this Guild Wars 2 Account</Box>
+          <Box variant={'h5'}>{i18n.pages.gw2AccountsDetail.noApplicationsAuthorized}</Box>
         </SpaceBetween>
       }
     />
-  );
-}
-
-function VerificationStatusValueWithLabel({ verificationStatus }: { verificationStatus: VerificationStatus }) {
-  return (
-    <ValueWithLabel label={'Verification Status'}>
-      <VerificationStatusIndicator status={verificationStatus} />
-    </ValueWithLabel>
   );
 }
 
@@ -435,6 +439,7 @@ interface TokenSelectionModalProps {
 }
 
 function TokenSelectionModal(props: TokenSelectionModalProps) {
+  const i18n = useI18n();
   const {
     visible, loading, onSaveClick, onCancelClick, currentApiToken, newApiToken,
   } = props;
@@ -444,12 +449,12 @@ function TokenSelectionModal(props: TokenSelectionModalProps) {
     <Modal
       visible={visible}
       onDismiss={onCancelClick}
-      header={'Select API Token'}
+      header={i18n.pages.gw2AccountsDetail.selectApiToken.header}
       footer={
         <Box float={'right'}>
           <SpaceBetween direction={'horizontal'} size={'xs'}>
-            <Button disabled={loading} variant={'link'} onClick={onCancelClick}>Cancel</Button>
-            <Button loading={loading} variant={'primary'} onClick={() => onSaveClick(value)}>Save</Button>
+            <Button disabled={loading} variant={'link'} onClick={onCancelClick}>{i18n.general.cancel}</Button>
+            <Button loading={loading} variant={'primary'} onClick={() => onSaveClick(value)}>{i18n.general.save}</Button>
           </SpaceBetween>
         </Box>
       }
@@ -457,9 +462,7 @@ function TokenSelectionModal(props: TokenSelectionModalProps) {
       <ColumnLayout columns={1}>
         <Alert type={'warning'}>
           <SpaceBetween size={'xs'} direction={'vertical'}>
-            <Box>Reducing the permissions of the API Token provided to GW2Auth <Box variant={'strong'}>may cause issues</Box> with the application(s) using it.</Box>
-            <Box>GW2Auth never shares the API Token itself with authorized applications. Instead, authorized applications are given <Link external={true} href={'https://wiki.guildwars2.com/wiki/API:2/createsubtoken'}>subtokens</Link> using the permissions you have authorized an application to use.</Box>
-            <Box>It is recommended to use an API Token with all permissions for GW2Auth.</Box>
+            {i18n.pages.gw2AccountsDetail.selectApiToken.warning}
           </SpaceBetween>
         </Alert>
         <Tiles
@@ -468,15 +471,15 @@ function TokenSelectionModal(props: TokenSelectionModalProps) {
           items={[
             {
               value: currentApiToken.id,
-              label: 'Current',
-              description: 'Keep the current API Token',
+              label: i18n.pages.gw2AccountsDetail.selectApiToken.keepCurrent.label,
+              description: i18n.pages.gw2AccountsDetail.selectApiToken.keepCurrent.description,
               image: <Gw2ApiPermissions permissions={currentApiToken.permissions} />,
               disabled: loading,
             },
             {
               value: newApiToken.id,
-              label: 'New',
-              description: 'Save the new API Token',
+              label: i18n.pages.gw2AccountsDetail.selectApiToken.saveNew.label,
+              description: i18n.pages.gw2AccountsDetail.selectApiToken.saveNew.description,
               image: <Gw2ApiPermissions permissions={newApiToken.permissions} />,
               disabled: loading,
             },
@@ -488,20 +491,21 @@ function TokenSelectionModal(props: TokenSelectionModalProps) {
 }
 
 function TokenDeleteModal(props: Omit<DeleteModalProps<string>, 'entityType'>) {
+  const i18n = useI18n();
+
   return (
     <DeleteModal
       {...props}
-      entityType={'API Token'}
+      entityType={i18n.pages.gw2AccountsDetail.entity}
     >
       <SpaceBetween size={'xs'} direction={'vertical'}>
         <Alert type={'warning'}>
           <SpaceBetween size={'xs'} direction={'vertical'}>
-            <Box>Deleting an API Token for an Guild Wars 2 Account which is used by an application <Box variant={'strong'}>will likely cause issues</Box> with the application(s) using it.</Box>
-            <Box>If you wish to use a new API Token instead, <Box variant={'strong'}>please use the in-place update instead</Box> to prevent any issues.</Box>
+            {i18n.pages.gw2AccountsDetail.deleteApiTokenWarn}
           </SpaceBetween>
         </Alert>
         <Alert type={'info'}>
-          <Box>Authorized applications may still be able to use an already issued API Token for at most 30 minutes after deletion of this API Token.</Box>
+          {i18n.pages.gw2AccountsDetail.deleteApiTokenInfo}
         </Alert>
       </SpaceBetween>
     </DeleteModal>

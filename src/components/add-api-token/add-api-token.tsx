@@ -11,9 +11,11 @@ import {
 import { Copy } from '../common/copy';
 import { catchNotify, useAppControls } from '../util/context/app-controls';
 import { useHttpClient } from '../util/context/http-client';
+import { useI18n } from '../util/context/i18n';
 import { usePreferences } from '../util/state/use-preferences';
 
 export function AddApiTokenWizard({ onDismiss }: { onDismiss: () => void }) {
+  const i18n = useI18n();
   const [preferences] = usePreferences();
   const { apiClient } = useHttpClient();
   const { notification } = useAppControls();
@@ -30,7 +32,7 @@ export function AddApiTokenWizard({ onDismiss }: { onDismiss: () => void }) {
       const { body } = expectSuccess(await apiClient.getApiTokenAddVerification());
       setVerification(body);
     })()
-      .catch(catchNotify(notification, 'Failed to load verification information'))
+      .catch(catchNotify(notification, i18n.general.failedToLoad(i18n.components.addApiToken.tokenVerification)))
       .finally(() => setLoading(false));
   }, [apiClient, notification]);
 
@@ -46,26 +48,26 @@ export function AddApiTokenWizard({ onDismiss }: { onDismiss: () => void }) {
       if (body.verified) {
         notification.add({
           type: 'success',
-          content: 'Your API Token was added successfully and the account ownership was verified!',
+          content: i18n.components.addApiToken.successVerified,
           dismissible: true,
         });
       } else {
         notification.add({
           type: 'info',
-          content: 'Your API Token was added successfully. The account ownership was not verified.',
+          content: i18n.components.addApiToken.successNotVerified,
           dismissible: true,
         });
       }
 
       onDismiss();
     })()
-      .catch(catchNotify(notification))
+      .catch(catchNotify(notification, i18n.components.addApiToken.failed))
       .finally(() => setLoading(false));
   }
 
   return (
     <Wizard
-      submitButtonText={'Submit'}
+      submitButtonText={i18n.general.submit}
       allowSkipTo={true}
       activeStepIndex={activeStepIndex}
       onNavigate={(e) => setActiveStepIndex(e.detail.requestedStepIndex)}
@@ -74,63 +76,59 @@ export function AddApiTokenWizard({ onDismiss }: { onDismiss: () => void }) {
       isLoadingNextStep={loading}
       steps={[
         {
-          title: 'Login on the GW2 Website',
-          description: 'Login on the official website of Guild Wars 2 using the Guild Wars 2 Account you wish to add',
+          title: i18n.components.addApiToken.wizard.gw2Login.title,
+          description: i18n.components.addApiToken.wizard.gw2Login.description,
           content: (
             <ColumnLayout columns={1}>
-              <Box>Visit the <Link href={'https://account.arena.net/applications'} external={true}>Guild Wars 2 Account Page</Link> and login using the Guild Wars 2 Account you wish to add.</Box>
-              <Gw2Login lang={preferences.effectiveLocale} />
+              {i18n.components.addApiToken.wizard.gw2Login.content(({ children }) => <Link href={'https://account.arena.net/applications'} external={true}>{children}</Link>)}
+              <Gw2Login />
             </ColumnLayout>
           ),
           isOptional: true,
         },
         {
-          title: 'Create a new API Token',
-          description: 'Click the button to create a new API Token',
-          content: <CreateAPIToken1 variant={preferences.effectiveColorScheme} lang={preferences.effectiveLocale} />,
+          title: i18n.components.addApiToken.wizard.createToken.title,
+          description: i18n.components.addApiToken.wizard.createToken.description,
+          content: <CreateAPIToken1 variant={preferences.effectiveColorScheme} />,
           isOptional: true,
         },
         {
-          title: 'Assign name and permissions',
-          description: 'Assign a name and permissions. It is recommended to use an API Token with all permissions with GW2Auth',
+          title: i18n.components.addApiToken.wizard.assignNameAndPermissions.title,
+          description: i18n.components.addApiToken.wizard.assignNameAndPermissions.description,
           content: (
             <ColumnLayout columns={1}>
               <Alert type={'info'}>
-                <FormField label={'Token Name'} description={verification !== undefined ? 'Use this exact name for the API Token if you also wish to verify your account ownership' : ''}>
+                <FormField label={i18n.components.addApiToken.wizard.assignNameAndPermissions.formFieldName} description={verification !== undefined ? i18n.components.addApiToken.wizard.assignNameAndPermissions.formFieldDescription : undefined}>
                   {
                     verification !== undefined
                       ? <Copy copyText={verification.tokenName}><Box variant={'samp'}>{verification.tokenName}</Box></Copy>
-                      : <Box>Choose any name you like</Box>
+                      : <Box>{i18n.components.addApiToken.wizard.assignNameAndPermissions.anyName}</Box>
                   }
                 </FormField>
               </Alert>
               <CreateAPIToken2
                 name={verification?.tokenName ?? 'GW2Auth'}
                 permissions={AllGw2ApiPermissions}
-                permissionsText={<div>
-                  <p>Assign permissions</p>
-                  <p>It is recommended to provide GW2Auth with all permissions</p>
-                </div>}
+                permissionsText={i18n.components.addApiToken.wizard.assignNameAndPermissions.permissionInfo}
                 variant={preferences.effectiveColorScheme}
-                lang={preferences.effectiveLocale}
               />
             </ColumnLayout>
           ),
           isOptional: true,
         },
         {
-          title: 'Copy the API Token',
-          description: 'Click the button shown below to copy your newly created API Token',
-          content: <CreateAPIToken3 variant={preferences.effectiveColorScheme} lang={preferences.effectiveLocale} />,
+          title: i18n.components.addApiToken.wizard.copyToken.title,
+          description: i18n.components.addApiToken.wizard.copyToken.description,
+          content: <CreateAPIToken3 variant={preferences.effectiveColorScheme} />,
           isOptional: true,
         },
         {
-          title: 'Add the API Token',
-          description: 'Add the newly generated API Token to your GW2Auth Account',
+          title: i18n.components.addApiToken.wizard.addToken.title,
+          description: i18n.components.addApiToken.wizard.addToken.description,
           errorText: apiTokenError,
           content: (
-            <FormField label={'API Token'} description={'Paste the API Token here'}>
-              <Input value={apiToken} type={'text'} disabled={loading} onChange={(e) => setApiToken(e.detail.value)} />
+            <FormField label={i18n.components.addApiToken.wizard.addToken.formFieldName} description={i18n.components.addApiToken.wizard.addToken.formFieldDescription}>
+              <Input value={apiToken} type={'text'} disabled={loading} disableBrowserAutocorrect={true} spellcheck={false} onChange={(e) => setApiToken(e.detail.value)} />
             </FormField>
           ),
         },

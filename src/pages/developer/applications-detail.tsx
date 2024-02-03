@@ -547,7 +547,7 @@ function UserTable({ id, clients }: { id: string; clients: ReadonlyArray<DevAppl
     <CustomTable
       items={items}
       loading={isLoading}
-      loadingText={i18n.loading}
+      loadingText={i18n.general.loading}
       variant={'borderless'}
       columnDefinitions={columnDefinitions}
       visibleColumns={visibleColumns}
