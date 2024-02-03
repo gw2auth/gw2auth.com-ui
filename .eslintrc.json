@@ -20,6 +20,7 @@
     "@typescript-eslint/no-non-null-assertion": 0,
     "@typescript-eslint/lines-between-class-members": 0,
     "@typescript-eslint/no-use-before-define": 0,
+    "@typescript-eslint/array-type": 0,
     "typescript-sort-keys/string-enum": 0,
     "@typescript-eslint/no-unused-vars": ["error", { "varsIgnorePattern": "^_", "argsIgnorePattern": "^_" }],
     "object-shorthand": 0,
