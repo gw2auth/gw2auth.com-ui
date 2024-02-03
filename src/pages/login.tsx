@@ -2,7 +2,7 @@ import {
   Box, Button, ButtonProps,
   Container, ContentLayout, Grid, Header, HelpPanel, Link, SpaceBetween,
 } from '@cloudscape-design/components';
-import { LinkProps } from '@cloudscape-design/components/link/interfaces';
+import { LinkProps } from '@cloudscape-design/components/link';
 import React, { useEffect, useState } from 'react';
 import { Gw2AuthLogo } from '../components/common/gw2auth-logo';
 import LoginComp from '../components/login/login';

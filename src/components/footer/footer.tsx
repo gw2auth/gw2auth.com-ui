@@ -1,7 +1,6 @@
 import {
-  Box, Link, SpaceBetween,
+  Box, Link, LinkProps, SpaceBetween,
 } from '@cloudscape-design/components';
-import { BaseNavigationDetail, CancelableEventHandler } from '@cloudscape-design/components/internal/events';
 import React from 'react';
 import { RouterLink } from '../common/router-link';
 import { useI18n } from '../util/context/i18n';
@@ -9,7 +8,7 @@ import { useMobile } from '../util/state/common';
 import classes from './footer.module.scss';
 
 export interface Gw2AuthFooterProps {
-  onCookiePreferencesClick: CancelableEventHandler<BaseNavigationDetail>;
+  onCookiePreferencesClick: (e: CustomEvent<LinkProps.FollowDetail>) => void;
 }
 
 export default function Gw2AuthFooter(props: Gw2AuthFooterProps) {

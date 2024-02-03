@@ -2,7 +2,7 @@ import { CodeView } from '@cloudscape-design/code-view';
 import {
   PropertyFilterOperator,
   PropertyFilterOperatorExtended,
-} from '@cloudscape-design/collection-hooks/dist/cjs/interfaces';
+} from '@cloudscape-design/collection-hooks';
 import {
   Alert,
   Box, Button, ButtonProps,
@@ -15,7 +15,7 @@ import {
   PropertyFilter,
   PropertyFilterProps, SpaceBetween, Spinner, StatusIndicator, StatusIndicatorProps, Tabs, TextContent,
 } from '@cloudscape-design/components';
-import { LinkProps } from '@cloudscape-design/components/link/interfaces';
+import { LinkProps } from '@cloudscape-design/components/link';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   useHref, useLocation, useNavigate, useParams,

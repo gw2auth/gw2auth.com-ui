@@ -1,4 +1,4 @@
-import { I18nProviderProps } from '@cloudscape-design/components/i18n/provider';
+import { I18nProviderProps } from '@cloudscape-design/components/i18n';
 import { AuthInfo, Gw2ApiPermission, Issuer } from '../api/api.model';
 import { EffectiveLocale, Locale } from '../preferences.model';
 

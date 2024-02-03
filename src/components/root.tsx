@@ -2,19 +2,18 @@ import {
   AppLayout,
   AppLayoutProps,
   Flashbar,
-  FlashbarProps,
+  FlashbarProps, LinkProps,
   ModalProps,
   NonCancelableCustomEvent,
 } from '@cloudscape-design/components';
 import { I18nProvider as CSI18nProvider } from '@cloudscape-design/components/i18n';
 import deMessages from '@cloudscape-design/components/i18n/messages/all.de';
 import enMessages from '@cloudscape-design/components/i18n/messages/all.en';
-import { BaseNavigationDetail } from '@cloudscape-design/components/internal/events';
 import {
-  applyDensity, applyMode, Density, Mode, 
+  applyDensity, applyMode, Density, Mode,
 } from '@cloudscape-design/global-styles';
 import React, {
-  createContext, useContext, useEffect, useMemo, useState, 
+  createContext, useContext, useEffect, useMemo, useState,
 } from 'react';
 import { Location, useLocation } from 'react-router-dom';
 import { AuthInfo } from '../lib/api/api.model';
@@ -101,7 +100,7 @@ export function RootLayout(props: React.PropsWithChildren<RootLayoutProps>) {
     setNavigationOpen(!isMobile && (authInfo !== undefined && authInfo !== null));
   }, [isMobile, authInfo]);
 
-  function onCookiePreferencesClick(e: CustomEvent<BaseNavigationDetail>) {
+  function onCookiePreferencesClick(e: CustomEvent<LinkProps.FollowDetail>) {
     e.preventDefault();
     setCookiePrefVisible(true);
   }
