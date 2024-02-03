@@ -1,5 +1,4 @@
 import { CodeView } from '@cloudscape-design/code-view';
-import jsonHighlight from '@cloudscape-design/code-view/code-view/highlight/json';
 import {
   Button,
   Container, Form, FormField, Header, Input, SpaceBetween,
@@ -89,15 +88,15 @@ function SuccessContent({
           </FormField>
 
           <FormField label={'Raw Response'}>
-            <CodeView highlight={jsonHighlight} content={JSON.stringify(tokenResponse, null, 2)} />
+            <CodeView content={JSON.stringify(tokenResponse, null, 2)} />
           </FormField>
 
           <FormField label={'Access Token Header'}>
-            <CodeView highlight={jsonHighlight} content={JSON.stringify(jwt[0], null, 2)} />
+            <CodeView content={JSON.stringify(jwt[0], null, 2)} />
           </FormField>
 
           <FormField label={'Access Token Payload'}>
-            <CodeView highlight={jsonHighlight} content={JSON.stringify(jwt[1], null, 2)} />
+            <CodeView content={JSON.stringify(jwt[1], null, 2)} />
           </FormField>
 
           <FormField label={'Access Token Signature'}>

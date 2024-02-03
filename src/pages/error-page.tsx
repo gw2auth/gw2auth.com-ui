@@ -1,5 +1,4 @@
 import { CodeView } from '@cloudscape-design/code-view';
-import jsonHighlight from '@cloudscape-design/code-view/code-view/highlight/json';
 import {
   Box, Container, ContainerProps, ContentLayout, ExpandableSection, Header, SpaceBetween,
 } from '@cloudscape-design/components';
@@ -43,7 +42,7 @@ export default function ErrorPage() {
             <Box variant={'h2'}>Sorry, an unexpected error has occurred.</Box>
             <Box variant={'span'}>{error.statusText ?? error.message}</Box>
             <ExpandableSection headerText={'Details'} variant={'footer'}>
-              <CodeView highlight={jsonHighlight} content={JSON.stringify(error, null, 2)} />
+              <CodeView content={JSON.stringify(error, null, 2)} />
             </ExpandableSection>
           </SpaceBetween>
         </Container>
