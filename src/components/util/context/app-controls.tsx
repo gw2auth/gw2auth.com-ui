@@ -1,3 +1,5 @@
+import { CodeView } from '@cloudscape-design/code-view';
+import jsonHighlight from '@cloudscape-design/code-view/code-view/highlight/json';
 import {
   Box, ExpandableSection, FlashbarProps, SpaceBetween, 
 } from '@cloudscape-design/components';
@@ -188,9 +190,7 @@ export function catchNotify(notifications: AppControls['notification'] | Dispatc
       if (e.response.kind === 2) {
         parts.push(
           (
-            <Box variant={'code'}>
-              <Box variant={'pre'}>{getErrorDetails(e.response.error)}</Box>
-            </Box>
+            <CodeView highlight={jsonHighlight} content={getErrorDetails(e.response.error)} />
           ),
         );
       }
@@ -203,15 +203,11 @@ export function catchNotify(notifications: AppControls['notification'] | Dispatc
     } else if (e instanceof Error) {
       errMessage = e.message;
       errDetails = (
-        <Box variant={'code'}>
-          <Box variant={'pre'}>{getErrorDetails(e)}</Box>
-        </Box>
+        <CodeView highlight={jsonHighlight} content={getErrorDetails(e)} />
       );
     } else {
       errDetails = (
-        <Box variant={'code'}>
-          <Box variant={'pre'}>{JSON.stringify(e, null, 2)}</Box>
-        </Box>
+        <CodeView highlight={jsonHighlight} content={JSON.stringify(e, null, 2)} />
       );
     }
 

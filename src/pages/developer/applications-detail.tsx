@@ -1,3 +1,4 @@
+import { CodeView } from '@cloudscape-design/code-view';
 import {
   PropertyFilterOperator,
   PropertyFilterOperatorExtended,
@@ -12,12 +13,12 @@ import {
   Header, HelpPanel, Link,
   Pagination,
   PropertyFilter,
-  PropertyFilterProps, SpaceBetween, Spinner, StatusIndicator, StatusIndicatorProps, Tabs, Textarea, TextContent,
+  PropertyFilterProps, SpaceBetween, Spinner, StatusIndicator, StatusIndicatorProps, Tabs, TextContent,
 } from '@cloudscape-design/components';
 import { LinkProps } from '@cloudscape-design/components/link/interfaces';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-  useHref, useLocation, useNavigate, useParams, 
+  useHref, useLocation, useNavigate, useParams,
 } from 'react-router-dom';
 import { Copy } from '../../components/common/copy';
 import { CustomTable, CustomTableColumnDefinition } from '../../components/common/custom-table';
@@ -592,7 +593,7 @@ interface FilterProps {
 }
 
 function Filter({
-  query, setQuery, clientIds, disabled, 
+  query, setQuery, clientIds, disabled,
 }: FilterProps) {
   const [preferences] = usePreferences();
 
@@ -781,7 +782,7 @@ Content-Type: application/json
         <SpaceBetween size={'xs'} direction={'vertical'}>
           <Box variant={'h3'}>Available Endpoints</Box>
           <Box variant={'h5'}>Modify Redirect URIs of an existing Client</Box>
-          <Textarea value={redirectURIEndpointExample} disabled={true} spellcheck={false} disableBrowserAutocorrect={true} rows={15} />
+          <CodeView content={redirectURIEndpointExample} />
           <TextContent><small>This endpoint requires the <samp>client:modify</samp> permission.</small></TextContent>
         </SpaceBetween>
       </SpaceBetween>

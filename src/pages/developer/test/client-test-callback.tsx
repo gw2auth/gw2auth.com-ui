@@ -1,6 +1,8 @@
+import { CodeView } from '@cloudscape-design/code-view';
+import jsonHighlight from '@cloudscape-design/code-view/code-view/highlight/json';
 import {
   Button,
-  Container, Form, FormField, Header, Input, SpaceBetween, Textarea,
+  Container, Form, FormField, Header, Input, SpaceBetween,
 } from '@cloudscape-design/components';
 import React, { useMemo, useState } from 'react';
 import { useHref, useParams, useSearchParams } from 'react-router-dom';
@@ -87,15 +89,15 @@ function SuccessContent({
           </FormField>
 
           <FormField label={'Raw Response'}>
-            <Textarea value={JSON.stringify(tokenResponse, null, 2)} rows={5} disabled={true} />
+            <CodeView highlight={jsonHighlight} content={JSON.stringify(tokenResponse, null, 2)} />
           </FormField>
 
           <FormField label={'Access Token Header'}>
-            <Textarea value={JSON.stringify(jwt[0], null, 2)} rows={4} disabled={true} />
+            <CodeView highlight={jsonHighlight} content={JSON.stringify(jwt[0], null, 2)} />
           </FormField>
 
           <FormField label={'Access Token Payload'}>
-            <Textarea value={JSON.stringify(jwt[1], null, 2)} rows={10} disabled={true} />
+            <CodeView highlight={jsonHighlight} content={JSON.stringify(jwt[1], null, 2)} />
           </FormField>
 
           <FormField label={'Access Token Signature'}>
