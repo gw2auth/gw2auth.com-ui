@@ -15,7 +15,7 @@ export function PrivacyPolicy() {
   const { formatDate } = useDateFormat();
 
   return (
-    <ContentLayout header={<Header variant={'h1'} description={`${i18n.legal.lastUpdated}: ${formatDate(LAST_UPDATED)}`}>Privacy Policy</Header>}>
+    <ContentLayout header={<Header variant={'h1'} description={i18n.pages.privacyPolicy.lastUpdated(formatDate(LAST_UPDATED))}>Privacy Policy</Header>}>
       <Container variant={'stacked'} header={<Header variant={'h2'}>Human version</Header>}>
         <TextContent>
           <ul>

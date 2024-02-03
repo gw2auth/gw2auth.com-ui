@@ -3,6 +3,7 @@ import {
 } from '@cloudscape-design/components';
 import React, { useMemo } from 'react';
 import { Copy } from '../common/copy';
+import { useI18n } from '../util/context/i18n';
 
 type OmitProps = 'addButtonText' | 'onAddButtonClick' | 'onRemoveButtonClick' | 'items' | 'definition' | 'disableAddButton' | 'isItemRemovable' | 'additionalInfo';
 export interface RedirectUrisEditorProps extends Omit<AttributeEditorProps<string>, OmitProps> {
@@ -16,9 +17,11 @@ export interface RedirectUrisEditorProps extends Omit<AttributeEditorProps<strin
 export function RedirectURIsEditor({
   applicationId, clientId, disabled, items, setItems, ...attributeEditorProps 
 }: RedirectUrisEditorProps) {
+  const i18n = useI18n();
+
   return (
     <AttributeEditor
-      addButtonText={'Add'}
+      addButtonText={i18n.general.add}
       onAddButtonClick={() => setItems((prev) => [...prev, ''])}
       onRemoveButtonClick={(e) => setItems((prev) => prev.toSpliced(e.detail.itemIndex, 1))}
       items={items}
@@ -43,10 +46,11 @@ export function RedirectURIsEditor({
 }
 
 function AdditionalInfo({ applicationId, clientId }: { applicationId: string; clientId?: string }) {
+  const i18n = useI18n();
   const testCallbackHref = useTestCallbackHref(applicationId, clientId !== undefined ? encodeURIComponent(clientId) : '$client_id');
   return (
     <Box padding={{ top: 'm' }}>
-      You may add the following URI to be able to test this client on this site:
+      {i18n.components.devAppRedirectURIs.additionalInfo}
       <Copy copyText={testCallbackHref}><Box variant={'samp'} fontSize={'body-s'}>{testCallbackHref}</Box></Copy>
     </Box>
   );

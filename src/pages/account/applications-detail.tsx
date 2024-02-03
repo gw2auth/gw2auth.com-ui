@@ -11,6 +11,7 @@ import { RouterInlineLink } from '../../components/common/router-link';
 import { Scopes } from '../../components/scopes/scopes';
 import { catchNotify, useAppControls } from '../../components/util/context/app-controls';
 import { useHttpClient } from '../../components/util/context/http-client';
+import { useI18n } from '../../components/util/context/i18n';
 import { useDateFormat } from '../../components/util/state/use-dateformat';
 import { expectSuccess } from '../../lib/api/api';
 import { Application } from '../../lib/api/api.model';
@@ -21,6 +22,7 @@ export function ApplicationsDetail() {
     throw new Error();
   }
 
+  const i18n = useI18n();
   const { apiClient } = useHttpClient();
   const { notification } = useAppControls();
   const navigate = useNavigate();
@@ -36,7 +38,7 @@ export function ApplicationsDetail() {
       const { body } = expectSuccess(await apiClient.getApplication(id));
       setApplication(body);
     })()
-      .catch(catchNotify(notification, 'Failed to load application'))
+      .catch(catchNotify(notification, i18n.general.failedToLoad(i18n.pages.applicationsDetail.entity)))
       .finally(() => setLoading(false));
   }, [apiClient, id, notification]);
 
@@ -48,9 +50,9 @@ export function ApplicationsDetail() {
     authorizedScopes = <Container variant={'stacked'}><Spinner size={'large'} /></Container>;
     gw2Accounts = <Container variant={'stacked'}><Spinner size={'large'} /></Container>;
   } else if (application === undefined) {
-    overview = <Box>Failed to load</Box>;
-    authorizedScopes = <Container variant={'stacked'}><Box>Failed to load</Box></Container>;
-    gw2Accounts = <Container variant={'stacked'}><Box>Failed to load</Box></Container>;
+    overview = <Box>{i18n.general.failedToLoad('')}</Box>;
+    authorizedScopes = <Container variant={'stacked'}><Box>{i18n.general.failedToLoad('')}</Box></Container>;
+    gw2Accounts = <Container variant={'stacked'}><Box>{i18n.general.failedToLoad('')}</Box></Container>;
   } else {
     overview = <Overview id={id} application={application} />;
     authorizedScopes = <AuthorizedScopes application={application} />;
@@ -70,7 +72,7 @@ export function ApplicationsDetail() {
 
           const updateNotification = notification.add({
             type: 'in-progress',
-            content: 'Revoking access...',
+            content: i18n.pages.applicationsDetail.revokeAccessInProgress,
             dismissible: false,
           });
 
@@ -80,12 +82,12 @@ export function ApplicationsDetail() {
 
             updateNotification({
               type: 'success',
-              content: 'Access was revoked',
+              content: i18n.pages.applicationsDetail.revokeAccessSuccess,
               dismissible: true,
             });
             navigate('/applications');
           })()
-            .catch(catchNotify(updateNotification, 'Failed to revoke access'))
+            .catch(catchNotify(updateNotification, i18n.pages.applicationsDetail.revokeAccessFailed))
             .finally(() => {
               setRevokeAccessLoading(false);
               setShowRevokeAccessModal(false);
@@ -96,7 +98,7 @@ export function ApplicationsDetail() {
         header={
           <Header
             variant={'h1'}
-            actions={<Button loading={revokeAccessLoading} onClick={() => setShowRevokeAccessModal(true)}>Revoke Access</Button>}
+            actions={<Button loading={revokeAccessLoading} onClick={() => setShowRevokeAccessModal(true)}>{i18n.pages.applicationsDetail.revokeAccess}</Button>}
           >{application?.displayName ?? id}</Header>
         }
       >
@@ -111,29 +113,33 @@ export function ApplicationsDetail() {
 }
 
 function Overview({ id, application }: { id: string, application: Application }) {
+  const i18n = useI18n();
   const { formatDateTime } = useDateFormat();
 
   return (
     <KeyValuePairs columns={2}>
-      <ValueWithLabel label={'User ID'}>
+      <ValueWithLabel label={i18n.pages.applicationsDetail.userId}>
         <Copy copyText={id}><Box variant={'samp'} fontSize={'body-s'}>{application.userId}</Box></Copy>
       </ValueWithLabel>
-      <ValueWithLabel label={'Last Used'}>
-        <Box>{application.lastUsed !== undefined ? formatDateTime(application.lastUsed) : <StatusIndicator type={'info'}>Never</StatusIndicator>}</Box>
+      <ValueWithLabel label={i18n.pages.applicationsDetail.lastUsed}>
+        <Box>{application.lastUsed !== undefined ? formatDateTime(application.lastUsed) : <StatusIndicator type={'info'}>{i18n.pages.applicationsDetail.never}</StatusIndicator>}</Box>
       </ValueWithLabel>
     </KeyValuePairs>
   );
 }
 
 function AuthorizedScopes({ application }: { application: Application }) {
+  const i18n = useI18n();
+
   return (
-    <Container variant={'stacked'} header={<Header counter={`(${application.authorizedScopes.length})`}>Authorized Scopes</Header>}>
+    <Container variant={'stacked'} header={<Header counter={`(${application.authorizedScopes.length})`}>{i18n.pages.applicationsDetail.authorizedScopes}</Header>}>
       <Scopes scopes={application.authorizedScopes} />
     </Container>
   );
 }
 
 function Gw2Accounts({ application }: { application: Application }) {
+  const i18n = useI18n();
   const baseHref = useHref('/accounts');
 
   return (
@@ -142,20 +148,20 @@ function Gw2Accounts({ application }: { application: Application }) {
       columnDefinitions={[
         {
           id: 'name',
-          header: 'Name',
+          header: i18n.pages.applicationsDetail.authorizedGw2AccountsTableColumns.name,
           cell: (v) => v.name,
           sortingField: 'name',
         },
         {
           id: 'display_name',
-          header: 'Display Name',
+          header: i18n.pages.applicationsDetail.authorizedGw2AccountsTableColumns.displayName,
           cell: (v) => v.displayName,
           sortingField: 'displayName',
         },
         {
           id: 'actions',
-          header: 'Actions',
-          cell: (v) => <RouterInlineLink to={`${baseHref}/${encodeURIComponent(v.id)}`}>View</RouterInlineLink>,
+          header: i18n.general.actions,
+          cell: (v) => <RouterInlineLink to={`${baseHref}/${encodeURIComponent(v.id)}`}>{i18n.general.view}</RouterInlineLink>,
           alwaysVisible: true,
           preferencesDisable: true,
         },
@@ -163,21 +169,23 @@ function Gw2Accounts({ application }: { application: Application }) {
       stickyColumns={{ first: 0, last: 1 }}
       items={application.authorizedGw2Accounts}
       filter={
-        <Header counter={`(${application.authorizedGw2Accounts.length})`}>Authorized Guild Wars 2 Accounts</Header>
+        <Header counter={`(${application.authorizedGw2Accounts.length})`}>{i18n.pages.applicationsDetail.authorizedGw2Accounts}</Header>
       }
-      empty={<Box variant={'h5'}>No accounts authorized</Box>}
+      empty={<Box variant={'h5'}>{i18n.pages.applicationsDetail.noGw2AccountsAuthorized}</Box>}
     />
   );
 }
 
 function RevokeAccessModal(props: Omit<DeleteModalProps<string>, 'entityType'>) {
+  const i18n = useI18n();
+
   return (
     <DeleteModal
       {...props}
-      entityType={'Authorized Application'}
+      entityType={i18n.pages.applicationsDetail.entity}
     >
       <Alert type={'info'}>
-        <Box>Authorized applications may still be able to use an already issued API Token for at most 30 minutes after deletion of this authorization.</Box>
+        {i18n.pages.applicationsDetail.revokeAccessInfo}
       </Alert>
     </DeleteModal>
   );

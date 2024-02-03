@@ -13,18 +13,19 @@ import { useI18n } from '../../components/util/context/i18n';
 import { useDateFormat } from '../../components/util/state/use-dateformat';
 import { expectSuccess } from '../../lib/api/api';
 import { Gw2AccountListItem } from '../../lib/api/api.model';
+import { I18nFormats } from '../../lib/i18n/i18n.model';
 
 function visibleByDefault(id: string): boolean {
   return id !== 'id' && id !== 'name' && id !== 'api_token';
 }
 
-function buildColumnDefinitions() {
+function buildColumnDefinitions(i18n: I18nFormats) {
   const accountDetailBaseHref = useHref('/accounts');
   const { formatDateTime } = useDateFormat();
 
   const displayNameColumn = {
     id: 'display_name',
-    header: 'Display Name',
+    header: i18n.pages.gw2Accounts.tableColumns.displayName,
     cell: (v) => v.displayName,
     sortingField: 'displayName',
     editConfig: {
@@ -45,45 +46,45 @@ function buildColumnDefinitions() {
   const defs = [
     {
       id: 'id',
-      header: 'ID',
+      header: i18n.pages.gw2Accounts.tableColumns.id,
       cell: (v) => <Box fontSize={'body-s'} variant={'samp'}>{v.id}</Box>,
       sortingField: 'id',
     },
     {
       id: 'name',
-      header: 'Name',
+      header: i18n.pages.gw2Accounts.tableColumns.name,
       cell: (v) => v.name,
       sortingField: 'name',
     },
     displayNameColumn,
     {
       id: 'verification_status',
-      header: 'Verification Status',
+      header: i18n.pages.gw2Accounts.tableColumns.verificationStatus,
       cell: (v) => <VerificationStatusIndicator status={v.verificationStatus} />,
       sortingField: 'verificationStatus',
     },
     {
       id: 'authorized_apps',
-      header: 'Authorized Applications',
+      header: i18n.pages.gw2Accounts.tableColumns.authorizedApplications,
       cell: (v) => v.authorizedApps,
       sortingField: 'authorizedApps',
     },
     {
       id: 'api_token',
-      header: 'API Token',
+      header: i18n.pages.gw2Accounts.tableColumns.apiToken,
       cell: (v) => <Gw2ApiToken value={v.apiToken} />,
       sortingField: 'apiToken',
     },
     {
       id: 'creation_time',
-      header: 'Created',
+      header: i18n.pages.gw2Accounts.tableColumns.created,
       cell: (v) => formatDateTime(v.creationTime),
       sortingField: 'creationTime',
     },
     {
       id: 'actions',
-      header: 'Actions',
-      cell: (v) => <RouterInlineLink to={`${accountDetailBaseHref}/${encodeURIComponent(v.id)}`}>Details</RouterInlineLink>,
+      header: i18n.general.actions,
+      cell: (v) => <RouterInlineLink to={`${accountDetailBaseHref}/${encodeURIComponent(v.id)}`}>{i18n.general.details}</RouterInlineLink>,
       alwaysVisible: true,
       preferencesDisable: true,
     },
@@ -97,7 +98,7 @@ function buildColumnDefinitions() {
 
 export function Gw2Accounts() {
   const i18n = useI18n();
-  const { displayNameColumn, columnDefinitions } = buildColumnDefinitions();
+  const { displayNameColumn, columnDefinitions } = buildColumnDefinitions(i18n);
   const visibleColumns = columnDefinitions.map((v) => v.id).filter(visibleByDefault);
 
   const { apiClient } = useHttpClient();
@@ -111,16 +112,16 @@ export function Gw2Accounts() {
       const resp = expectSuccess(await apiClient.getGw2Accounts());
       setItems(resp.body);
     })()
-      .catch(catchNotify(notification, 'Failed to load your Guild Wars 2 Accounts'))
+      .catch(catchNotify(notification, i18n.general.failedToLoad(i18n.pages.gw2Accounts.pageHeader)))
       .finally(() => setLoading(false));
   }, [apiClient, notification]);
 
   return (
-    <ContentLayout header={<Header variant={'h1'}>Guild Wars 2 Accounts</Header>}>
+    <ContentLayout header={<Header variant={'h1'}>{i18n.pages.gw2Accounts.pageHeader}</Header>}>
       <CustomTable
         items={items}
         loading={isLoading}
-        loadingText={i18n.loading}
+        loadingText={i18n.general.loading}
         variant={'container'}
         columnDefinitions={columnDefinitions}
         visibleColumns={visibleColumns}
@@ -146,8 +147,8 @@ export function Gw2Accounts() {
         }}
         empty={
           <SpaceBetween size={'m'} direction={'vertical'} alignItems={'center'}>
-            <Box variant={'h5'}>No Guild Wars 2 Accounts added yet</Box>
-            <RouterInlineLink to={useHref('/accounts/add')} variant={'normal'}>Add API Token</RouterInlineLink>
+            <Box variant={'h5'}>{i18n.pages.gw2Accounts.noGw2AccountsAddedYet}</Box>
+            <RouterInlineLink to={useHref('/accounts/add')} variant={'normal'}>{i18n.pages.gw2Accounts.addApiToken}</RouterInlineLink>
           </SpaceBetween>
         }
       />
@@ -156,10 +157,12 @@ export function Gw2Accounts() {
 }
 
 function TableHeader({ count }: { count: number }) {
+  const i18n = useI18n();
+
   return (
     <Header
       counter={`(${count})`}
-      actions={<RouterInlineLink to={useHref('/accounts/add')} variant={'primary'}>Add API Token</RouterInlineLink>}
-    >Accounts</Header>
+      actions={<RouterInlineLink to={useHref('/accounts/add')} variant={'primary'}>{i18n.pages.gw2Accounts.addApiToken}</RouterInlineLink>}
+    >{i18n.pages.gw2Accounts.tableHeader}</Header>
   );
 }

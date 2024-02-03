@@ -6,12 +6,14 @@ import React, { useEffect, useState } from 'react';
 import { KeyValuePairs, ValueWithLabel } from '../components/common/key-value-pairs';
 import { RouterLink } from '../components/common/router-link';
 import { Contact } from '../components/contact/contact';
+import { catchNotify, useAppControls } from '../components/util/context/app-controls';
 import { useAuthInfo } from '../components/util/context/auth-info';
 import { useHttpClient } from '../components/util/context/http-client';
 import { expectSuccess } from '../lib/api/api';
 import { ApplicationSummary } from '../lib/api/api.model';
 
 export default function Home() {
+  const { notification } = useAppControls();
   const { apiClient } = useHttpClient();
   const [authInfo] = useAuthInfo();
 
@@ -22,6 +24,7 @@ export default function Home() {
       const { body } = expectSuccess(await apiClient.getApplicationSummary());
       setSummary(body);
     })()
+      .catch(catchNotify(notification, 'Failed to load application summary'))
       .finally(() => {});
   }, [apiClient]);
 

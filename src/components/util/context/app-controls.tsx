@@ -9,6 +9,7 @@ import React, {
 import { ApiError } from '../../../lib/api/api';
 import { Copy } from '../../common/copy';
 import { KeyValuePairs, ValueWithLabel } from '../../common/key-value-pairs';
+import { useI18n } from './i18n';
 
 export interface AppControls {
   readonly tools: {
@@ -147,6 +148,83 @@ export function useTools(tools?: React.ReactNode) {
   }, [appControls]);
 }
 
+export function catchNotify(notifications: AppControls['notification'] | Dispatch<SetStateAction<FlashbarProps.MessageDefinition>>, errText?: string): (e: unknown) => void {
+  return (e) => {
+    const notification = {
+      type: 'error',
+      content: <ErrorNotificationContent errText={errText} error={e} />,
+      dismissible: true,
+    } satisfies FlashbarProps.MessageDefinition;
+
+    if (typeof notifications === 'function') {
+      notifications(notification);
+    } else {
+      notifications.addOnce(notification);
+    }
+  };
+}
+
+function ErrorNotificationContent({ errText, error: e }: { errText?: string, error: unknown }) {
+  const i18n = useI18n();
+
+  let errMessage: string | undefined;
+  let errDetails: React.ReactNode;
+
+  if (e instanceof ApiError) {
+    errMessage = e.message;
+
+    const requestId = e.response.headers.get('X-Amzn-Requestid');
+    const parts: Array<React.ReactNode> = [
+      (
+        <KeyValuePairs columns={requestId !== null ? 2 : 1}>
+          <ValueWithLabel label={i18n.components.errorNotificationContent.status}>{e.response.status}</ValueWithLabel>
+          <ValueWithLabel label={i18n.components.errorNotificationContent.requestId}>
+            {
+              requestId !== null
+                ? <Copy copyText={requestId}><Box variant={'samp'}>{requestId}</Box></Copy>
+                : <Box variant={'samp'}>unknown</Box>
+            }
+          </ValueWithLabel>
+        </KeyValuePairs>
+      ),
+    ];
+
+    if (e.response.kind === 2) {
+      parts.push(
+        (
+          <CodeView content={getErrorDetails(e.response.error)} highlight={jsonHighlight} />
+        ),
+      );
+    }
+
+    errDetails = (
+      <SpaceBetween size={'s'} direction={'vertical'}>
+        {...parts}
+      </SpaceBetween>
+    );
+  } else if (e instanceof Error) {
+    errMessage = e.message;
+    errDetails = (
+      <CodeView content={getErrorDetails(e)} highlight={jsonHighlight} />
+    );
+  } else {
+    errDetails = (
+      <CodeView content={JSON.stringify(e, null, 2)} highlight={jsonHighlight} />
+    );
+  }
+
+  const errSuffix = errMessage !== undefined ? `: ${errMessage}` : '';
+
+  return (
+    <SpaceBetween size={'xs'} direction={'vertical'}>
+      <Box>{(errText ?? 'Failed to perform action') + errSuffix}</Box>
+      <ExpandableSection headerText={'Details'} variant={'footer'}>
+        {errDetails}
+      </ExpandableSection>
+    </SpaceBetween>
+  );
+}
+
 function getErrorDetails(e: Error): string {
   function transformError(v: unknown): unknown {
     if (v instanceof Error) {
@@ -161,74 +239,4 @@ function getErrorDetails(e: Error): string {
   }
 
   return JSON.stringify(transformError(e), null, 2);
-}
-
-export function catchNotify(notifications: AppControls['notification'] | Dispatch<SetStateAction<FlashbarProps.MessageDefinition>>, errText?: string): (e: unknown) => void {
-  return (e) => {
-    let errMessage: string | undefined;
-    let errDetails: React.ReactNode;
-
-    if (e instanceof ApiError) {
-      errMessage = e.message;
-
-      const requestId = e.response.headers.get('X-Amzn-Requestid');
-      const parts: Array<React.ReactNode> = [
-        (
-          <KeyValuePairs columns={requestId !== null ? 2 : 1}>
-            <ValueWithLabel label={'Status'}>{e.response.status}</ValueWithLabel>
-            <ValueWithLabel label={'Request ID'}>
-              {
-                requestId !== null
-                  ? <Copy copyText={requestId}><Box variant={'samp'}>{requestId}</Box></Copy>
-                  : <Box variant={'samp'}>unknown</Box>
-              }
-            </ValueWithLabel>
-          </KeyValuePairs>
-        ),
-      ];
-
-      if (e.response.kind === 2) {
-        parts.push(
-          (
-            <CodeView content={getErrorDetails(e.response.error)} highlight={jsonHighlight} />
-          ),
-        );
-      }
-
-      errDetails = (
-        <SpaceBetween size={'s'} direction={'vertical'}>
-          {...parts}
-        </SpaceBetween>
-      );
-    } else if (e instanceof Error) {
-      errMessage = e.message;
-      errDetails = (
-        <CodeView content={getErrorDetails(e)} highlight={jsonHighlight} />
-      );
-    } else {
-      errDetails = (
-        <CodeView content={JSON.stringify(e, null, 2)} highlight={jsonHighlight} />
-      );
-    }
-
-    const errSuffix = errMessage !== undefined ? `: ${errMessage}` : '';
-    const notification = {
-      type: 'error',
-      content: (
-        <SpaceBetween size={'xs'} direction={'vertical'}>
-          <Box>{(errText ?? 'Failed to perform action') + errSuffix}</Box>
-          <ExpandableSection headerText={'Details'} variant={'footer'}>
-            {errDetails}
-          </ExpandableSection>
-        </SpaceBetween>
-      ),
-      dismissible: true,
-    } satisfies FlashbarProps.MessageDefinition;
-
-    if (typeof notifications === 'function') {
-      notifications(notification);
-    } else {
-      notifications.addOnce(notification);
-    }
-  };
 }

@@ -14,10 +14,10 @@ export default function Legal() {
   const { formatDate } = useDateFormat();
 
   return (
-    <ContentLayout header={<Header variant={'h1'} description={`${i18n.legal.lastUpdated}: ${formatDate(LAST_UPDATED)}`}>Privacy Policy</Header>}>
+    <ContentLayout header={<Header variant={'h1'} description={i18n.pages.privacyPolicy.lastUpdated(formatDate(LAST_UPDATED))}>Privacy Policy</Header>}>
       <Container variant={'stacked'}>
         <ColumnLayout columns={1}>
-          {...i18n.footer.copyrightGw2.map((v) => <Box variant={'strong'}>{v}</Box>)}
+          {...i18n.pages.legal.copyrightGw2.map((v) => <Box variant={'strong'}>{v}</Box>)}
         </ColumnLayout>
       </Container>
 

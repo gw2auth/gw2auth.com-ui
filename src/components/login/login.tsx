@@ -1,5 +1,5 @@
 import {
-  Alert, Box, Button, ColumnLayout, ExpandableSection, SpaceBetween,
+  Alert, Button, ColumnLayout, ExpandableSection, SpaceBetween,
 } from '@cloudscape-design/components';
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -14,9 +14,9 @@ export default function Login() {
   const [previousIssuer] = usePreviousIssuer();
   const [alert, loginSelection] = useMemo(() => {
     const buttonByIssuer = {
-      [Issuer.GITHUB]: (<Button iconSvg={<FontAwesomeIcon icon={faGithub} />} variant={'primary'} fullWidth={true} href={'/auth/oauth2/authorization/github'}>Login with GitHub</Button>),
-      [Issuer.GOOGLE]: (<Button iconSvg={<FontAwesomeIcon icon={faGoogle} />} variant={'primary'} fullWidth={true} href={'/auth/oauth2/authorization/google'}>Login with Google</Button>),
-      [Issuer.COGNITO]: (<Button iconSvg={<Gw2AuthLogo />} variant={'primary'} fullWidth={true} href={'/auth/oauth2/authorization/cognito'}>Login with E-Mail & Password</Button>),
+      [Issuer.GITHUB]: (<Button iconSvg={<FontAwesomeIcon icon={faGithub} />} variant={'primary'} fullWidth={true} href={'/auth/oauth2/authorization/github'}>{i18n.components.login.loginWith(Issuer.GITHUB)}</Button>),
+      [Issuer.GOOGLE]: (<Button iconSvg={<FontAwesomeIcon icon={faGoogle} />} variant={'primary'} fullWidth={true} href={'/auth/oauth2/authorization/google'}>{i18n.components.login.loginWith(Issuer.GOOGLE)}</Button>),
+      [Issuer.COGNITO]: (<Button iconSvg={<Gw2AuthLogo />} variant={'primary'} fullWidth={true} href={'/auth/oauth2/authorization/cognito'}>{i18n.components.login.loginWith(Issuer.COGNITO)}</Button>),
     };
 
     if (previousIssuer === null) {
@@ -24,8 +24,7 @@ export default function Login() {
         (
           <Alert type={'warning'}>
             <SpaceBetween size={'xs'} direction={'vertical'}>
-              <Box>If you logged in to GW2Auth before, <Box variant={'strong'}>please use the same login provider you have used before</Box>.</Box>
-              <Box>If you never logged in to GW2Auth before, choose the login provider you would like to use the most.</Box>
+              {i18n.components.login.noPreviousWarning}
             </SpaceBetween>
           </Alert>
         ),
@@ -43,16 +42,14 @@ export default function Login() {
       (
         <Alert type={'warning'}>
           <SpaceBetween size={'xs'} direction={'vertical'}>
-            <Box>You have logged in to GW2Auth using <Box variant={'strong'}>{i18n.issuerName(previousIssuer)}</Box> before.</Box>
-            <Box>Logging in using a login provider which is not yet linked to your GW2Auth account will create a new GW2Auth account.</Box>
-            <Box>If you want to add an additional login provider to your GW2Auth account, please login using a known login provider first and navigate to your account settings to add the one you wish to use.</Box>
+            {i18n.components.login.previousWarning(previousIssuer)}
           </SpaceBetween>
         </Alert>
       ),
       (
         <ColumnLayout columns={1}>
           {buttonByIssuer[previousIssuer]}
-          <ExpandableSection headerText={'More options'}>
+          <ExpandableSection headerText={i18n.components.login.moreOptions}>
             <ColumnLayout columns={1}>
               {previousIssuer !== Issuer.GITHUB && buttonByIssuer[Issuer.GITHUB]}
               {previousIssuer !== Issuer.GOOGLE && buttonByIssuer[Issuer.GOOGLE]}

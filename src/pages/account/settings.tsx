@@ -1,7 +1,15 @@
 import {
   Alert,
-  Box, Button,
-  ColumnLayout, ContentLayout, ExpandableSection, Header, Icon, Modal, SpaceBetween, StatusIndicator,
+  Box,
+  Button,
+  ColumnLayout,
+  ContentLayout,
+  ExpandableSection,
+  Header,
+  Icon,
+  Modal,
+  SpaceBetween,
+  StatusIndicator,
 } from '@cloudscape-design/components';
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -13,13 +21,13 @@ import { Hidden } from '../../components/common/hidden';
 import { catchNotify, useAppControls } from '../../components/util/context/app-controls';
 import { useAuthInfo, useMustAuthInfo } from '../../components/util/context/auth-info';
 import { useHttpClient } from '../../components/util/context/http-client';
+import { useI18n } from '../../components/util/context/i18n';
 import { useDateFormat } from '../../components/util/state/use-dateformat';
 import { expectSuccess } from '../../lib/api/api';
-import {
-  AccountFederation, AccountFederationSession, Issuer,
-} from '../../lib/api/api.model';
+import { AccountFederation, AccountFederationSession, Issuer } from '../../lib/api/api.model';
 
 export function Settings() {
+  const i18n = useI18n();
   const { apiClient } = useHttpClient();
   const { notification } = useAppControls();
 
@@ -39,12 +47,12 @@ export function Settings() {
       setFederations(body.federations);
       setSessions(body.sessions);
     })()
-      .catch(catchNotify(notification, 'Failed to load account'))
+      .catch(catchNotify(notification, i18n.general.failedToLoad('Account')))
       .finally(() => setLoading(false));
   }, [notification, apiClient]);
 
   return (
-    <ContentLayout header={<Header variant={'h1'}>Settings</Header>}>
+    <ContentLayout header={<Header variant={'h1'}>{i18n.pages.settings.header}</Header>}>
       <ColumnLayout columns={1}>
         <FederationsTable isLoading={isLoading} federations={federations} onUpdate={setFederations} />
         <SessionsTable isLoading={isLoading} sessions={sessions} onUpdate={setSessions} />
@@ -55,6 +63,7 @@ export function Settings() {
 }
 
 function FederationsTable({ isLoading, federations, onUpdate }: { isLoading: boolean, federations: ReadonlyArray<AccountFederation>, onUpdate: React.Dispatch<React.SetStateAction<ReadonlyArray<AccountFederation>>> }) {
+  const i18n = useI18n();
   const { notification } = useAppControls();
   const { apiClient } = useHttpClient();
   const authInfo = useMustAuthInfo();
@@ -65,7 +74,7 @@ function FederationsTable({ isLoading, federations, onUpdate }: { isLoading: boo
 
   return (
     <>
-      <Modal visible={showAddFederationModal} onDismiss={() => setShowAddFederationModal(false)} header={'Add Login Provider'}>
+      <Modal visible={showAddFederationModal} onDismiss={() => setShowAddFederationModal(false)} header={i18n.pages.settings.addLoginProvider}>
         <AddLoginProviderModalContent />
       </Modal>
       <FederationDeleteModal
@@ -79,7 +88,7 @@ function FederationsTable({ isLoading, federations, onUpdate }: { isLoading: boo
 
           const updateNotification = notification.add({
             type: 'in-progress',
-            content: 'Deleting your Login Provider...',
+            content: i18n.pages.settings.deleteLoginProviderLoading,
             dismissible: false,
           });
 
@@ -89,13 +98,13 @@ function FederationsTable({ isLoading, federations, onUpdate }: { isLoading: boo
 
             updateNotification({
               type: 'success',
-              content: 'Your Login Provider was deleted!',
+              content: i18n.pages.settings.deleteLoginProviderSuccess,
               dismissible: true,
             });
 
             onUpdate((prev) => prev.filter((v) => v.issuer !== e.detail.item.issuer || v.idAtIssuer !== e.detail.item.idAtIssuer));
           })()
-            .catch(catchNotify(updateNotification, 'Failed to delete login provider'))
+            .catch(catchNotify(updateNotification, i18n.pages.settings.deleteLoginProviderFailed))
             .finally(() => {
               setDeleteLoading(false);
               setDeleteModalItem(undefined);
@@ -108,19 +117,19 @@ function FederationsTable({ isLoading, federations, onUpdate }: { isLoading: boo
         columnDefinitions={[
           {
             id: 'issuer',
-            header: 'Provider',
+            header: i18n.pages.settings.loginProviderTableColumns.issuer,
             cell: (v) => <IssuerLabel issuer={v.issuer} />,
             sortingField: 'issuer',
           },
           {
             id: 'id_at_issuer',
-            header: 'ID at Provider',
+            header: i18n.pages.settings.loginProviderTableColumns.idAtIssuer,
             cell: (v) => <Hidden>{v.idAtIssuer}</Hidden>,
             sortingField: 'idAtIssuer',
           },
           {
             id: 'actions',
-            header: 'Actions',
+            header: i18n.general.actions,
             cell: (v) => <Button
               variant={'inline-link'}
               iconName={'remove'}
@@ -136,8 +145,8 @@ function FederationsTable({ isLoading, federations, onUpdate }: { isLoading: boo
         filter={
           <Header
             counter={`(${federations.length})`}
-            actions={<Button variant={'primary'} onClick={() => setShowAddFederationModal(true)}>Add Login Provider</Button>}
-          >Login Providers</Header>
+            actions={<Button variant={'primary'} onClick={() => setShowAddFederationModal(true)}>{i18n.pages.settings.addLoginProvider}</Button>}
+          >{i18n.pages.settings.loginProvidersHeader}</Header>
       }
       />
     </>
@@ -145,6 +154,7 @@ function FederationsTable({ isLoading, federations, onUpdate }: { isLoading: boo
 }
 
 function SessionsTable({ isLoading, sessions, onUpdate }: { isLoading: boolean, sessions: ReadonlyArray<AccountFederationSession>, onUpdate: React.Dispatch<React.SetStateAction<ReadonlyArray<AccountFederationSession>>> }) {
+  const i18n = useI18n();
   const { formatDateTime } = useDateFormat();
   const { notification } = useAppControls();
   const { apiClient } = useHttpClient();
@@ -166,7 +176,7 @@ function SessionsTable({ isLoading, sessions, onUpdate }: { isLoading: boolean, 
 
           const updateNotification = notification.add({
             type: 'in-progress',
-            content: 'Deleting your Sessions...',
+            content: i18n.pages.settings.deleteSessionLoading,
             dismissible: false,
           });
 
@@ -176,13 +186,13 @@ function SessionsTable({ isLoading, sessions, onUpdate }: { isLoading: boolean, 
 
             updateNotification({
               type: 'success',
-              content: 'Your Login Provider was deleted!',
+              content: i18n.pages.settings.deleteSessionSuccess,
               dismissible: true,
             });
 
             onUpdate((prev) => prev.filter((v) => v.id !== e.detail.item));
           })()
-            .catch(catchNotify(updateNotification, 'Failed to delete session'))
+            .catch(catchNotify(updateNotification, i18n.pages.settings.deleteSessionFailed))
             .finally(() => {
               setDeleteLoading(false);
               setDeleteModalItem(undefined);
@@ -195,7 +205,7 @@ function SessionsTable({ isLoading, sessions, onUpdate }: { isLoading: boolean, 
         columnDefinitions={[
           {
             id: 'current',
-            header: 'Current',
+            header: i18n.pages.settings.sessionTableColumns.current,
             cell: (v) => {
               if (v.id !== authInfo.sessionId) {
                 return undefined;
@@ -217,37 +227,37 @@ function SessionsTable({ isLoading, sessions, onUpdate }: { isLoading: boolean, 
           },
           {
             id: 'id',
-            header: 'ID',
+            header: i18n.pages.settings.sessionTableColumns.id,
             cell: (v) => <Hidden>{v.id}</Hidden>,
             sortingField: 'id',
           },
           {
             id: 'issuer',
-            header: 'Provider',
+            header: i18n.pages.settings.sessionTableColumns.issuer,
             cell: (v) => <IssuerLabel issuer={v.issuer} />,
             sortingField: 'issuer',
           },
           {
             id: 'id_at_issuer',
-            header: 'ID at Provider',
+            header: i18n.pages.settings.sessionTableColumns.idAtIssuer,
             cell: (v) => <Hidden>{v.idAtIssuer}</Hidden>,
             sortingField: 'idAtIssuer',
           },
           {
             id: 'creation_time',
-            header: 'Created At',
+            header: i18n.pages.settings.sessionTableColumns.createdAt,
             cell: (v) => formatDateTime(v.creationTime),
             sortingField: 'creationTime',
           },
           {
             id: 'actions',
-            header: 'Actions',
+            header: i18n.general.actions,
             cell: (v) => <Button
               variant={'inline-link'}
               iconName={'remove'}
               disabled={(isDeleteLoading && deleteModalItem !== v.id) || v.id === authInfo.sessionId}
               loading={isDeleteLoading && deleteModalItem === v.id}
-              onClick={() => setDeleteModalItem(v.id)}>Delete</Button>,
+              onClick={() => setDeleteModalItem(v.id)}>{i18n.general.delete}</Button>,
             alwaysVisible: true,
             preferencesDisable: true,
           },
@@ -255,7 +265,7 @@ function SessionsTable({ isLoading, sessions, onUpdate }: { isLoading: boolean, 
         items={sessions}
         stickyColumns={{ first: 0, last: 1 }}
         visibleColumns={['current', 'issuer', 'id_at_issuer', 'creation_time', 'details']}
-        filter={<Header counter={`(${sessions.length})`}>Sessions</Header>}
+        filter={<Header counter={`(${sessions.length})`}>{i18n.pages.settings.sessionsHeader}</Header>}
       />
     </>
   );
@@ -328,29 +338,26 @@ function DeleteAccountSection() {
 }
 
 function IssuerLabel({ issuer }: { issuer: Issuer }) {
+  const i18n = useI18n();
   const icon = ({
     [Issuer.GITHUB]: <FontAwesomeIcon icon={faGithub} />,
     [Issuer.GOOGLE]: <FontAwesomeIcon icon={faGoogle} />,
     [Issuer.COGNITO]: <Icon svg={<Gw2AuthLogo inverse={true} />} />,
   })[issuer] ?? <Icon name={'status-warning'} />;
 
-  const name = ({
-    [Issuer.GITHUB]: 'GitHub',
-    [Issuer.GOOGLE]: 'Google',
-    [Issuer.COGNITO]: 'E-Mail & Password',
-  })[issuer] ?? 'UNKNOWN';
-
   return (
-    <Box>{icon} {name}</Box>
+    <Box>{icon} {i18n.pages.settings.loginProviderName(issuer)}</Box>
   );
 }
 
 function AddLoginProviderModalContent() {
+  const i18n = useI18n();
+
   return (
     <ColumnLayout columns={1}>
-      <Button iconSvg={<FontAwesomeIcon icon={faGithub} />} variant={'primary'} fullWidth={true} href={'/api/account/federation/github'}>GitHub</Button>
-      <Button iconSvg={<FontAwesomeIcon icon={faGoogle} />} variant={'primary'} fullWidth={true} href={'/api/account/federation/google'}>Google</Button>
-      <Button iconSvg={<Gw2AuthLogo />} variant={'primary'} fullWidth={true} href={'/api/account/federation/cognito'}> E-Mail & Password</Button>
+      <Button iconSvg={<FontAwesomeIcon icon={faGithub} />} variant={'primary'} fullWidth={true} href={'/api/account/federation/github'}>{i18n.pages.settings.loginProviderName(Issuer.GITHUB)}</Button>
+      <Button iconSvg={<FontAwesomeIcon icon={faGoogle} />} variant={'primary'} fullWidth={true} href={'/api/account/federation/google'}>{i18n.pages.settings.loginProviderName(Issuer.GOOGLE)}</Button>
+      <Button iconSvg={<Gw2AuthLogo />} variant={'primary'} fullWidth={true} href={'/api/account/federation/cognito'}>{i18n.pages.settings.loginProviderName(Issuer.COGNITO)}</Button>
     </ColumnLayout>
   );
 }

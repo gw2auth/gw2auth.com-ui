@@ -1,9 +1,10 @@
 import React, { useMemo } from 'react';
 import { Gw2ApiPermission } from '../../lib/api/api.model';
+import { Locale } from '../../lib/preferences.model';
+import { useI18n } from '../util/context/i18n';
 
 export interface AssetProps {
   variant: 'dark' | 'light';
-  lang: 'en' | 'de';
 }
 
 function responsiveStyle(width: number): React.CSSProperties {
@@ -14,8 +15,10 @@ function responsiveStyle(width: number): React.CSSProperties {
   };
 }
 
-export function Gw2Login({ lang }: { lang: string }) {
-  const href = useMemo(() => `/assets/${lang}/login.png`, [lang]);
+export function Gw2Login() {
+  const i18n = useI18n();
+  const href = useMemo(() => `${i18n.components.assets.srcBase}/login.png`, [i18n]);
+
   return (
     <svg style={responsiveStyle(500)} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 661'>
       <image href={href} width='500' height='661' />
@@ -23,35 +26,35 @@ export function Gw2Login({ lang }: { lang: string }) {
       <Arrow x1={90} y1={260} x2={70} y2={100} rotate={-70} xCorr={10} yCorr={10} />
       <foreignObject x='10' y='70' width='230' height='100%' color='black' fontSize='1.2em'>
         <div style={{ backgroundColor: 'red', padding: '5px' }}>
-          <span>ArenaNet GW2 Account?</span>
-          <br />
-          <span>Login via E-Mail & Password</span>
+          {i18n.components.assets.gw2Login.anetGw2Account}
         </div>
       </foreignObject>
 
       <Arrow x1={240} y1={429} x2={330} y2={260} xCorr={4} />
       <foreignObject x='290' y='230' width='180' height='100%' color='black' fontSize='1.2em'>
         <div style={{ backgroundColor: 'red', padding: '5px' }}>
-          <span>Steam GW2 Account?</span>
-          <br />
-          <span>Login via Steam</span>
+          {i18n.components.assets.gw2Login.steamGw2Account}
         </div>
       </foreignObject>
     </svg>
   );
 }
 
-export function CreateAPIToken1({ variant, lang }: AssetProps) {
-  const href = useMemo(() => `/assets/${lang}/${variant}/create_api_token_01.png`, [variant, lang]);
+export function CreateAPIToken1({ variant }: AssetProps) {
+  const i18n = useI18n();
+  const href = useMemo(() => `${i18n.components.assets.srcBase}/${variant}/create_api_token_01.png`, [i18n, variant]);
 
-  if (lang === 'de') {
+  if (i18n.locale === Locale.DE) {
     return (
       <svg style={responsiveStyle(1106)} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1106 661'>
         <image href={href} width='1106' height='661' />
 
         <Arrow x1={990} y1={475} x2={1000} y2={260} />
-        <line x1='750' y1='253' x2='1100' y2='253' stroke='red' strokeWidth='40px' />
-        <text x='760' y='260' fontSize='1.5em' fill='black'>Erstelle einen neuen API Schlüssel</text>
+        <foreignObject x='750' y='230' width='350' height='100%' color='black' fontSize='1.5em'>
+          <div style={{ backgroundColor: 'red', padding: '5px' }}>
+            <span>{i18n.components.assets.createApiToken1.text}</span>
+          </div>
+        </foreignObject>
       </svg>
     );
   }
@@ -61,8 +64,11 @@ export function CreateAPIToken1({ variant, lang }: AssetProps) {
       <image href={href} width='1106' height='661' />
 
       <Arrow x1={990} y1={460} x2={1000} y2={260} />
-      <line x1='840' y1='253' x2='1090' y2='253' stroke='red' strokeWidth='40px' />
-      <text x='850' y='260' fontSize='1.5em' fill='black'>Create a new API Token</text>
+      <foreignObject x='820' y='230' width='280' height='100%' color='black' fontSize='1.5em'>
+        <div style={{ backgroundColor: 'red', padding: '5px' }}>
+          <span>{i18n.components.assets.createApiToken1.text}</span>
+        </div>
+      </foreignObject>
     </svg>
   );
 }
@@ -74,9 +80,10 @@ export interface CreateAPIToken2Props extends AssetProps {
 }
 
 export function CreateAPIToken2({
-  name, variant, lang, permissions, permissionsText,
+  name, variant, permissions, permissionsText,
 }: CreateAPIToken2Props) {
-  const href = useMemo(() => `/assets/${lang}/${variant}/create_api_token_02_variant1.png`, [variant, lang]);
+  const i18n = useI18n();
+  const href = useMemo(() => `${i18n.components.assets.srcBase}/${variant}/create_api_token_02_variant1.png`, [i18n, variant]);
   const [permissionLines, checkboxes] = useMemo(() => {
     const p: Array<React.ReactNode> = [];
     const c: Array<React.ReactNode> = [];
@@ -121,30 +128,37 @@ export function CreateAPIToken2({
       </foreignObject>
 
       <Arrow x1={140} y1={400} x2={250} y2={300} xCorr={7} yCorr={5} />
-      <line x1='195' y1='295' x2='570' y2='295' stroke='red' strokeWidth='40px' />
-      <text x='200' y='300' fontSize='1.5em' fill='black'>Assign a name for the new API Token</text>
+      <foreignObject x='245' y='280' width='350' height='100%' fontSize='1.5em'>
+        <div style={{ backgroundColor: 'red', padding: '5px', color: 'black' }}>
+          <span>{i18n.components.assets.createApiToken2.assignName}</span>
+        </div>
+      </foreignObject>
 
       {...permissionLines}
       {...checkboxes}
       <foreignObject x='730' y='390' width='350' height='100%' fontSize='1.5em'>
         <div style={{ backgroundColor: 'red', padding: '5px', color: 'black' }}>
-          {permissionsText ?? <span>Grant required permissions</span>}
+          {permissionsText ?? <span>{i18n.components.assets.createApiToken2.assignPermissions}</span>}
         </div>
       </foreignObject>
 
       <Arrow x1={180} y1={910} x2={800} y2={750} yCorr={10} />
-      <line x1='800' y1='750' x2='1015' y2='750' stroke='red' strokeWidth='40px' />
-      <text x='805' y='755' fontSize='1.5em' fill='black'>Create the API Token</text>
+      <foreignObject x='795' y='745' width='300' height='100%' fontSize='1.5em'>
+        <div style={{ backgroundColor: 'red', padding: '5px', color: 'black' }}>
+          <span>{i18n.components.assets.createApiToken2.create}</span>
+        </div>
+      </foreignObject>
     </svg>
   );
 }
 
-export function CreateAPIToken3({ variant, lang }: AssetProps) {
-  const href = useMemo(() => `/assets/${lang}/${variant}/create_api_token_03.png`, [variant, lang]);
+export function CreateAPIToken3({ variant }: AssetProps) {
+  const i18n = useI18n();
+  const href = useMemo(() => `${i18n.components.assets.srcBase}/${variant}/create_api_token_03.png`, [i18n, variant]);
   const yAdd = ({
-    de: 15,
-    en: 0,
-  })[lang] ?? 0;
+    [Locale.DE]: 15,
+    [Locale.EN]: 0,
+  })[i18n.locale] ?? 0;
 
   return (
     <svg style={responsiveStyle(1006)} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1106 729'>
@@ -153,7 +167,7 @@ export function CreateAPIToken3({ variant, lang }: AssetProps) {
       <Arrow x1={985} y1={550 + yAdd} x2={900} y2={360} />
       <foreignObject x='600' y='340' width='400' height='100%' color='black' fontSize='1.5em'>
         <div style={{ backgroundColor: 'red', padding: '5px' }}>
-          <span>Click this button to copy the newly generated API Token to your clipboard</span>
+          <span>{i18n.components.assets.createApiToken3.text}</span>
         </div>
       </foreignObject>
     </svg>
@@ -161,7 +175,6 @@ export function CreateAPIToken3({ variant, lang }: AssetProps) {
 }
 
 export interface TradingpostProps {
-  lang: string;
   iconHref: string;
   name: string;
   gold: number;
@@ -170,9 +183,10 @@ export interface TradingpostProps {
 }
 
 export function Tradingpost({
-  lang, iconHref, name, gold, silver, copper,
+  iconHref, name, gold, silver, copper,
 }: TradingpostProps) {
-  const href = useMemo(() => `/assets/${lang}/tradingpost.png`, [lang]);
+  const i18n = useI18n();
+  const href = useMemo(() => `${i18n.components.assets.srcBase}/tradingpost.png`, [i18n]);
   const goldColor = '#ffcc52';
   const silverColor = '#d0d0d0';
   const copperColor = '#da854b';
@@ -197,14 +211,14 @@ export function Tradingpost({
       <line x1='580' y1='270' x2='600' y2='200' stroke='red' strokeWidth='3px' />
       <foreignObject x='560' y='150' width='350' height='100%' color='black' fontSize='1.5em'>
         <div style={{ backgroundColor: 'red', padding: '5px' }}>
-          <span>Make sure the buy-order <strong>exactly</strong> matches the shown price</span>
+          {i18n.components.assets.tradingpost.makeSureToMatchPrice}
         </div>
       </foreignObject>
 
       <Arrow x1={490} y1={355} x2={750} y2={330} rotate={30} yCorr={13} />
       <foreignObject x='745' y='310' width='210' height='100%' color='black' fontSize='1.5em'>
         <div style={{ backgroundColor: 'red', padding: '5px' }}>
-          <span>Place the buy-order</span>
+          <span>{i18n.components.assets.tradingpost.placeBuyOrder}</span>
         </div>
       </foreignObject>
     </svg>

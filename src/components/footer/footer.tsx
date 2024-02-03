@@ -19,14 +19,14 @@ export default function Gw2AuthFooter(props: Gw2AuthFooterProps) {
     <footer id="gw2auth-custom-footer" className={classes['gw2auth-footer']}>
       <SpaceBetween size={'xs'} direction={'vertical'}>
         <SpaceBetween size={isMobile ? 'xs' : 'm'} direction={isMobile ? 'vertical' : 'horizontal'}>
-          <RouterLink to={'/legal'}>{i18n.footer.legal}</RouterLink>
-          <RouterLink to={'/privacy-policy'}>{i18n.footer.privacyPolicy}</RouterLink>
-          <Link href={'https://github.com/gw2auth/oauth2-server/wiki/FAQ'} external={true}>{i18n.footer.faq}</Link>
-          <Link href={'https://github.com/gw2auth/oauth2-server/wiki'} external={true}>{i18n.footer.developerWiki}</Link>
-          <Link variant={'secondary'} href={'#'} onFollow={props.onCookiePreferencesClick}>{i18n.footer.cookiePreferences}</Link>
-          <Box variant={'span'}>{i18n.footer.copyrightGw2Auth}</Box>
+          <RouterLink to={'/legal'}>{i18n.components.footer.legal}</RouterLink>
+          <RouterLink to={'/privacy-policy'}>{i18n.components.footer.privacyPolicy}</RouterLink>
+          <Link href={'https://github.com/gw2auth/oauth2-server/wiki/FAQ'} external={true}>{i18n.components.footer.faq}</Link>
+          <Link href={'https://github.com/gw2auth/oauth2-server/wiki'} external={true}>{i18n.components.footer.developerWiki}</Link>
+          <Link variant={'secondary'} href={'#'} onFollow={props.onCookiePreferencesClick}>{i18n.components.footer.cookiePreferences}</Link>
+          <Box variant={'span'}>{i18n.components.footer.copyrightGw2Auth}</Box>
         </SpaceBetween>
-        {...i18n.footer.copyrightGw2.map((v) => <Box variant={'small'}>{v}</Box>)}
+        {...i18n.components.footer.copyrightGw2.map((v) => <Box variant={'small'}>{v}</Box>)}
       </SpaceBetween>
     </footer>
   );

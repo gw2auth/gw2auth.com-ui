@@ -1,5 +1,5 @@
 import { resolve } from 'path';
-import { defineConfig, PluginOption, ProxyOptions } from 'vite';
+import { defineConfig, ProxyOptions } from 'vite';
 import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
@@ -25,28 +25,10 @@ const proxyConfig: Record<string, string | ProxyOptions> = {
   '/.well-known/oauth-authorization-server': localTarget('http://127.0.0.1:9000'),
 };
 
-function defaultRootPlugin(): PluginOption {
-  return {
-    name: 'configure-server',
-    configureServer: (server) => {
-      server.middlewares.use((req, res, next) => {
-        if (!['/', '/@react-refresh', '/@vite/client'].includes(req.url) && !Object.keys(proxyConfig).some((prefix) => req.url.startsWith(prefix))) {
-          const index = req.url.lastIndexOf('.');
-          if (index === -1) {
-            req.url = '/';
-          }
-        }
-
-        next();
-      });
-    },
-  };
-}
-
 export default defineConfig({
   root: resolve(__dirname, 'src/pages'),
   publicDir: resolve(__dirname, 'public'),
-  plugins: [react(), defaultRootPlugin()],
+  plugins: [react()],
   server: {
     port: 4200,
     proxy: proxyConfig,
