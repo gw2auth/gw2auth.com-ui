@@ -89,7 +89,7 @@ function SuccessContent({
           </FormField>
 
           <FormField label={'Raw Response'}>
-            <CodeView content={JSON.stringify(tokenResponse, null, 2)} highlight={jsonHighlight} />
+            <CodeView content={JSON.stringify(tokenResponse ?? null, null, 2)} highlight={jsonHighlight} />
           </FormField>
 
           <FormField label={'Access Token Header'}>
