@@ -147,7 +147,7 @@ function Overview({ id, gw2Account }: { id: string, gw2Account: Gw2Account }) {
   return (
     <KeyValuePairs columns={3}>
       <ValueWithLabel label={i18n.pages.gw2AccountsDetail.id}>
-        <Copy copyText={id}><Box variant={'samp'} fontSize={'body-s'}>{id}</Box></Copy>
+        <Copy copyText={id}><Box variant={'samp'}>{id}</Box></Copy>
       </ValueWithLabel>
       <ValueWithLabel label={i18n.pages.gw2AccountsDetail.created}>
         <Box>{formatDateTime(gw2Account.creationTime)}</Box>

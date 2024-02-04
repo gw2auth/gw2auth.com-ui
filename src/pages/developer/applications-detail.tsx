@@ -172,7 +172,7 @@ function Overview({ id, devApplication }: { id: string, devApplication: DevAppli
   return (
     <KeyValuePairs columns={3}>
       <ValueWithLabel label={'ID'}>
-        <Copy copyText={id}><Box variant={'samp'} fontSize={'body-s'}>{id}</Box></Copy>
+        <Copy copyText={id}><Box variant={'samp'}>{id}</Box></Copy>
       </ValueWithLabel>
       <ValueWithLabel label={'Name'}>
         <Box>{devApplication.displayName}</Box>
@@ -195,7 +195,7 @@ function ClientTable({ id, devApplication }: { id: string, devApplication: DevAp
         {
           id: 'id',
           header: 'ID',
-          cell: (v) => <Box fontSize={'body-s'} variant={'samp'}>{v.id}</Box>,
+          cell: (v) => <Box variant={'samp'}>{v.id}</Box>,
           sortingField: 'id',
         },
         {
@@ -213,7 +213,7 @@ function ClientTable({ id, devApplication }: { id: string, devApplication: DevAp
         {
           id: 'api_version',
           header: 'API Version',
-          cell: (v) => <Box fontSize={'body-s'} variant={'samp'}>{v.apiVersion}</Box>,
+          cell: (v) => <Box variant={'samp'}>{v.apiVersion}</Box>,
           sortingField: 'apiVersion',
         },
         {
@@ -315,13 +315,13 @@ function APIKeyTable({ id, devApplication, onUpdate }: { id: string, devApplicat
           {
             id: 'id',
             header: 'ID',
-            cell: (v) => <Copy copyText={v.id}><Box fontSize={'body-s'} variant={'samp'}>{v.id}</Box></Copy>,
+            cell: (v) => <Copy copyText={v.id}><Box variant={'samp'}>{v.id}</Box></Copy>,
             sortingField: 'id',
           },
           {
             id: 'permissions',
             header: 'Permissions',
-            cell: (v) => <Box fontSize={'body-s'} variant={'samp'}>{JSON.stringify(v.permissions)}</Box>,
+            cell: (v) => <Box variant={'samp'}>{JSON.stringify(v.permissions)}</Box>,
             sortingField: 'permissions',
           },
           {
@@ -377,7 +377,7 @@ function buildColumnDefinitions(formatDateTime: (v: string) => string, onActionC
     {
       id: 'user_id',
       header: 'User ID',
-      cell: (v) => <Box fontSize={'body-s'} variant={'samp'}>{v.userId}</Box>,
+      cell: (v) => <Box variant={'samp'}>{v.userId}</Box>,
     },
     {
       id: 'creation_time',
@@ -392,7 +392,7 @@ function buildColumnDefinitions(formatDateTime: (v: string) => string, onActionC
           return undefined;
         }
 
-        return <Box fontSize={'body-s'} variant={'samp'}>{v.client.clientId}</Box>;
+        return <Box variant={'samp'}>{v.client.clientId}</Box>;
       },
     },
     {
@@ -420,7 +420,7 @@ function buildColumnDefinitions(formatDateTime: (v: string) => string, onActionC
           return undefined;
         }
 
-        return <Box fontSize={'body-s'} variant={'samp'}>{v.client.approvalRequestMessage}</Box>;
+        return <Box variant={'samp'}>{v.client.approvalRequestMessage}</Box>;
       },
     },
     {
@@ -431,7 +431,7 @@ function buildColumnDefinitions(formatDateTime: (v: string) => string, onActionC
           return undefined;
         }
 
-        return <Box fontSize={'body-s'} variant={'samp'}>{JSON.stringify(v.client.authorizedScopes)}</Box>;
+        return <Box variant={'samp'}>{JSON.stringify(v.client.authorizedScopes)}</Box>;
       },
     },
     {

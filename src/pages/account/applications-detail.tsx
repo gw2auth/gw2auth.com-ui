@@ -119,7 +119,7 @@ function Overview({ id, application }: { id: string, application: Application })
   return (
     <KeyValuePairs columns={2}>
       <ValueWithLabel label={i18n.pages.applicationsDetail.userId}>
-        <Copy copyText={id}><Box variant={'samp'} fontSize={'body-s'}>{application.userId}</Box></Copy>
+        <Copy copyText={id}><Box variant={'samp'}>{application.userId}</Box></Copy>
       </ValueWithLabel>
       <ValueWithLabel label={i18n.pages.applicationsDetail.lastUsed}>
         <Box>{application.lastUsed !== undefined ? formatDateTime(application.lastUsed) : <StatusIndicator type={'info'}>{i18n.pages.applicationsDetail.never}</StatusIndicator>}</Box>

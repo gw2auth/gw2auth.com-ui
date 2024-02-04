@@ -25,7 +25,7 @@ function buildColumnDefinitions(i18n: I18nFormats) {
     {
       id: 'id',
       header: i18n.pages.applications.tableColumns.id,
-      cell: (v) => <Box fontSize={'body-s'} variant={'samp'}>{v.id}</Box>,
+      cell: (v) => <Box variant={'samp'}>{v.id}</Box>,
       sortingField: 'id',
     },
     {
@@ -55,7 +55,7 @@ function buildColumnDefinitions(i18n: I18nFormats) {
     {
       id: 'authorized_scopes',
       header: i18n.pages.applications.tableColumns.authorizedScopes,
-      cell: (v) => <Box fontSize={'body-s'} variant={'samp'}>{JSON.stringify(v.authorizedScopes)}</Box>,
+      cell: (v) => <Box variant={'samp'}>{JSON.stringify(v.authorizedScopes)}</Box>,
     },
     {
       id: 'actions',

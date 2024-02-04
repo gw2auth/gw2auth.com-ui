@@ -47,7 +47,7 @@ function buildColumnDefinitions(i18n: I18nFormats) {
     {
       id: 'id',
       header: i18n.pages.gw2Accounts.tableColumns.id,
-      cell: (v) => <Box fontSize={'body-s'} variant={'samp'}>{v.id}</Box>,
+      cell: (v) => <Box variant={'samp'}>{v.id}</Box>,
       sortingField: 'id',
     },
     {

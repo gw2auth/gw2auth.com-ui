@@ -13,7 +13,7 @@ export function Hidden({ children }: React.PropsWithChildren) {
   }
 
   return (
-    <Box fontSize={'body-s'} variant={'samp'}>{children}</Box>
+    <Box variant={'samp'}>{children}</Box>
   );
 }
 

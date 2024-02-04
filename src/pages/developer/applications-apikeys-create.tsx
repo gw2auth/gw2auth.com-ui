@@ -60,13 +60,13 @@ export function DevApplicationsAPIKeysCreate() {
             <ExpandableSection headerText={'Show'} variant={'footer'}>
               <KeyValuePairs columns={1}>
                 <ValueWithLabel label={'ID (Username)'}>
-                  <Copy copyText={body.key}><Box variant={'samp'} fontSize={'body-s'}>{body.id}</Box></Copy>
+                  <Copy copyText={body.key}><Box variant={'samp'}>{body.id}</Box></Copy>
                 </ValueWithLabel>
                 <ValueWithLabel label={'Secret (Password)'}>
-                  <Copy copyText={body.key}><Box variant={'samp'} fontSize={'body-s'}>{body.key}</Box></Copy>
+                  <Copy copyText={body.key}><Box variant={'samp'}>{body.key}</Box></Copy>
                 </ValueWithLabel>
                 <ValueWithLabel label={'Header'}>
-                  <Copy copyText={basicAuthFull}><Box variant={'samp'} fontSize={'body-s'}>{basicAuthFull}</Box></Copy>
+                  <Copy copyText={basicAuthFull}><Box variant={'samp'}>{basicAuthFull}</Box></Copy>
                 </ValueWithLabel>
               </KeyValuePairs>
             </ExpandableSection>

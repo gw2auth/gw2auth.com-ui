@@ -142,7 +142,7 @@ function Overview({ id, devApplicationClient }: { id: string; devApplicationClie
   return (
     <KeyValuePairs columns={3}>
       <ValueWithLabel label={'ID'}>
-        <Copy copyText={id}><Box variant={'samp'} fontSize={'body-s'}>{id}</Box></Copy>
+        <Copy copyText={id}><Box variant={'samp'}>{id}</Box></Copy>
       </ValueWithLabel>
       <ValueWithLabel label={'Name'}>
         <Box>{devApplicationClient.displayName}</Box>
@@ -151,10 +151,10 @@ function Overview({ id, devApplicationClient }: { id: string; devApplicationClie
         <Box>{formatDateTime(devApplicationClient.creationTime)}</Box>
       </ValueWithLabel>
       <ValueWithLabel label={'API Version'}>
-        <Box variant={'samp'} fontSize={'body-s'}>{devApplicationClient.apiVersion}</Box>
+        <Box variant={'samp'}>{devApplicationClient.apiVersion}</Box>
       </ValueWithLabel>
       <ValueWithLabel label={'Type'}>
-        <Box variant={'samp'} fontSize={'body-s'}>{devApplicationClient.type}</Box>
+        <Box variant={'samp'}>{devApplicationClient.type}</Box>
       </ValueWithLabel>
       <ValueWithLabel label={'Approval Type'}>
         <ApprovalType requiresApproval={devApplicationClient.requiresApproval} />

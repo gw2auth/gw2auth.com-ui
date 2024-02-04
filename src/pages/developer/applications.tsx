@@ -20,7 +20,7 @@ function buildColumnDefinitions() {
     {
       id: 'id',
       header: 'ID',
-      cell: (v) => <Box fontSize={'body-s'} variant={'samp'}>{v.id}</Box>,
+      cell: (v) => <Box variant={'samp'}>{v.id}</Box>,
       sortingField: 'id',
     },
     {
