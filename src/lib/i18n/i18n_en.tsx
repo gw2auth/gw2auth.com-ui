@@ -236,7 +236,7 @@ export const I18N_EN = ({
           title: 'Assign name and permissions',
           description: 'Assign a name and permissions. It is recommended to use an API Token with all permissions with GW2Auth',
           formFieldName: 'Token Name',
-          formFieldDescription: 'Use this exact name for the API Token if you also wish to verify your account ownership',
+          formFieldDescription: 'Use this exact name for the API Token if you also wish to verify your account ownership. Please use this name UPON CREATION of the API Token since changing the name of an existing API Token is not immediately visible in the API.',
           anyName: 'Choose any name you like',
           permissionInfo: (
             <>

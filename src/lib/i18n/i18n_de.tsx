@@ -236,7 +236,7 @@ export const I18N_DE = ({
           title: 'Weise einen Namen und Berichtigungen zu',
           description: 'Weise einen Namen und Berichtigungen zu. Wir empfehlen, dem API Schlüssel für GW2Auth alle Berechtigungen zuzuweisen. GW2Auth kümmert sich um die Verwaltung der Berechtigungen von externen Anwendungen.',
           formFieldName: 'Schlüssel Name',
-          formFieldDescription: 'Benutze exakt diesen Namen für den API Schlüssel, um gleichzeitig die Account-Verizifierung abzuschließen',
+          formFieldDescription: 'Benutze exakt diesen Namen für den API Schlüssel, um gleichzeitig die Account-Verizifierung abzuschließen. Bitte verwende diesen Namen BEIM ERSTELLEN des API Schlüssels. Das Ändern des Namens eines bereits erstellten API Schlüssels ist nicht rechtzeitig über die API sichtbar.',
           anyName: 'Benutze irgendeinen Namen der dir gefällt',
           permissionInfo: (
             <>
