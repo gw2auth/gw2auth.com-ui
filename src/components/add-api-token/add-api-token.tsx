@@ -127,9 +127,20 @@ export function AddApiTokenWizard({ onDismiss }: { onDismiss: () => void }) {
           description: i18n.components.addApiToken.wizard.addToken.description,
           errorText: apiTokenError,
           content: (
-            <FormField label={i18n.components.addApiToken.wizard.addToken.formFieldName} description={i18n.components.addApiToken.wizard.addToken.formFieldDescription}>
-              <Input value={apiToken} type={'text'} disabled={loading} disableBrowserAutocorrect={true} spellcheck={false} onChange={(e) => setApiToken(e.detail.value)} />
-            </FormField>
+            <ColumnLayout columns={1}>
+              {
+                verification !== undefined
+                  ? <Alert type={'info'}>
+                    <FormField label={i18n.components.addApiToken.wizard.assignNameAndPermissions.formFieldName} description={i18n.components.addApiToken.wizard.assignNameAndPermissions.formFieldDescription}>
+                      <Copy copyText={verification.tokenName}><Box variant={'samp'}>{verification.tokenName}</Box></Copy>
+                    </FormField>
+                  </Alert>
+                  : undefined
+              }
+              <FormField label={i18n.components.addApiToken.wizard.addToken.formFieldName} description={i18n.components.addApiToken.wizard.addToken.formFieldDescription}>
+                <Input value={apiToken} type={'text'} disabled={loading} disableBrowserAutocorrect={true} spellcheck={false} onChange={(e) => setApiToken(e.detail.value)} />
+              </FormField>
+            </ColumnLayout>
           ),
         },
       ]}
