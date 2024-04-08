@@ -138,7 +138,7 @@ export function AddApiTokenWizard({ onDismiss }: { onDismiss: () => void }) {
                   : undefined
               }
               <FormField label={i18n.components.addApiToken.wizard.addToken.formFieldName} description={i18n.components.addApiToken.wizard.addToken.formFieldDescription}>
-                <Input value={apiToken} type={'text'} disabled={loading} disableBrowserAutocorrect={true} spellcheck={false} onChange={(e) => setApiToken(e.detail.value)} />
+                <Input value={apiToken} type={'password'} disabled={loading} disableBrowserAutocorrect={true} spellcheck={false} onChange={(e) => setApiToken(e.detail.value)} />
               </FormField>
             </ColumnLayout>
           ),
