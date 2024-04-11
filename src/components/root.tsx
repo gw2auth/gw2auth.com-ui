@@ -2,9 +2,11 @@ import {
   AppLayout,
   AppLayoutProps,
   Flashbar,
-  FlashbarProps, LinkProps,
+  FlashbarProps,
+  LinkProps,
   ModalProps,
   NonCancelableCustomEvent,
+  SplitPanel,
 } from '@cloudscape-design/components';
 import { I18nProvider as CSI18nProvider } from '@cloudscape-design/components/i18n';
 import deMessages from '@cloudscape-design/components/i18n/messages/all.de';
@@ -41,6 +43,7 @@ interface AppControlsState {
     open: boolean;
     onChange: (e: NonCancelableCustomEvent<AppLayoutProps.ChangeDetail>) => void;
   };
+  splitPanel: [string, React.ReactNode] | undefined;
   notification: {
     messages: Array<FlashbarProps.MessageDefinition>;
   };
@@ -52,6 +55,7 @@ const AppControlsStateContext = createContext<AppControlsState>({
     open: false,
     onChange: () => {},
   },
+  splitPanel: undefined,
   notification: {
     messages: [],
   },
@@ -70,6 +74,7 @@ export function RootLayout({
   const hasConsent = useHasConsent();
   const [cookiePrefVisible, setCookiePrefVisible] = useDependentState(!hasConsent);
   const isMobile = useMobile();
+  const [splitPanelOpen, setSplitPanelOpen] = useState(true);
   const [isNavigationOpen, setNavigationOpen] = useState(!isMobile && (authInfo !== undefined && authInfo !== null));
   const appControlsState = useContext(AppControlsStateContext);
 
@@ -104,8 +109,15 @@ export function RootLayout({
         tools={appControlsState.tools.element}
         toolsOpen={appControlsState.tools.element !== undefined && appControlsState.tools.open}
         onToolsChange={appControlsState.tools.onChange}
+        splitPanel={
+          appControlsState.splitPanel !== undefined
+            ? <SplitPanel header={appControlsState.splitPanel[0]} hidePreferencesButton={true}>{appControlsState.splitPanel[1]}</SplitPanel>
+            : undefined
+        }
+        splitPanelOpen={appControlsState.splitPanel !== undefined && splitPanelOpen}
+        splitPanelPreferences={{ position: 'side' }}
+        onSplitPanelToggle={(e) => setSplitPanelOpen(e.detail.open)}
         headerSelector={headerHide ? undefined : '#gw2auth-custom-header'}
-        footerSelector={'#gw2auth-custom-footer'}
         stickyNotifications={true}
         notifications={<Flashbar stackItems={true} items={appControlsState.notification.messages} />}
         breadcrumbs={breadcrumbsHide ? undefined : <Breadcrumb />}
@@ -154,6 +166,7 @@ function InternalBaseProviders({ children }: React.PropsWithChildren) {
   const [,setPreviousIssuer] = usePreviousIssuer();
   const [tools, setTools] = useState<React.ReactNode>();
   const [toolsOpen, setToolsOpen] = useState(false);
+  const [splitPanel, setSplitPanel] = useState<[string, React.ReactNode]>();
   const [notificationMessages, setNotificationMessages] = useState<Array<FlashbarProps.MessageDefinition>>([]);
 
   function setAuthInfoInternal(newValue: (AuthInfo | null) | ((prevState: (AuthInfo | null | undefined)) => (AuthInfo | null))) {
@@ -194,16 +207,22 @@ function InternalBaseProviders({ children }: React.PropsWithChildren) {
         setToolsOpen(e.detail.open);
       },
     },
+    splitPanel: splitPanel,
     notification: {
       messages: notificationMessages,
     },
-  }), [tools, toolsOpen, notificationMessages]);
+  }), [tools, toolsOpen, splitPanel, notificationMessages]);
 
   return (
     <CSI18nProvider locale={preferences.effectiveLocale} messages={[enMessages, deMessages, customI18nMessages]}>
       <I18nProvider locale={preferences.effectiveLocale} messages={I18N_GW2AUTH}>
         <AuthInfoProvider value={[authInfo, setAuthInfoInternal]}>
-          <AppControlsProvider setTools={setTools} setToolsOpen={setToolsOpen} setNotificationMessages={setNotificationMessages}>
+          <AppControlsProvider
+            setTools={setTools}
+            setToolsOpen={setToolsOpen}
+            setSplitPanel={setSplitPanel}
+            setNotificationMessages={setNotificationMessages}
+          >
             <AppControlsStateContext.Provider value={appControlsState}>
               {children}
             </AppControlsStateContext.Provider>

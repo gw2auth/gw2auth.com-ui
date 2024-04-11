@@ -16,6 +16,9 @@ export interface AppControls {
     set(value: React.SetStateAction<React.ReactNode | undefined>): void;
     open(value: React.SetStateAction<boolean>): void;
   };
+  readonly splitPanel: {
+    set(value: React.SetStateAction<[string, React.ReactNode] | undefined>): void;
+  };
   readonly notification: {
     addOnce(base: FlashbarProps.MessageDefinition): void;
     add(base: FlashbarProps.MessageDefinition): Dispatch<SetStateAction<FlashbarProps.MessageDefinition>>;
@@ -27,6 +30,10 @@ const AppControlsContext = createContext<AppControls>({
     set(_: React.SetStateAction<React.ReactNode | undefined>): void {
     },
     open(_: React.SetStateAction<boolean>): void {
+    },
+  },
+  splitPanel: {
+    set(_: React.SetStateAction<[string, React.ReactNode] | undefined>): void {
     },
   },
   notification: {
@@ -41,12 +48,17 @@ const AppControlsContext = createContext<AppControls>({
 export interface AppControlsProviderProps {
   setTools: React.Dispatch<React.SetStateAction<React.ReactNode | undefined>>;
   setToolsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setSplitPanel: React.Dispatch<React.SetStateAction<[string, React.ReactNode] | undefined>>;
   setNotificationMessages: React.Dispatch<React.SetStateAction<Array<FlashbarProps.MessageDefinition>>>;
 }
 
 export function AppControlsProvider(props: React.PropsWithChildren<AppControlsProviderProps>) {
   const {
-    setTools, setToolsOpen, setNotificationMessages, children,
+    setTools,
+    setToolsOpen,
+    setSplitPanel,
+    setNotificationMessages,
+    children,
   } = props;
   
   const createNotificationMessage = useCallback((id: string, base: FlashbarProps.MessageDefinition): FlashbarProps.MessageDefinition => ({
@@ -78,6 +90,11 @@ export function AppControlsProvider(props: React.PropsWithChildren<AppControlsPr
       },
       open(value: React.SetStateAction<boolean>) {
         setToolsOpen(value);
+      },
+    },
+    splitPanel: {
+      set(value: React.SetStateAction<[string, React.ReactNode] | undefined>) {
+        setSplitPanel(value);
       },
     },
     notification: {
@@ -146,6 +163,19 @@ export function useTools(tools?: React.ReactNode) {
   return useCallback((value: React.SetStateAction<boolean>) => {
     appControls.tools.open(value);
   }, [appControls]);
+}
+
+export function useSplitPanel(header: string, content: React.ReactNode) {
+  const appControls = useAppControls();
+  useEffect(() => {
+    let restore: [string, React.ReactNode] | undefined;
+    appControls.splitPanel.set((prev) => {
+      restore = prev;
+      return [header, content];
+    });
+
+    return () => appControls.splitPanel.set(restore);
+  }, [appControls, header, content]);
 }
 
 export function catchNotify(notifications: AppControls['notification'] | Dispatch<SetStateAction<FlashbarProps.MessageDefinition>>, errText?: string): (e: unknown) => void {
