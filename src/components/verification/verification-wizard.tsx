@@ -28,7 +28,7 @@ import {
 } from '../common/assets';
 import { Copy, CopyButton } from '../common/copy';
 import { Gw2ApiPermissions } from '../common/gw2-api-permissions';
-import { catchNotify, useAppControls } from '../util/context/app-controls';
+import { catchNotify, useAppControls, useSplitPanel } from '../util/context/app-controls';
 import { useHttpClient } from '../util/context/http-client';
 import { useI18n } from '../util/context/i18n';
 import { usePreferences } from '../util/state/use-preferences';
@@ -210,20 +210,12 @@ function InternalVerificationWizard({ activeChallenge, onDismiss }: { activeChal
       .catch(catchNotify(notification, i18n.general.failedToLoad(i18n.components.verification.itemInfo)));
   }, [i18n, httpClient, activeChallenge]);
 
+  useSplitPanel(
+    'Video Guide',
+    <YouTubeEmbed src={youTubeVideoEmbed(activeChallenge.challengeId)} />,
+  );
+
   const steps: Array<WizardProps.Step> = [];
-  const embeds = youTubeVideoEmbeds(activeChallenge.challengeId);
-  if (embeds.length > 0) {
-    steps.push({
-      title: i18n.components.verification.wizard.videoGuide.title,
-      description: i18n.components.verification.wizard.videoGuide.description,
-      content: (
-        <ColumnLayout columns={embeds.length}>
-          {...(embeds.map((src) => <YouTubeEmbed src={src} />))}
-        </ColumnLayout>
-      ),
-      isOptional: true,
-    });
-  }
 
   if (activeChallenge.challengeId === 1) {
     steps.push(
@@ -538,16 +530,16 @@ function requiredPermissions(challengeId: number): ReadonlyArray<Gw2ApiPermissio
   }
 }
 
-function youTubeVideoEmbeds(challengeId: number): ReadonlyArray<string> {
+function youTubeVideoEmbed(challengeId: number): string {
   switch (challengeId) {
     case 1:
-      return ['https://www.youtube.com/embed/4pQGPGwowds?si=gieSgTfNm1pQecZa'];
+      return 'https://www.youtube.com/embed/4pQGPGwowds?si=gieSgTfNm1pQecZa';
 
     case 2:
-      return ['https://www.youtube.com/embed/0ICy3JmEZUU?si=T1cLucSvcOzMvLeL'];
+      return 'https://www.youtube.com/embed/0ICy3JmEZUU?si=T1cLucSvcOzMvLeL';
 
     case 3:
-      return ['https://www.youtube.com/embed/r6P4AWRNcZs?si=bBB974kPoy7WFDDI'];
+      return 'https://www.youtube.com/embed/r6P4AWRNcZs?si=bBB974kPoy7WFDDI';
 
     default:
       throw new Error('invalid challenge');
