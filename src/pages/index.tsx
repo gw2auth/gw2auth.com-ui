@@ -174,5 +174,5 @@ const element = (
   </React.StrictMode>
 );
 
-applyMode(Mode.Dark);
+applyMode(Mode.Dark, document.documentElement);
 root.render(element);
