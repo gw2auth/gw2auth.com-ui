@@ -89,10 +89,10 @@ export default function Home() {
   );
 }
 
-function LoadableValueWithLabel({ label, children }: React.PropsWithChildren<{ label: string }>) {
+function LoadableValueWithLabel({ label, children }: { label: string, children?: number }) {
   return (
     <ValueWithLabel label={label}>
-      {children === undefined ? <Spinner /> : children}
+      {children === undefined ? <Spinner /> : `${children}+`}
     </ValueWithLabel>
   );
 }
