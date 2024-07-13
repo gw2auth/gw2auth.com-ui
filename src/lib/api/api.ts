@@ -28,7 +28,9 @@ import {
   VerificationStartedChallenge,
   Account,
   ApplicationSummary,
-  ApiTokenAddOrUpdate, ApiTokenAddVerification,
+  ApiTokenAddOrUpdate,
+  ApiTokenAddVerification,
+  Notification,
 } from './api.model';
 
 const KindSuccess = 0;
@@ -374,6 +376,10 @@ export class ApiClient {
       this.httpClient.fetch(`/api/verification/pending/${encodeURIComponent(gw2AccountId)}`, { method: 'DELETE' }),
       (status) => status === 200,
     );
+  }
+
+  getNotifications(): Promise<ApiResponse<ReadonlyArray<Notification>>> {
+    return transform(this.httpClient.fetch('/api-v2/notifications'));
   }
 
   logout(): Promise<ApiResponse<unknown>> {

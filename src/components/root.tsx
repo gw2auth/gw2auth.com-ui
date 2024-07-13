@@ -17,6 +17,7 @@ import {
 import React, {
   createContext, useContext, useEffect, useMemo, useState,
 } from 'react';
+import { expectSuccess } from '../lib/api/api';
 import { AuthInfo } from '../lib/api/api.model';
 import { customI18nMessages, I18N_GW2AUTH } from '../lib/i18n/i18n-strings';
 import { ColorScheme, UIDensity } from '../lib/preferences.model';
@@ -191,6 +192,20 @@ function InternalBaseProviders({ children }: React.PropsWithChildren) {
         setAuthInfo(null);
       }
     })().catch(() => setAuthInfo(null));
+  }, [apiClient]);
+
+  useEffect(() => {
+    (async () => {
+      const { body } = expectSuccess(await apiClient.getNotifications());
+      const notifications = body.map((v) => ({
+        type: v.type,
+        header: v.header,
+        content: v.content,
+        dismissible: true,
+      } satisfies FlashbarProps.MessageDefinition));
+
+      setNotificationMessages((prev) => [...prev, ...notifications]);
+    })().catch(() => {});
   }, [apiClient]);
 
   useEffect(() => {

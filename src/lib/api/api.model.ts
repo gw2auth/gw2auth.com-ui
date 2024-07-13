@@ -1,4 +1,4 @@
-export type JsonObject = { [k: string]: JsonType };
+export type JsonObject = Record<string, JsonType>;
 export type JsonArray = ReadonlyArray<JsonType>;
 export type JsonType = JsonObject | JsonArray | string | number | boolean | null;
 
@@ -223,7 +223,7 @@ export interface OAuth2ConsentInfo {
   },
   requestedScopes: ReadonlyArray<string>;
   submitFormUri: string;
-  submitFormParameters: { [k: string]: ReadonlyArray<string> };
+  submitFormParameters: Record<string, ReadonlyArray<string>>;
   cancelUri: string;
   apiTokensWithSufficientPermissions: ReadonlyArray<MinimalApiToken>;
   apiTokensWithInsufficientPermissions: ReadonlyArray<MinimalApiToken>;
@@ -295,3 +295,9 @@ export interface LegacyVerificationPendingChallenge {
 }
 
 export type VerificationSubmit = VerificationSubmitSuccess | VerificationSubmitPending;
+
+export interface Notification {
+  type: 'success' | 'info' | 'warning' | 'error' | 'in-progress';
+  header?: string;
+  content?: string;
+}
