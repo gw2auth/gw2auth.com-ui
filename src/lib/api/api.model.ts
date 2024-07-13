@@ -1,4 +1,5 @@
-export type JsonObject = Record<string, JsonType>;
+// eslint-disable-next-line
+export interface JsonObject extends Record<string, JsonType> {}
 export type JsonArray = ReadonlyArray<JsonType>;
 export type JsonType = JsonObject | JsonArray | string | number | boolean | null;
 
