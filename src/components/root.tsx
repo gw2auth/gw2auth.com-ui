@@ -26,7 +26,7 @@ import CookiePreferences from './cookie-preferences/cookie-preferences';
 import Gw2AuthFooter from './footer/footer';
 import Gw2AuthHeader from './header/header';
 import { SideNav } from './sidenav/sidenav';
-import { AppControlsProvider } from './util/context/app-controls';
+import { AppControlsProvider, catchNotify, useAppControls } from './util/context/app-controls';
 import { AuthInfoProvider, useAuthInfo } from './util/context/auth-info';
 import { BrowserStoreProvider } from './util/context/browser-store';
 import { HttpClientProvider, useHttpClient } from './util/context/http-client';
@@ -70,6 +70,9 @@ export interface RootLayoutProps extends Omit<AppLayoutProps, 'content'> {
 export function RootLayout({
   headerHide, breadcrumbsHide, children, ...appLayoutProps 
 }: React.PropsWithChildren<RootLayoutProps>) {
+  const { apiClient } = useHttpClient();
+  const { notification } = useAppControls();
+
   const documentTitle = useDocumentTitle();
   const [authInfo] = useAuthInfo();
   const hasConsent = useHasConsent();
@@ -88,6 +91,18 @@ export function RootLayout({
   useEffect(() => {
     setNavigationOpen(!isMobile && (authInfo !== undefined && authInfo !== null));
   }, [isMobile, authInfo]);
+
+  useEffect(() => {
+    (async () => {
+      const { body } = expectSuccess(await apiClient.getNotifications());
+      body.forEach((v) => notification.addOnce({
+        type: v.type,
+        header: v.header,
+        content: v.content,
+        dismissible: true,
+      }));
+    })().catch(catchNotify(notification, 'Failed to load notifications'));
+  }, [apiClient, notification]);
 
   function onCookiePreferencesClick(e: CustomEvent<LinkProps.FollowDetail>) {
     e.preventDefault();
@@ -192,20 +207,6 @@ function InternalBaseProviders({ children }: React.PropsWithChildren) {
         setAuthInfo(null);
       }
     })().catch(() => setAuthInfo(null));
-  }, [apiClient]);
-
-  useEffect(() => {
-    (async () => {
-      const { body } = expectSuccess(await apiClient.getNotifications());
-      const notifications = body.map((v) => ({
-        type: v.type,
-        header: v.header,
-        content: v.content,
-        dismissible: true,
-      } satisfies FlashbarProps.MessageDefinition));
-
-      setNotificationMessages((prev) => [...prev, ...notifications]);
-    })().catch(() => {});
   }, [apiClient]);
 
   useEffect(() => {
