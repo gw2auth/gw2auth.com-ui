@@ -178,7 +178,7 @@ export function PendingChallengeWizard({ challengeId, state, onDismiss }: { chal
   const tpBuyOrderState = useTpBuyOrderState(challengeId, state);
   const [activeStepIndex, setActiveStepIndex] = useState(0);
 
-  const steps = buildChallengeSpecificSteps(i18n, preferences, challengeId, state, tpBuyOrderState);
+  const steps = useChallengeSpecificSteps(i18n, preferences, challengeId, state, tpBuyOrderState);
 
   return (
     <Wizard
@@ -211,7 +211,8 @@ function InternalVerificationWizard({ activeChallenge, onDismiss }: { activeChal
     <YouTubeEmbed src={youTubeVideoEmbed(activeChallenge.challengeId)} />,
   );
 
-  const steps: Array<WizardProps.Step> = buildChallengeSpecificSteps(i18n, preferences, activeChallenge.challengeId, activeChallenge.state, tpBuyOrderState);
+  const challengeSpecificSteps = useChallengeSpecificSteps(i18n, preferences, activeChallenge.challengeId, activeChallenge.state, tpBuyOrderState);
+  const steps: Array<WizardProps.Step> = [...challengeSpecificSteps];
 
   if (activeChallenge.challengeId === 1) {
     steps.push(
@@ -310,85 +311,87 @@ function InternalVerificationWizard({ activeChallenge, onDismiss }: { activeChal
   );
 }
 
-function buildChallengeSpecificSteps(i18n: I18nFormats, preferences: EffectivePreferences, challengeId: number, rawState: string, tpBuyOrderState?: TPBuyOrderStateFull) {
-  const steps: Array<WizardProps.Step> = [];
+function useChallengeSpecificSteps(i18n: I18nFormats, preferences: EffectivePreferences, challengeId: number, rawState: string, tpBuyOrderState?: TPBuyOrderStateFull) {
+  return useMemo<ReadonlyArray<WizardProps.Step>>(() => {
+    const steps: Array<WizardProps.Step> = [];
 
-  if (challengeId === 1) {
-    steps.push(
-      ...addApiTokenSteps(i18n, preferences, requiredPermissions(1), rawState, false),
-    );
-  } else {
-    steps.push({
-      title: i18n.components.verification.wizard.gw2GameLogin.title,
-      description: i18n.components.verification.wizard.gw2GameLogin.description,
-      content: i18n.components.verification.wizard.gw2GameLogin.content,
-    });
-
-    if (challengeId === 2 && tpBuyOrderState !== undefined) {
-      let coins = tpBuyOrderState.state.price;
-      const copper = coins % 100;
-      coins = (coins - copper) / 100;
-      const silver = coins % 100;
-      coins = (coins - silver) / 100;
-
-      const iconSrc = tpBuyOrderState.item.icon
-        .replace('https://render.guildwars2.com/file/', 'https://icons-gw2.darthmaim-cdn.com/')
-        .replace('.png', '-64px.png');
-
+    if (challengeId === 1) {
+      steps.push(
+        ...addApiTokenSteps(i18n, preferences, requiredPermissions(1), rawState, false),
+      );
+    } else {
       steps.push({
-        title: i18n.components.verification.wizard.placeBuyOrder.title(tpBuyOrderState.item.name),
-        description: i18n.components.verification.wizard.placeBuyOrder.description(tpBuyOrderState.item.name),
-        content: (
-          <ColumnLayout columns={1}>
+        title: i18n.components.verification.wizard.gw2GameLogin.title,
+        description: i18n.components.verification.wizard.gw2GameLogin.description,
+        content: i18n.components.verification.wizard.gw2GameLogin.content,
+      });
+
+      if (challengeId === 2 && tpBuyOrderState !== undefined) {
+        let coins = tpBuyOrderState.state.price;
+        const copper = coins % 100;
+        coins = (coins - copper) / 100;
+        const silver = coins % 100;
+        coins = (coins - silver) / 100;
+
+        const iconSrc = tpBuyOrderState.item.icon
+          .replace('https://render.guildwars2.com/file/', 'https://icons-gw2.darthmaim-cdn.com/')
+          .replace('.png', '-64px.png');
+
+        steps.push({
+          title: i18n.components.verification.wizard.placeBuyOrder.title(tpBuyOrderState.item.name),
+          description: i18n.components.verification.wizard.placeBuyOrder.description(tpBuyOrderState.item.name),
+          content: (
+            <ColumnLayout columns={1}>
+              <Alert type={'info'}>
+                <ColumnLayout columns={1}>
+                  {
+                    i18n.components.verification.wizard.placeBuyOrder.content(
+                      () => <CopyButton copyText={tpBuyOrderState.item.name} iconUrl={iconSrc}>{tpBuyOrderState.item.name}</CopyButton>,
+                      () => (
+                        <Box variant={'h2'}>
+                          {coins}
+                          <ImgText src={'/assets/gold_coin.png'} alt={'Gold Coin'} />
+                          {silver}
+                          <ImgText src={'/assets/silver_coin.png'} alt={'Silver Coin'} />
+                          {copper}
+                          <ImgText src={'/assets/copper_coin.png'} alt={'Copper Coin'} />
+                        </Box>
+                      ),
+                    )
+                  }
+                </ColumnLayout>
+              </Alert>
+
+              <Tradingpost
+                iconHref={iconSrc}
+                name={tpBuyOrderState.item.name}
+                gold={coins}
+                silver={silver}
+                copper={copper}
+              />
+
+              <Box variant={'small'}>{i18n.components.verification.wizard.placeBuyOrder.footNode}</Box>
+            </ColumnLayout>
+          ),
+        });
+      } else if (challengeId === 3) {
+        steps.push({
+          title: i18n.components.verification.wizard.createCharacter.title(rawState),
+          description: i18n.components.verification.wizard.createCharacter.description(rawState),
+          content: (
             <Alert type={'info'}>
               <ColumnLayout columns={1}>
-                {
-                  i18n.components.verification.wizard.placeBuyOrder.content(
-                    () => <CopyButton copyText={tpBuyOrderState.item.name} iconUrl={iconSrc}>{tpBuyOrderState.item.name}</CopyButton>,
-                    () => (
-                      <Box variant={'h2'}>
-                        {coins}
-                        <ImgText src={'/assets/gold_coin.png'} alt={'Gold Coin'} />
-                        {silver}
-                        <ImgText src={'/assets/silver_coin.png'} alt={'Silver Coin'} />
-                        {copper}
-                        <ImgText src={'/assets/copper_coin.png'} alt={'Copper Coin'} />
-                      </Box>
-                    ),
-                  )
-                }
+                {i18n.components.verification.wizard.createCharacter.content(() => <CopyButton copyText={rawState}>{rawState}</CopyButton>)}
+                <Box variant={'small'}>{i18n.components.verification.wizard.createCharacter.footNode}</Box>
               </ColumnLayout>
             </Alert>
-
-            <Tradingpost
-              iconHref={iconSrc}
-              name={tpBuyOrderState.item.name}
-              gold={coins}
-              silver={silver}
-              copper={copper}
-            />
-
-            <Box variant={'small'}>{i18n.components.verification.wizard.placeBuyOrder.footNode}</Box>
-          </ColumnLayout>
-        ),
-      });
-    } else if (challengeId === 3) {
-      steps.push({
-        title: i18n.components.verification.wizard.createCharacter.title(rawState),
-        description: i18n.components.verification.wizard.createCharacter.description(rawState),
-        content: (
-          <Alert type={'info'}>
-            <ColumnLayout columns={1}>
-              {i18n.components.verification.wizard.createCharacter.content(() => <CopyButton copyText={rawState}>{rawState}</CopyButton>)}
-              <Box variant={'small'}>{i18n.components.verification.wizard.createCharacter.footNode}</Box>
-            </ColumnLayout>
-          </Alert>
-        ),
-      });
+          ),
+        });
+      }
     }
-  }
 
-  return steps;
+    return steps;
+  }, [i18n, preferences, challengeId, rawState, tpBuyOrderState]);
 }
 
 function ChallengeLabel({ name, recommended }: { name: string, recommended: boolean }) {
