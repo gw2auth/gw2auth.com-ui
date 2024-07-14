@@ -23,7 +23,7 @@ import { DevApplicationsCreate } from './developer/applications-create';
 import { DevApplicationsDetail } from './developer/applications-detail';
 import { ClientTest } from './developer/test/client-test';
 import { ClientTestCallback } from './developer/test/client-test-callback';
-import ErrorPage from './error-page';
+import { ErrorPage, ErrorLayout } from './error-page';
 import Home from './home';
 import Legal from './legal';
 import { Login } from './login';
@@ -49,6 +49,10 @@ const router = createBrowserRouter([
       {
         path: 'privacy-policy',
         element: <PrivacyPolicy />,
+      },
+      {
+        path: 'error',
+        element: <ErrorLayout backendError={true} />,
       },
       {
         path: '',
