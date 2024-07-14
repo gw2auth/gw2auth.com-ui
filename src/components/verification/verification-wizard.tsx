@@ -464,6 +464,7 @@ function YouTubeEmbed({ src }: { src: string }) {
       title={'YouTube video player'}
       frameBorder={'0'}
       allow={'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'}
+      referrerPolicy={'strict-origin-when-cross-origin'}
       allowFullScreen
     />
   );
@@ -577,13 +578,13 @@ function requiredPermissions(challengeId: number): ReadonlyArray<Gw2ApiPermissio
 function youTubeVideoEmbed(challengeId: number): string {
   switch (challengeId) {
     case 1:
-      return 'https://www.youtube.com/embed/4pQGPGwowds?si=gieSgTfNm1pQecZa';
+      return 'https://www.youtube-nocookie.com/embed/4pQGPGwowds';
 
     case 2:
-      return 'https://www.youtube.com/embed/0ICy3JmEZUU?si=T1cLucSvcOzMvLeL';
+      return 'https://www.youtube-nocookie.com/embed/0ICy3JmEZUU';
 
     case 3:
-      return 'https://www.youtube.com/embed/r6P4AWRNcZs?si=bBB974kPoy7WFDDI';
+      return 'https://www.youtube-nocookie.com/embed/r6P4AWRNcZs';
 
     default:
       throw new Error('invalid challenge');
