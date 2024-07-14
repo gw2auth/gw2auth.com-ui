@@ -153,8 +153,8 @@ const ROUTES = [{
     },
     {
       path: 'error',
-      title: i18nTitle((i18n) => i18n.routes.settings),
-      breadcrumb: i18nBreadcrumb((i18n) => i18n.routes.settings),
+      title: i18nTitle((i18n) => i18n.routes.error),
+      breadcrumb: i18nBreadcrumb((i18n) => i18n.routes.error),
     },
     // endregion
   ],
