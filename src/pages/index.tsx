@@ -15,6 +15,7 @@ import { Gw2AccountsDetail } from './account/gw2-accounts-detail';
 import { Settings } from './account/settings';
 import { Gw2AccountVerification } from './account/verification';
 import { Gw2AccountVerificationNew } from './account/verification-new';
+import { Gw2AccountVerificationPending } from './account/verification-pending';
 import { DevApplications } from './developer/applications';
 import { DevApplicationsAPIKeysCreate } from './developer/applications-apikeys-create';
 import { DevApplicationsClientsCreate } from './developer/applications-clients-create';
@@ -82,6 +83,10 @@ const router = createBrowserRouter([
           {
             path: 'verification/new',
             element: <Gw2AccountVerificationNew />,
+          },
+          {
+            path: 'verification/pending',
+            element: <Gw2AccountVerificationPending />,
           },
           {
             path: 'applications',

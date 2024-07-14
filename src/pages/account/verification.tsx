@@ -1,11 +1,13 @@
 import {
-  Box, Button, ColumnLayout, Container, ContentLayout, Header,
+  Box, Button, ColumnLayout, Container, ContentLayout, Header, SpaceBetween,
 } from '@cloudscape-design/components';
 import React, { useEffect, useState } from 'react';
 import { useHref, useNavigate } from 'react-router-dom';
 import { CustomTable } from '../../components/common/custom-table';
+import { RouterInlineLink } from '../../components/common/router-link';
 import { catchNotify, useAppControls } from '../../components/util/context/app-controls';
 import { useHttpClient } from '../../components/util/context/http-client';
+import { useI18n } from '../../components/util/context/i18n';
 import { useDateFormat } from '../../components/util/state/use-dateformat';
 import { VerificationSelection } from '../../components/verification/verification-wizard';
 import { expectSuccess } from '../../lib/api/api';
@@ -28,6 +30,7 @@ export function Gw2AccountVerification() {
 }
 
 function PendingChallengesTable() {
+  const i18n = useI18n();
   const { formatDateTime } = useDateFormat();
   const { notification } = useAppControls();
   const { apiClient } = useHttpClient();
@@ -104,7 +107,18 @@ function PendingChallengesTable() {
         {
           id: 'actions',
           header: 'Actions',
-          cell: (v) => <CancelPendingChallengeButton gw2AccountId={v.gw2AccountId} onCancelled={onCancelled} />,
+          cell: (v) => {
+            const query = new URLSearchParams();
+            query.set('challengeId', v.challengeId.toString());
+            query.set('state', v.state);
+
+            return (
+              <SpaceBetween direction={'horizontal'} size={'xs'}>
+                <RouterInlineLink to={`/verification/pending?${query.toString()}`}>{i18n.general.view}</RouterInlineLink>
+                <CancelPendingChallengeButton gw2AccountId={v.gw2AccountId} onCancelled={onCancelled} />
+              </SpaceBetween>
+            );
+          },
           alwaysVisible: true,
           preferencesDisable: true,
         },

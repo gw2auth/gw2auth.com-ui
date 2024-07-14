@@ -61,6 +61,7 @@ export const I18N_EN = ({
     addGw2Account: { title: 'Add GW2 Account', breadcrumb: 'Add' },
     verification: { title: 'Verification', breadcrumb: 'GW2 Account Verification' },
     newVerification: { title: 'New GW2 Account Verification', breadcrumb: 'New' },
+    pendingVerification: { title: 'Pending GW2 Account Verification', breadcrumb: 'Pending' },
     applications: 'Applications',
     settings: 'Settings',
     devApplications: 'Applications',
@@ -70,6 +71,7 @@ export const I18N_EN = ({
     createDevApiKey: 'Create API Key',
     legal: 'Legal',
     privacyPolicy: 'Privacy Policy',
+    error: 'Error',
   },
   pages: {
     applications: {
@@ -490,6 +492,7 @@ export const I18N_EN = ({
       challenge: 'Challenge',
       itemInfo: 'Item Infos',
       recommended: 'Recommended',
+      backToOverview: 'Back to Overview',
       challenges: {
         tokenName: {
           label: 'API Token Name',

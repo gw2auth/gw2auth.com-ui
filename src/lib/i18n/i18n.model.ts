@@ -41,6 +41,7 @@ export interface I18nFormats {
     addGw2Account: I18nRoute,
     verification: I18nRoute,
     newVerification: I18nRoute,
+    pendingVerification: I18nRoute,
     applications: I18nRoute,
     settings: I18nRoute,
     devApplications: I18nRoute,
@@ -50,6 +51,7 @@ export interface I18nFormats {
     createDevApiKey: I18nRoute,
     legal: I18nRoute,
     privacyPolicy: I18nRoute,
+    error: I18nRoute;
   },
   pages: {
     applications: {
@@ -376,6 +378,7 @@ export interface I18nFormats {
       challenge: string,
       itemInfo: string,
       recommended: string,
+      backToOverview: string;
       challenges: {
         tokenName: {
           label: string,

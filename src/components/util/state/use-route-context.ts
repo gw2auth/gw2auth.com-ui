@@ -60,6 +60,11 @@ const ROUTES = [{
           title: i18nTitle((i18n) => i18n.routes.newVerification),
           breadcrumb: i18nBreadcrumb((i18n) => i18n.routes.newVerification),
         },
+        {
+          path: 'pending',
+          title: i18nTitle((i18n) => i18n.routes.pendingVerification),
+          breadcrumb: i18nBreadcrumb((i18n) => i18n.routes.pendingVerification),
+        },
       ],
     },
     {
@@ -145,6 +150,11 @@ const ROUTES = [{
       path: 'privacy-policy',
       title: i18nTitle((i18n) => i18n.routes.privacyPolicy),
       breadcrumb: i18nBreadcrumb((i18n) => i18n.routes.privacyPolicy),
+    },
+    {
+      path: 'error',
+      title: i18nTitle((i18n) => i18n.routes.settings),
+      breadcrumb: i18nBreadcrumb((i18n) => i18n.routes.settings),
     },
     // endregion
   ],
