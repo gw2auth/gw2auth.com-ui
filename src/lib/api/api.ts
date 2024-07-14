@@ -379,7 +379,18 @@ export class ApiClient {
   }
 
   getNotifications(): Promise<ApiResponse<ReadonlyArray<Notification>>> {
-    return transform(this.httpClient.fetch('/api-v2/notifications'));
+    return transform(
+      this.httpClient.fetch('/api-v2/notifications'),
+      (status, body) => {
+        if (status === 502) {
+          return [];
+        }
+
+        return JSON.parse(body) as ReadonlyArray<Notification>;
+      },
+      200,
+      502,
+    );
   }
 
   logout(): Promise<ApiResponse<unknown>> {
