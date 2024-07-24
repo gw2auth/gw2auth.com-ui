@@ -84,11 +84,12 @@ export const AllGw2ApiPermissions: ReadonlyArray<Gw2ApiPermission> = [
   'inventories',
   'progression',
   'pvp',
+  'wvw',
   'tradingpost',
   'unlocks',
   'wallet',
 ];
-export type Gw2ApiPermission = 'account' | 'builds' | 'characters' | 'guilds' | 'inventories' | 'progression' | 'pvp' | 'tradingpost' | 'unlocks' | 'wallet';
+export type Gw2ApiPermission = 'account' | 'builds' | 'characters' | 'guilds' | 'inventories' | 'progression' | 'pvp' | 'wvw' | 'tradingpost' | 'unlocks' | 'wallet';
 export interface ApiToken {
   value: string;
   creationTime: string;

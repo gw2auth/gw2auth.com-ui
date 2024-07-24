@@ -20,17 +20,17 @@ export function Gw2Login() {
   const href = useMemo(() => `${i18n.components.assets.srcBase}/login.png`, [i18n]);
 
   return (
-    <svg style={responsiveStyle(500)} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 661'>
-      <image href={href} width='500' height='661' />
+    <svg style={responsiveStyle(539)} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 539 652'>
+      <image href={href} width='539' height='652' />
 
-      <Arrow x1={90} y1={260} x2={70} y2={100} rotate={-70} xCorr={10} yCorr={10} />
+      <Arrow x1={80} y1={250} x2={70} y2={100} rotate={-50} xCorr={5} yCorr={10} />
       <foreignObject x='10' y='70' width='230' height='100%' color='black' fontSize='1.2em'>
         <div style={{ backgroundColor: 'red', padding: '5px' }}>
           {i18n.components.assets.gw2Login.anetGw2Account}
         </div>
       </foreignObject>
 
-      <Arrow x1={240} y1={429} x2={330} y2={260} xCorr={4} />
+      <Arrow x1={280} y1={429} x2={330} y2={260} />
       <foreignObject x='290' y='230' width='180' height='100%' color='black' fontSize='1.2em'>
         <div style={{ backgroundColor: 'red', padding: '5px' }}>
           {i18n.components.assets.gw2Login.steamGw2Account}
@@ -83,28 +83,30 @@ export function CreateAPIToken2({
   name, variant, permissions, permissionsText,
 }: CreateAPIToken2Props) {
   const i18n = useI18n();
-  const href = useMemo(() => `${i18n.components.assets.srcBase}/${variant}/create_api_token_02_variant1.png`, [i18n, variant]);
+  const href = useMemo(() => `${i18n.components.assets.srcBase}/${variant}/create_api_token_02.png`, [i18n, variant]);
   const [permissionLines, checkboxes] = useMemo(() => {
     const p: Array<React.ReactNode> = [];
     const c: Array<React.ReactNode> = [];
 
     for (const perm of permissions) {
+      const base = 449;
       const y = ({
-        account: 458,
-        inventories: 503,
-        characters: 548,
-        tradingpost: 592,
-        wallet: 638,
-        unlocks: 683,
-        pvp: 728,
-        builds: 773,
-        progression: 818,
-        guilds: 863,
+        account: base,
+        inventories: base + 59,
+        characters: base + (59 * 2),
+        tradingpost: base + (59 * 3),
+        wallet: base + (59 * 4) + 1,
+        unlocks: base + (59 * 5) + 1,
+        pvp: base + (59 * 6) + 1,
+        wvw: base + (59 * 7) + 2,
+        builds: base + (59 * 8) + 2,
+        progression: base + (59 * 9) + 3,
+        guilds: base + (59 * 10) + 3,
       })[perm];
 
       if (y !== undefined) {
-        p.push(<line x1='135' y1={y} x2='730' y2='400' stroke='red' strokeWidth='3px' />);
-        c.push(<use href='#checkbox' x='125' y={y - 5} />);
+        p.push(<line x1='95' y1={y} x2='730' y2='400' stroke='red' strokeWidth='3px' />);
+        c.push(<use href='#checkbox' x='79' y={y - 5} />);
       }
     }
 
@@ -114,20 +116,20 @@ export function CreateAPIToken2({
   const textBgStroke = useMemo(() => (variant === 'dark' ? 'black' : 'white'), [variant]);
 
   return (
-    <svg style={responsiveStyle(1106)} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1106 1005'>
+    <svg style={responsiveStyle(1186)} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1186 1174'>
       <defs>
         <image id='checkbox' href='/assets/checkbox.png' width='13' height='13' />
       </defs>
 
-      <image href={href} width='1106' height='1005' />
+      <image href={href} width='1186' height='1174' />
 
-      <foreignObject x='104' y='408' width='800' height='100%' color='red' fontSize='1.2em'>
+      <foreignObject x='50' y='392' width='800' height='100%' color='red' fontSize='1.2em'>
         <div style={{ backgroundColor: textBgStroke, padding: '5px' }}>
           <span>{name}</span>
         </div>
       </foreignObject>
 
-      <Arrow x1={140} y1={400} x2={250} y2={300} xCorr={7} yCorr={5} />
+      <Arrow x1={120} y1={390} x2={250} y2={300} xCorr={7} yCorr={5} />
       <foreignObject x='245' y='280' width='350' height='100%' fontSize='1.5em'>
         <div style={{ backgroundColor: 'red', padding: '5px', color: 'black' }}>
           <span>{i18n.components.assets.createApiToken2.assignName}</span>
@@ -142,7 +144,7 @@ export function CreateAPIToken2({
         </div>
       </foreignObject>
 
-      <Arrow x1={180} y1={910} x2={800} y2={750} yCorr={10} />
+      <Arrow x1={180} y1={1090} x2={800} y2={750} yCorr={10} xCorr={10} />
       <foreignObject x='795' y='745' width='300' height='100%' fontSize='1.5em'>
         <div style={{ backgroundColor: 'red', padding: '5px', color: 'black' }}>
           <span>{i18n.components.assets.createApiToken2.create}</span>

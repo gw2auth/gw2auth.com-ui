@@ -50,6 +50,7 @@ export const I18N_EN = ({
       inventories: 'Your account bank, material storage, recipe unlocks, and character inventories',
       progression: 'Your achievements, dungeon unlock status, mastery point assignments, and general PvE progress',
       pvp: 'Your PvP stats, match history, reward track progression, and custom arena details',
+      wvw: 'Your selected WvW guild, assigned team, and personal WvW information.',
       tradingpost: 'Your Trading Post transactions',
       unlocks: 'Your wardrobe unlocks—skins, dyes, minipets, finishers, etc.—and currently equipped skins',
       wallet: 'Your account\'s wallet',

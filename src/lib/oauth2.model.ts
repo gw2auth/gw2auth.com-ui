@@ -6,6 +6,7 @@ export const OAUTH2_SCOPES: ReadonlyArray<string> = [
   'gw2:inventories',
   'gw2:progression',
   'gw2:pvp',
+  'gw2:wvw',
   'gw2:tradingpost',
   'gw2:unlocks',
   'gw2:wallet',

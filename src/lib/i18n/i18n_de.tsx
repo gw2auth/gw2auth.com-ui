@@ -50,6 +50,7 @@ export const I18N_DE = ({
       inventories: 'Account-Bank, Materialienlager, Rezept-Freischaltungen und Charakter-Inventare',
       progression: 'Erfolge, der Freischaltungsstatus von Verliesen, Aufträge für Beherrschungs-Punkte und allgemeiner PvE-Fortschritt',
       pvp: 'PvP-Werte, Match-Verlauf, die Entwicklung des Belohnungspfades und angepasste Arena-Informationen',
+      wvw: 'Deine ausgewählte WvW-Gilde, das zugewiesene Team und persönliche WvW-Informationen.',
       tradingpost: 'Transaktionen beim Handelsposten',
       unlocks: 'Garderoben-Freischaltungen – Skins, Farben, Mini Tiergefährten, Todesstöße etc. – und aktuell ausgerüstete Skins',
       wallet: 'Account-Geldbörse',
