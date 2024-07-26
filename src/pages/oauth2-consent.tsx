@@ -236,7 +236,7 @@ function buildOptions(consentInfo: OAuth2ConsentInfo) {
       };
 
       if (!gw2ApiToken.isValid) {
-        option.description = 'Invalid: Please update the API Token of this account';
+        option.description = 'Invalid: Please update the API Token for this account';
         invalidOptions.push(option);
       } else if (requestedVerifiedScope && !gw2ApiToken.isVerified) {
         option.description = 'Unverified: This account may be rejected by the application';
@@ -254,7 +254,7 @@ function buildOptions(consentInfo: OAuth2ConsentInfo) {
       insufficientOptions.push({
         value: gw2ApiToken.gw2AccountId,
         label: gw2ApiToken.displayName,
-        description: 'The API Token for this account appears to be invalid',
+        description: 'The API Token for this account does not have the permissions requested by the application',
         filteringTags: [gw2ApiToken.gw2AccountId, gw2ApiToken.displayName],
         disabled: true,
       });
