@@ -54,7 +54,7 @@ export function ApplicationsDetail() {
     authorizedScopes = <Container variant={'stacked'}><Box>{i18n.general.failedToLoad('')}</Box></Container>;
     gw2Accounts = <Container variant={'stacked'}><Box>{i18n.general.failedToLoad('')}</Box></Container>;
   } else {
-    overview = <Overview id={id} application={application} />;
+    overview = <Overview application={application} />;
     authorizedScopes = <AuthorizedScopes application={application} />;
     gw2Accounts = <Gw2Accounts application={application} />;
   }
@@ -112,14 +112,14 @@ export function ApplicationsDetail() {
   );
 }
 
-function Overview({ id, application }: { id: string, application: Application }) {
+function Overview({ application }: { application: Application }) {
   const i18n = useI18n();
   const { formatDateTime } = useDateFormat();
 
   return (
     <KeyValuePairs columns={2}>
       <ValueWithLabel label={i18n.pages.applicationsDetail.userId}>
-        <Copy copyText={id}><Box variant={'samp'}>{application.userId}</Box></Copy>
+        <Copy copyText={application.userId}><Box variant={'samp'}>{application.userId}</Box></Copy>
       </ValueWithLabel>
       <ValueWithLabel label={i18n.pages.applicationsDetail.lastUsed}>
         <Box>{application.lastUsed !== undefined ? formatDateTime(application.lastUsed) : <StatusIndicator type={'info'}>{i18n.pages.applicationsDetail.never}</StatusIndicator>}</Box>
