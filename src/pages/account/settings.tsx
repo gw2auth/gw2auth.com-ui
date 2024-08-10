@@ -52,7 +52,7 @@ export function Settings() {
   }, [notification, apiClient]);
 
   return (
-    <ContentLayout header={<Header variant={'h1'}>{i18n.pages.settings.header}</Header>} headerVariant={'high-contrast'}>
+    <ContentLayout header={<Header variant={'h1'}>{i18n.pages.settings.header}</Header>}>
       <ColumnLayout columns={1}>
         <FederationsTable isLoading={isLoading} federations={federations} onUpdate={setFederations} />
         <SessionsTable isLoading={isLoading} sessions={sessions} onUpdate={setSessions} />

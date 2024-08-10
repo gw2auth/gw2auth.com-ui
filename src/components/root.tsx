@@ -133,7 +133,6 @@ export function RootLayout({
         navigationOpen={isNavigationOpen}
         onNavigationChange={(e) => setNavigationOpen(e.detail.open)}
         content={children}
-        headerVariant={'high-contrast'}
         {...appLayoutProps}
       />
       <CookiePreferences onDismiss={() => setCookiePrefVisible(false)} visible={cookiePrefVisible} />

@@ -159,7 +159,7 @@ export function VerificationWizard({ onDismiss }: { onDismiss: () => void }) {
     );
   } if (activeChallenge === undefined) {
     return (
-      <ContentLayout headerVariant={'high-contrast'}>
+      <ContentLayout>
         <Container>
           <Box>{i18n.general.failedToLoad('')}</Box>
         </Container>

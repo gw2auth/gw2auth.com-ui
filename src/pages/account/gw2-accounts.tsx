@@ -117,7 +117,7 @@ export function Gw2Accounts() {
   }, [apiClient, notification]);
 
   return (
-    <ContentLayout header={<Header variant={'h1'}>{i18n.pages.gw2Accounts.pageHeader}</Header>} headerVariant={'high-contrast'}>
+    <ContentLayout header={<Header variant={'h1'}>{i18n.pages.gw2Accounts.pageHeader}</Header>}>
       <CustomTable
         items={items}
         loading={isLoading}

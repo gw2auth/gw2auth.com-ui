@@ -1,6 +1,6 @@
 import {
   Button, Checkbox,
-  Container, ContentLayout,
+  Container,
   Form,
   FormField,
   Header,
@@ -128,70 +128,70 @@ export function ClientTest() {
   }, [authorizationBaseURL, redirectURI, clientId, authorizationName, scopes, forceConsent, codeChallengeMethod, codeChallenge, state]);
 
   return (
-    <ContentLayout header={<Header variant={'h1'}>Test Client {clientId}</Header>} headerVariant={'high-contrast'}>
-      <Form
-        actions={
-          <SpaceBetween direction={'horizontal'} size={'xs'}>
-            <RouterInlineLink to={clientHref} variant={'link'}>Cancel</RouterInlineLink>
-            <Button variant={'primary'} href={authorizationRequestURL}>Test</Button>
-          </SpaceBetween>
-        }
-      >
-        <Container>
-          <SpaceBetween direction={'vertical'} size={'l'}>
-            <FormField label={'Authorization Name'} description={'A custom name for this authorization - optional'}>
-              <Input value={authorizationName} type={'text'} onChange={(e) => setAuthorizationName(e.detail.value)} />
-            </FormField>
+    <Form
+      variant={'full-page'}
+      header={<Header variant={'h1'}>Test Client {clientId}</Header>}
+      actions={
+        <SpaceBetween direction={'horizontal'} size={'xs'}>
+          <RouterInlineLink to={clientHref} variant={'link'}>Cancel</RouterInlineLink>
+          <Button variant={'primary'} href={authorizationRequestURL}>Test</Button>
+        </SpaceBetween>
+      }
+    >
+      <Container>
+        <SpaceBetween direction={'vertical'} size={'l'}>
+          <FormField label={'Authorization Name'} description={'A custom name for this authorization - optional'}>
+            <Input value={authorizationName} type={'text'} onChange={(e) => setAuthorizationName(e.detail.value)} />
+          </FormField>
 
-            <FormField label={'Scopes'} description={'The scopes to request for this authorization'} errorText={scopesErrorText}>
-              <Multiselect
-                filteringType={'auto'}
-                options={scopeOptions}
-                selectedOptions={scopes}
-                onChange={(e) => setScopes(e.detail.selectedOptions)}
-                keepOpen={true}
-              />
-            </FormField>
+          <FormField label={'Scopes'} description={'The scopes to request for this authorization'} errorText={scopesErrorText}>
+            <Multiselect
+              filteringType={'auto'}
+              options={scopeOptions}
+              selectedOptions={scopes}
+              onChange={(e) => setScopes(e.detail.selectedOptions)}
+              keepOpen={true}
+            />
+          </FormField>
 
-            <FormField label={'Force Consent'} description={'Whether to force the consent prompt to be shown even if the consent was already given'}>
-              <Checkbox checked={forceConsent} onChange={(e) => setForceConsent(e.detail.checked)}>Force consent prompt</Checkbox>
-            </FormField>
+          <FormField label={'Force Consent'} description={'Whether to force the consent prompt to be shown even if the consent was already given'}>
+            <Checkbox checked={forceConsent} onChange={(e) => setForceConsent(e.detail.checked)}>Force consent prompt</Checkbox>
+          </FormField>
 
-            <FormField label={'Code Challenge Method'} description={'Adds an additional layer of trust'}>
-              <Tiles
-                value={codeChallengeMethod}
-                onChange={(e) => setCodeChallengeMethod(e.detail.value)}
-                items={[
-                  { label: 'none', value: '' },
-                  { label: OAuth2Params.CodeChallengeMethod.S256, value: OAuth2Params.CodeChallengeMethod.S256 },
-                  { label: OAuth2Params.CodeChallengeMethod.PLAIN, value: OAuth2Params.CodeChallengeMethod.PLAIN, disabled: true },
-                ]}
-              />
-            </FormField>
+          <FormField label={'Code Challenge Method'} description={'Adds an additional layer of trust'}>
+            <Tiles
+              value={codeChallengeMethod}
+              onChange={(e) => setCodeChallengeMethod(e.detail.value)}
+              items={[
+                { label: 'none', value: '' },
+                { label: OAuth2Params.CodeChallengeMethod.S256, value: OAuth2Params.CodeChallengeMethod.S256 },
+                { label: OAuth2Params.CodeChallengeMethod.PLAIN, value: OAuth2Params.CodeChallengeMethod.PLAIN, disabled: true },
+              ]}
+            />
+          </FormField>
 
-            <FormField label={'Code Challenge'} description={'Managed by this UI. You would need to generate this on your side'}>
-              <Input value={codeChallenge} type={'text'} disabled={true} />
-            </FormField>
+          <FormField label={'Code Challenge'} description={'Managed by this UI. You would need to generate this on your side'}>
+            <Input value={codeChallenge} type={'text'} disabled={true} />
+          </FormField>
 
-            <FormField label={'State'} description={'Managed by this UI. You would need to generate this on your side'}>
-              <Input value={state} type={'text'} disabled={true} />
-            </FormField>
+          <FormField label={'State'} description={'Managed by this UI. You would need to generate this on your side'}>
+            <Input value={state} type={'text'} disabled={true} />
+          </FormField>
 
-            <FormField label={'Client ID'} description={'Managed by this UI'}>
-              <Input value={clientId} type={'text'} disabled={true} />
-            </FormField>
+          <FormField label={'Client ID'} description={'Managed by this UI'}>
+            <Input value={clientId} type={'text'} disabled={true} />
+          </FormField>
 
-            <FormField label={'Redirect URI'} description={'Managed by this UI'}>
-              <Input value={redirectURI} type={'url'} disabled={true} />
-            </FormField>
+          <FormField label={'Redirect URI'} description={'Managed by this UI'}>
+            <Input value={redirectURI} type={'url'} disabled={true} />
+          </FormField>
 
-            <FormField label={'Authorization URL'} description={'The resulting authorization URL'}>
-              <Textarea value={authorizationRequestURL} rows={10} disabled={true} />
-            </FormField>
-          </SpaceBetween>
-        </Container>
-      </Form>
-    </ContentLayout>
+          <FormField label={'Authorization URL'} description={'The resulting authorization URL'}>
+            <Textarea value={authorizationRequestURL} rows={10} disabled={true} />
+          </FormField>
+        </SpaceBetween>
+      </Container>
+    </Form>
   );
 }
 

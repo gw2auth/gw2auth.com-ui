@@ -88,7 +88,7 @@ export function ErrorLayout({ backendError }: { backendError?: boolean }) {
   }, [quaggan, isMobile]);
 
   return (
-    <ContentLayout header={<Header variant={'h1'}>Oops!</Header>} headerVariant={'high-contrast'}>
+    <ContentLayout header={<Header variant={'h1'}>Oops!</Header>}>
       <Container media={media}>
         <SpaceBetween direction={'vertical'} size={'s'}>
           <Box variant={'h2'}>{error.error ?? 'Sorry, an unexpected error has occurred.'}</Box>

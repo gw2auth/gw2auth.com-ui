@@ -80,7 +80,7 @@ export function OAuth2Consent() {
     }
 
     return (
-      <ContentLayout headerVariant={'high-contrast'}>
+      <ContentLayout>
         <Grid gridDefinition={[{ colspan: { default: 12, xs: 10, s: 8 }, offset: { default: 0, xs: 1, s: 2 } }]}>
           {content}
         </Grid>
@@ -164,6 +164,7 @@ function ConsentForm({ consentInfo, setActiveWindow }: { consentInfo: OAuth2Cons
             {...formInputsGw2AccountIds}
           </>
           <Form
+            variant={'embedded'}
             header={<Header variant={'h3'} counter={`(${selectedOptions.length})`}>Authorize Guild Wars 2 Accounts</Header>}
             actions={
               <SpaceBetween direction={'horizontal'} size={'xs'}>

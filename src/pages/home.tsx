@@ -29,7 +29,7 @@ export default function Home() {
   }, [apiClient]);
 
   return (
-    <ContentLayout header={<Header variant={'h1'}>Welcome to GW2Auth!</Header>} headerVariant={'high-contrast'}>
+    <ContentLayout header={<Header variant={'h1'}>Welcome to GW2Auth!</Header>}>
       <Container variant={'stacked'} header={<Header variant={'h2'}>As a user ...</Header>}>
         <Box variant={'h5'}>Your portal to manage access shared with applications using the Guild Wars 2 API</Box>
         <Box variant={'p'}>One API Token to rule them all.</Box>

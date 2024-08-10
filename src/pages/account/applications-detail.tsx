@@ -101,7 +101,6 @@ export function ApplicationsDetail() {
             actions={<Button loading={revokeAccessLoading} onClick={() => setShowRevokeAccessModal(true)}>{i18n.pages.applicationsDetail.revokeAccess}</Button>}
           >{application?.displayName ?? id}</Header>
         }
-        headerVariant={'high-contrast'}
       >
         <ColumnLayout columns={1}>
           <Container variant={'stacked'}>{overview}</Container>
