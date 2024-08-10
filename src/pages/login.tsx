@@ -10,7 +10,7 @@ import { useTools } from '../components/util/context/app-controls';
 
 export function Login() {
   return (
-    <ContentLayout>
+    <ContentLayout headerVariant={'high-contrast'}>
       <Grid gridDefinition={[{ colspan: { default: 12, xs: 10, s: 8 }, offset: { default: 0, xs: 1, s: 2 } }]}>
         <Container header={<LoginHeader />}>
           <LoginComp />

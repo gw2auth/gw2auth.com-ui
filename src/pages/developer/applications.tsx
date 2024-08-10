@@ -82,7 +82,7 @@ export function DevApplications() {
   }, [apiClient]);
 
   return (
-    <ContentLayout header={<Header variant={'h1'}>Applications</Header>}>
+    <ContentLayout header={<Header variant={'h1'}>Applications</Header>} headerVariant={'high-contrast'}>
       <CustomTable
         items={items}
         loading={isLoading}

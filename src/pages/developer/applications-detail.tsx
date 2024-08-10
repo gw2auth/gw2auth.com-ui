@@ -129,6 +129,7 @@ export function DevApplicationsDetail() {
             actions={<Button loading={deleteLoading} onClick={() => setShowDeleteModal(true)}>Delete</Button>}
           >{devApplication?.displayName ?? id}</Header>
         }
+        headerVariant={'high-contrast'}
       >
         <ColumnLayout columns={1}>
           <Container variant={'stacked'}>{overview}</Container>

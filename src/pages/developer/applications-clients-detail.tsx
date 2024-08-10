@@ -126,6 +126,7 @@ export function DevApplicationsClientsDetail() {
             }
           >{devApplicationClient?.displayName ?? clientId}</Header>
         }
+        headerVariant={'high-contrast'}
       >
         <ColumnLayout columns={1}>
           <Container variant={'stacked'}>{overview}</Container>

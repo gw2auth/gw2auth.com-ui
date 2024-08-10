@@ -93,7 +93,7 @@ export function Applications() {
   }, [apiClient, notification]);
 
   return (
-    <ContentLayout header={<Header variant={'h1'}>{i18n.pages.applications.pageHeader}</Header>}>
+    <ContentLayout header={<Header variant={'h1'}>{i18n.pages.applications.pageHeader}</Header>} headerVariant={'high-contrast'}>
       <CustomTable
         items={items}
         loading={isLoading}

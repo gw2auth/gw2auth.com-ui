@@ -18,7 +18,7 @@ export function Gw2AccountVerification() {
   const proceedHref = useHref('/verification/new');
 
   return (
-    <ContentLayout header={<Header variant={'h1'}>Guild Wars 2 Account Verification</Header>}>
+    <ContentLayout header={<Header variant={'h1'}>Guild Wars 2 Account Verification</Header>} headerVariant={'high-contrast'}>
       <ColumnLayout columns={1}>
         <Container header={<Header>New Verification</Header>}>
           <VerificationSelection onContinue={() => navigate(proceedHref)} />
