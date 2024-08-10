@@ -4,7 +4,6 @@ import {
   Flashbar,
   FlashbarProps,
   LinkProps,
-  ModalProps,
   NonCancelableCustomEvent,
   SplitPanel,
 } from '@cloudscape-design/components';
@@ -22,6 +21,7 @@ import { AuthInfo } from '../lib/api/api.model';
 import { customI18nMessages, I18N_GW2AUTH } from '../lib/i18n/i18n-strings';
 import { ColorScheme, UIDensity } from '../lib/preferences.model';
 import { Breadcrumb } from './breadcrumb/breadcrumb';
+import { CookieBanner } from './cookie-banner/cookie-banner';
 import CookiePreferences from './cookie-preferences/cookie-preferences';
 import Gw2AuthFooter from './footer/footer';
 import Gw2AuthHeader from './header/header';
@@ -33,7 +33,6 @@ import { HttpClientProvider, useHttpClient } from './util/context/http-client';
 import { I18nProvider } from './util/context/i18n';
 import { useMobile } from './util/state/common';
 import { useHasConsent } from './util/state/use-consent';
-import { useDependentState } from './util/state/use-dependent-state';
 import { usePreferences } from './util/state/use-preferences';
 import { usePreviousIssuer } from './util/state/use-previous-issuer';
 import { useDocumentTitle } from './util/state/use-route-context';
@@ -76,7 +75,7 @@ export function RootLayout({
   const documentTitle = useDocumentTitle();
   const [authInfo] = useAuthInfo();
   const hasConsent = useHasConsent();
-  const [cookiePrefVisible, setCookiePrefVisible] = useDependentState(!hasConsent);
+  const [cookiePrefVisible, setCookiePrefVisible] = useState(false);
   const isMobile = useMobile();
   const [splitPanelOpen, setSplitPanelOpen] = useState(true);
   const [isNavigationOpen, setNavigationOpen] = useState(!isMobile && (authInfo !== undefined && authInfo !== null));
@@ -109,14 +108,6 @@ export function RootLayout({
     setCookiePrefVisible(true);
   }
 
-  function onCookiePreferencesDismiss(e: NonCancelableCustomEvent<ModalProps.DismissDetail>) {
-    if (!hasConsent && e.detail.reason !== 'save') {
-      return;
-    }
-
-    setCookiePrefVisible(false);
-  }
-
   return (
     <>
       {!headerHide && <Gw2AuthHeader />}
@@ -144,7 +135,8 @@ export function RootLayout({
         content={children}
         {...appLayoutProps}
       />
-      <CookiePreferences onDismiss={onCookiePreferencesDismiss} visible={cookiePrefVisible} />
+      <CookiePreferences onDismiss={() => setCookiePrefVisible(false)} visible={cookiePrefVisible} />
+      {!hasConsent && <CookieBanner onCustomizeClick={() => setCookiePrefVisible(true)} />}
       <Gw2AuthFooter onCookiePreferencesClick={onCookiePreferencesClick} />
     </>
   );

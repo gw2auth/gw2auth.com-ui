@@ -65,18 +65,6 @@ export default function CookiePreferences({ onDismiss, ...modalProps }: ModalPro
     }
   }
 
-  function onDenyAllClick(e: CustomEvent<unknown>) {
-    denyAll(e.type);
-  }
-
-  function denyAll(eventType: string) {
-    setConsentLevels([ConsentLevel.STRICTLY_NECESSARY]);
-
-    if (onDismiss) {
-      onDismiss(new CustomEvent(eventType, { detail: { reason: 'save' } }));
-    }
-  }
-
   function onSaveClick(e: CustomEvent<unknown>) {
     if (consent.functional) {
       setConsentLevels([ConsentLevel.STRICTLY_NECESSARY, ConsentLevel.FUNCTIONALITY]);
@@ -89,12 +77,16 @@ export default function CookiePreferences({ onDismiss, ...modalProps }: ModalPro
     }
   }
 
+  function onFollowPrivacyPolicy(e: CustomEvent<unknown>) {
+    if (onDismiss) {
+      onDismiss(new CustomEvent(e.type, { detail: { reason: 'cancel' } }));
+    }
+  }
+
   return (
     <Modal
       onDismiss={(e) => {
-        if (!hasConsent && e.detail.reason === 'closeButton') {
-          denyAll(e.type);
-        } else if (onDismiss) {
+        if (onDismiss) {
           onDismiss(e);
         }
       }}
@@ -104,11 +96,7 @@ export default function CookiePreferences({ onDismiss, ...modalProps }: ModalPro
       footer={
         <Box float={'right'}>
           <SpaceBetween direction={'horizontal'} size={'xs'}>
-            {
-              hasConsent
-                ? <Button variant={'link'} onClick={onCancelClick}>{i18n.general.cancel}</Button>
-                : <Button variant={'link'} onClick={onDenyAllClick}>{i18n.components.cookiePreferences.denyOptional}</Button>
-            }
+            <Button variant={'link'} onClick={onCancelClick}>{i18n.general.cancel}</Button>
             <Button variant={'primary'} onClick={onSaveClick}>{i18n.general.save}</Button>
           </SpaceBetween>
         </Box>
@@ -132,7 +120,7 @@ export default function CookiePreferences({ onDismiss, ...modalProps }: ModalPro
             }
           }
         ></Category>
-        {i18n.components.cookiePreferences.learnMore(({ children }) => <RouterLink to={'/privacy-policy'} fontSize={'inherit'}>{children}</RouterLink>)}
+        {i18n.components.cookiePreferences.learnMore(({ children }) => <RouterLink to={'/privacy-policy'} fontSize={'inherit'} onFollow={onFollowPrivacyPolicy}>{children}</RouterLink>)}
       </ColumnLayout>
     </Modal>
   );

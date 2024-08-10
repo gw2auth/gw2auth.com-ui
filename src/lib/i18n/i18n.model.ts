@@ -273,6 +273,13 @@ export interface I18nFormats {
       email: string,
       emailDetail: (Link: React.FunctionComponent) => React.ReactNode,
     },
+    cookieBanner: {
+      header: string,
+      content: string,
+      denyOptional: string,
+      customize: string,
+      acceptAll: string,
+    },
     cookiePreferences: {
       header: string,
       subTitle: string,

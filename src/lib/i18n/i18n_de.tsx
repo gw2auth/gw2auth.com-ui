@@ -351,6 +351,13 @@ export const I18N_DE = ({
         <Box>Sende uns eine E-Mail an <XLink /></Box>
       ),
     },
+    cookieBanner: {
+      header: 'Cookie Einstellungen',
+      content: 'Wir verwenden cookies und local storage um Basisfunktionen auf dieser Seite bereitzustellen, wie zum Beispiel den Login und das Speichern deiner Präferenzen auf diesem Gerät.',
+      denyOptional: 'Optionale verweigern',
+      customize: 'Anpassen',
+      acceptAll: 'Alle akzeptieren',
+    },
     cookiePreferences: {
       header: 'Cookie Einstellungen',
       subTitle: 'Wir verwenden Cookies und Local Storage für die folgenden Zwecke',

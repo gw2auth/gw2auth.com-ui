@@ -92,7 +92,7 @@ export class BrowserStore {
   }
 
   private handleStorageEvent(event: StorageEvent): void {
-    if (event.storageArea !== this.storage || event.key === null || !event.key.startsWith(STORAGE_PREFIX)) {
+    if (event.storageArea !== this.storage || !event.key?.startsWith(STORAGE_PREFIX)) {
       return;
     }
 
@@ -105,7 +105,7 @@ export class BrowserStore {
     if (key === CONSENT_LEVELS_KEY) {
       this.updateAllowedConsentLevels(parseConsentLevels(event.newValue));
       this.flush();
-      this.pushConsentUpdate(this.allowedConsentLevels);
+      this.pushConsentUpdate(event.newValue ? this.allowedConsentLevels : null);
       return;
     }
 
