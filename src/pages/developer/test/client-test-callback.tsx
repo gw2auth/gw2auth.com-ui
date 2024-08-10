@@ -2,7 +2,7 @@ import { CodeView } from '@cloudscape-design/code-view';
 import jsonHighlight from '@cloudscape-design/code-view/highlight/json';
 import {
   Button,
-  Container, Form, FormField, Header, Input, SpaceBetween,
+  Container, ContentLayout, Form, FormField, Header, Input, SpaceBetween,
 } from '@cloudscape-design/components';
 import React, { useMemo, useState } from 'react';
 import { useHref, useParams, useSearchParams } from 'react-router-dom';
@@ -72,48 +72,48 @@ function SuccessContent({
   }
 
   return (
-    <Form
-      variant={'full-page'}
-      header={<Header variant={'h1'}>Test Client {clientId} Callback</Header>}
-      actions={
-        <SpaceBetween direction={'horizontal'} size={'xs'}>
-          <CancelButton applicationId={applicationId} clientId={clientId} />
-          <Button variant={'primary'} loading={isLoading} onClick={onRetrieveTokenClick}>Retrieve Token</Button>
-        </SpaceBetween>
-      }
-    >
-      <Container>
-        <SpaceBetween direction={'vertical'} size={'l'}>
-          <FormField label={'Client Secret'} description={'Paste your client secret here'}>
-            <Input value={clientSecret} type={'password'} disableBrowserAutocorrect={true} onChange={(e) => setClientSecret(e.detail.value)} />
-          </FormField>
+    <ContentLayout header={<Header variant={'h1'}>Test Client {clientId} Callback</Header>} headerVariant={'high-contrast'}>
+      <Form
+        actions={
+          <SpaceBetween direction={'horizontal'} size={'xs'}>
+            <CancelButton applicationId={applicationId} clientId={clientId} />
+            <Button variant={'primary'} loading={isLoading} onClick={onRetrieveTokenClick}>Retrieve Token</Button>
+          </SpaceBetween>
+        }
+      >
+        <Container>
+          <SpaceBetween direction={'vertical'} size={'l'}>
+            <FormField label={'Client Secret'} description={'Paste your client secret here'}>
+              <Input value={clientSecret} type={'password'} disableBrowserAutocorrect={true} onChange={(e) => setClientSecret(e.detail.value)} />
+            </FormField>
 
-          <FormField label={'Raw Response'}>
-            <CodeView content={JSON.stringify(tokenResponse ?? null, null, 2)} highlight={jsonHighlight} />
-          </FormField>
+            <FormField label={'Raw Response'}>
+              <CodeView content={JSON.stringify(tokenResponse ?? null, null, 2)} highlight={jsonHighlight} />
+            </FormField>
 
-          <FormField label={'Access Token Header'}>
-            <CodeView content={JSON.stringify(jwt[0], null, 2)} highlight={jsonHighlight} />
-          </FormField>
+            <FormField label={'Access Token Header'}>
+              <CodeView content={JSON.stringify(jwt[0], null, 2)} highlight={jsonHighlight} />
+            </FormField>
 
-          <FormField label={'Access Token Payload'}>
-            <CodeView content={JSON.stringify(jwt[1], null, 2)} highlight={jsonHighlight} />
-          </FormField>
+            <FormField label={'Access Token Payload'}>
+              <CodeView content={JSON.stringify(jwt[1], null, 2)} highlight={jsonHighlight} />
+            </FormField>
 
-          <FormField label={'Access Token Signature'}>
-            <Input value={jwt[2]} disabled={true} />
-          </FormField>
+            <FormField label={'Access Token Signature'}>
+              <Input value={jwt[2]} disabled={true} />
+            </FormField>
 
-          <FormField label={'Refresh Token'}>
-            <Input value={tokenResponse?.refresh_token ?? ''} disabled={true} />
-          </FormField>
+            <FormField label={'Refresh Token'}>
+              <Input value={tokenResponse?.refresh_token ?? ''} disabled={true} />
+            </FormField>
 
-          <FormField label={'Expires In'} description={'Time until the access token expires, in seconds'}>
-            <Input value={tokenResponse?.expires_in?.toString() ?? ''} type={'number'} disabled={true} />
-          </FormField>
-        </SpaceBetween>
-      </Container>
-    </Form>
+            <FormField label={'Expires In'} description={'Time until the access token expires, in seconds'}>
+              <Input value={tokenResponse?.expires_in?.toString() ?? ''} type={'number'} disabled={true} />
+            </FormField>
+          </SpaceBetween>
+        </Container>
+      </Form>
+    </ContentLayout>
   );
 }
 
@@ -121,23 +121,21 @@ function ErrorContent({
   applicationId, clientId, error, errorDescription, 
 }: { applicationId: string; clientId: string; error: string; errorDescription: string }) {
   return (
-    <Form
-      variant={'full-page'}
-      header={<Header variant={'h1'}>Test Client {clientId} Callback</Header>}
-      actions={<CancelButton applicationId={applicationId} clientId={clientId} />}
-    >
-      <Container>
-        <SpaceBetween direction={'vertical'} size={'l'}>
-          <FormField label={'Error'}>
-            <Input value={error} type={'text'} disabled={true} />
-          </FormField>
+    <ContentLayout header={<Header variant={'h1'}>Test Client {clientId} Callback</Header>} headerVariant={'high-contrast'}>
+      <Form actions={<CancelButton applicationId={applicationId} clientId={clientId} />}>
+        <Container>
+          <SpaceBetween direction={'vertical'} size={'l'}>
+            <FormField label={'Error'}>
+              <Input value={error} type={'text'} disabled={true} />
+            </FormField>
 
-          <FormField label={'Error Description'}>
-            <Input value={errorDescription} type={'text'} disabled={true} />
-          </FormField>
-        </SpaceBetween>
-      </Container>
-    </Form>
+            <FormField label={'Error Description'}>
+              <Input value={errorDescription} type={'text'} disabled={true} />
+            </FormField>
+          </SpaceBetween>
+        </Container>
+      </Form>
+    </ContentLayout>
   );
 }
 
