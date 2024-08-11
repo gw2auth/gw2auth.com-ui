@@ -3,4 +3,6 @@ Allow: /$
 Allow: /login
 Allow: /privacy-policy
 Allow: /legal
+Allow: /favicon.svg
+Allow: /favicon.ico
 Disallow: /
