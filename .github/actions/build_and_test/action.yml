@@ -5,6 +5,9 @@ inputs:
   working-directory:
     description: 'working directory'
     required: true
+  base-url:
+    description: 'base URL'
+    required: true
 
 outputs:
   output_dir:
@@ -25,5 +28,7 @@ runs:
       shell: bash
     - name: 'Build'
       working-directory: ${{ inputs.working-directory }}
+      env:
+        VITE_BASE_URL: ${{ inputs.base-url }}
       run: 'npm run build'
       shell: bash
