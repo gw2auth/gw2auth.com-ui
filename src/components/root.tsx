@@ -25,6 +25,7 @@ import { CookieBanner } from './cookie-banner/cookie-banner';
 import CookiePreferences from './cookie-preferences/cookie-preferences';
 import Gw2AuthFooter from './footer/footer';
 import Gw2AuthHeader from './header/header';
+import { Markdown } from './markdown/markdown';
 import { SideNav } from './sidenav/sidenav';
 import { AppControlsProvider, catchNotify, useAppControls } from './util/context/app-controls';
 import { AuthInfoProvider, useAuthInfo } from './util/context/auth-info';
@@ -97,7 +98,7 @@ export function RootLayout({
       body.forEach((v) => notification.addOnce({
         type: v.type,
         header: v.header,
-        content: v.content,
+        content: <Markdown md={v.content} />,
         dismissible: true,
       }));
     })().catch(catchNotify(notification, 'Failed to load notifications'));
