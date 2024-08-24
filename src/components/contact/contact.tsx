@@ -13,7 +13,7 @@ export function Contact() {
         <Copy copyText={'Felix.9127'}>Felix.9127</Copy>
       </ValueWithLabel>
       <ValueWithLabel label={i18n.components.contact.discord}>
-        {i18n.components.contact.discordDetail(({ children }) => <Link href={'https://discord.gg/HfY3Z4ex'} external={true}>{children}</Link>)}
+        {i18n.components.contact.discordDetail(({ children }) => <Link href={'https://discord.gg/bgN59yhbec'} external={true}>{children}</Link>)}
       </ValueWithLabel>
       <ValueWithLabel label={i18n.components.contact.email}>
         {i18n.components.contact.emailDetail(() => <Copy copyText={'contact@gw2auth.com'}><Link href={'mailto:contact@gw2auth.com'} external={true}>contact@gw2auth.com</Link></Copy>)}
