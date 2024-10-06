@@ -28,6 +28,7 @@ const proxyConfig: Record<string, string | ProxyOptions> = {
 export default defineConfig({
   root: resolve(__dirname, 'src/pages'),
   publicDir: resolve(__dirname, 'public'),
+  envDir: resolve(__dirname),
   plugins: [react()],
   css: {
     preprocessorOptions: {
