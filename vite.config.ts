@@ -29,6 +29,13 @@ export default defineConfig({
   root: resolve(__dirname, 'src/pages'),
   publicDir: resolve(__dirname, 'public'),
   plugins: [react()],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: 'modern-compiler',
+      },
+    },
+  },
   server: {
     port: 4200,
     proxy: proxyConfig,
