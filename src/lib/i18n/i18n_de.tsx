@@ -23,6 +23,7 @@ const COMMON = {
 export const I18N_DE = ({
   locale: Locale.DE,
   general: {
+    issuerName: COMMON.issuerName,
     date: (d) => d.toLocaleDateString('de-DE'),
     time: (d) => d.toLocaleTimeString('de-DE'),
     dateTime: (d) => d.toLocaleString('de-DE'),

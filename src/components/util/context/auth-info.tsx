@@ -26,6 +26,7 @@ export function useAuthInfo() {
 const MustAuthInfoContext = createContext<AuthInfo>({
   sessionId: '',
   sessionCreationTime: new Date().toISOString(),
+  accountCreationTime: new Date().toISOString(),
   issuer: Issuer.COGNITO,
   idAtIssuer: '',
 });

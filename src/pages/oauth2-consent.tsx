@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Button,
   Container,
@@ -9,16 +10,19 @@ import {
   Header,
   Multiselect,
   MultiselectProps, SpaceBetween,
-  Spinner, TextContent,
+  Spinner, TextContent
 } from '@cloudscape-design/components';
 import React, {
   useCallback, useEffect, useMemo, useState, 
 } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { AddApiTokenWizard } from '../components/add-api-token/add-api-token';
+import { IssuerIcon } from '../components/common/issuer-icon';
 import { Scopes } from '../components/scopes/scopes';
 import { catchNotify, useAppControls } from '../components/util/context/app-controls';
+import { useMustAuthInfo } from '../components/util/context/auth-info';
 import { useHttpClient } from '../components/util/context/http-client';
+import { useI18n } from '../components/util/context/i18n';
 import { useDateFormat } from '../components/util/state/use-dateformat';
 import { VerificationSelection, VerificationWizard } from '../components/verification/verification-wizard';
 import { expectSuccess } from '../lib/api/api';
@@ -63,45 +67,86 @@ export function OAuth2Consent() {
     reloadConsentInfo();
   }, [reloadConsentInfo]);
 
-  if (activeWindow === 'form' || activeWindow === 'verification-select') {
-    let content: React.ReactNode;
-    if (isLoading) {
-      content = <Spinner size={'large'} />;
-    } else if (consentInfo === undefined) {
-      content = <Box>Failed to load</Box>;
-    } else if (activeWindow === 'verification-select') {
-      content = (
-        <Container header={<Header variant={'h1'}>Guild Wars 2 Account Verification</Header>}>
-          <VerificationSelection onCancel={() => setActiveWindow('form')} onContinue={() => setActiveWindow('verification-new')} />
-        </Container>
-      );
-    } else {
-      content = <ConsentForm consentInfo={consentInfo} setActiveWindow={setActiveWindow} />;
-    }
-
+  if (isLoading) {
     return (
-      <ContentLayout>
-        <Grid gridDefinition={[{ colspan: { default: 12, xs: 10, s: 8 }, offset: { default: 0, xs: 1, s: 2 } }]}>
-          {content}
-        </Grid>
-      </ContentLayout>
-    );
+      <StandardLayout>
+        <Spinner size={'large'} />
+      </StandardLayout>
+    )
   }
 
-  if (activeWindow === 'add-api-token') {
+  if (!consentInfo) {
     return (
+      <StandardLayout>
+        <Box>Failed to load</Box>
+      </StandardLayout>
+    )
+  }
+
+  let content: React.ReactNode;
+  if (activeWindow === 'form') {
+    content = <ConsentForm consentInfo={consentInfo} setActiveWindow={setActiveWindow} />;
+  } else if (activeWindow === 'verification-select') {
+    content = (
+      <Container header={<Header variant={'h1'}>Guild Wars 2 Account Verification</Header>}>
+        <VerificationSelection onCancel={() => setActiveWindow('form')} onContinue={() => setActiveWindow('verification-new')} />
+      </Container>
+    );
+  } else if (activeWindow === 'add-api-token') {
+    content = (
       <AddApiTokenWizard onDismiss={() => {
         reloadConsentInfo();
         setActiveWindow('form');
       }} />
     );
+  } else if (activeWindow === 'verification-new') {
+    content = (
+      <VerificationWizard onDismiss={() => {
+        reloadConsentInfo();
+        setActiveWindow('form');
+      }} />
+    );
+  } else {
+    content = <Box>Unknown window</Box>;
+  }
+
+  if (activeWindow === 'add-api-token' || activeWindow === 'verification-new') {
+    // wizard: dont wrap in ContentLayout
+    return (
+      <SpaceBetween size={'l'} direction={'vertical'}>
+        <StandardGrid>
+          <LoginInfo requestUri={consentInfo.requestUri} />
+        </StandardGrid>
+        {content}
+      </SpaceBetween>
+    );
   }
 
   return (
-    <VerificationWizard onDismiss={() => {
-      reloadConsentInfo();
-      setActiveWindow('form');
-    }} />
+    <StandardLayout>
+      <SpaceBetween size={'l'} direction={'vertical'}>
+        <LoginInfo requestUri={consentInfo.requestUri} />
+        {content}
+      </SpaceBetween>
+    </StandardLayout>
+  );
+}
+
+function StandardLayout({ children }: React.PropsWithChildren) {
+  return (
+    <ContentLayout>
+      <StandardGrid>
+        {children}
+      </StandardGrid>
+    </ContentLayout>
+  );
+}
+
+function StandardGrid({ children }: React.PropsWithChildren) {
+  return (
+    <Grid gridDefinition={[{ colspan: { default: 12, xs: 10, s: 8 }, offset: { default: 0, xs: 1, s: 2 } }]}>
+      {children}
+    </Grid>
   );
 }
 
@@ -216,6 +261,41 @@ function ConsentForm({ consentInfo, setActiveWindow }: { consentInfo: OAuth2Cons
       </Container>
     </>
   );
+}
+
+function LoginInfo({ requestUri }: { requestUri: string }) {
+  const i18n = useI18n();
+  const { apiClient } = useHttpClient();
+  const { notification } = useAppControls();
+  const { formatDate } = useDateFormat();
+  const authInfo = useMustAuthInfo();
+
+  const [isLoading, setLoading] = useState(false);
+
+  function logout() {
+    setLoading(true);
+    (async () => {
+      const resp = await apiClient.logout();
+      if (resp.status >= 500) {
+        expectSuccess(resp);
+        return;
+      }
+
+      window.location.href = requestUri;
+    })()
+      .catch(catchNotify(notification))
+      .finally(() => setLoading(false));
+  }
+
+  return (
+    <Alert
+      type={'info'}
+      action={<Button variant={'inline-link'} loading={isLoading} onClick={logout}>Not you? Sign out</Button>}
+    >
+      <Box>Signed in using <Box variant={'strong'}><IssuerIcon issuer={authInfo.issuer} /> {i18n.general.issuerName(authInfo.issuer)}</Box></Box>
+      <Box>Account created: <Box variant={'strong'}>{formatDate(authInfo.accountCreationTime)}</Box></Box>
+    </Alert>
+  )
 }
 
 function buildOptions(consentInfo: OAuth2ConsentInfo) {

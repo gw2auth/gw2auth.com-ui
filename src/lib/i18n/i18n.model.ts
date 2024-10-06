@@ -14,6 +14,7 @@ export type I18nRoute = string | I18nRouteExplicit;
 export interface I18nFormats {
   locale: EffectiveLocale,
   general: {
+    issuerName: (v: Issuer) => string,
     date: (d: Date) => string,
     time: (d: Date) => string,
     dateTime: (d: Date) => string,

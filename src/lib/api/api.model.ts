@@ -29,6 +29,7 @@ export enum Issuer {
 export interface AuthInfo {
   sessionId: string;
   sessionCreationTime: string;
+  accountCreationTime: string;
   issuer: Issuer;
   idAtIssuer: string;
 }
@@ -232,6 +233,7 @@ export interface OAuth2ConsentInfo {
   previouslyConsentedGw2AccountIds: ReadonlyArray<string>;
   containsAnyGw2AccountRelatedScopes: boolean;
   redirectUri: string;
+  requestUri: string;
 }
 
 export interface MinimalApiToken {
