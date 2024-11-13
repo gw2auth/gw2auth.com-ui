@@ -11,13 +11,14 @@ import {
   SpaceBetween,
   StatusIndicator,
 } from '@cloudscape-design/components';
-import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
+import { faDiscord, faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react';
 import { CustomTable } from '../../components/common/custom-table';
 import { DeleteModal, DeleteModalProps } from '../../components/common/delete-modal';
 import { Gw2AuthLogo } from '../../components/common/gw2auth-logo';
 import { Hidden } from '../../components/common/hidden';
+import { IssuerIcon } from '../../components/common/issuer-icon';
 import { catchNotify, useAppControls } from '../../components/util/context/app-controls';
 import { useAuthInfo, useMustAuthInfo } from '../../components/util/context/auth-info';
 import { useHttpClient } from '../../components/util/context/http-client';
@@ -343,6 +344,7 @@ function IssuerLabel({ issuer }: { issuer: Issuer }) {
     [Issuer.GITHUB]: <FontAwesomeIcon icon={faGithub} />,
     [Issuer.GOOGLE]: <FontAwesomeIcon icon={faGoogle} />,
     [Issuer.COGNITO]: <Icon svg={<Gw2AuthLogo inverse={true} />} />,
+    [Issuer.DISCORD]: <FontAwesomeIcon icon={faDiscord} />,
   })[issuer] ?? <Icon name={'status-warning'} />;
 
   return (
@@ -355,9 +357,10 @@ function AddLoginProviderModalContent() {
 
   return (
     <ColumnLayout columns={1}>
-      <Button iconSvg={<FontAwesomeIcon icon={faGithub} />} variant={'primary'} fullWidth={true} href={'/api/account/federation/github'}>{i18n.pages.settings.loginProviderName(Issuer.GITHUB)}</Button>
-      <Button iconSvg={<FontAwesomeIcon icon={faGoogle} />} variant={'primary'} fullWidth={true} href={'/api/account/federation/google'}>{i18n.pages.settings.loginProviderName(Issuer.GOOGLE)}</Button>
-      <Button iconSvg={<Gw2AuthLogo />} variant={'primary'} fullWidth={true} href={'/api/account/federation/cognito'}>{i18n.pages.settings.loginProviderName(Issuer.COGNITO)}</Button>
+      <Button iconSvg={<IssuerIcon issuer={Issuer.GITHUB} />} variant={'primary'} fullWidth={true} href={'/api/account/federation/github'}>{i18n.pages.settings.loginProviderName(Issuer.GITHUB)}</Button>
+      <Button iconSvg={<IssuerIcon issuer={Issuer.GOOGLE} />} variant={'primary'} fullWidth={true} href={'/api/account/federation/google'}>{i18n.pages.settings.loginProviderName(Issuer.GOOGLE)}</Button>
+      <Button iconSvg={<IssuerIcon issuer={Issuer.COGNITO} />} variant={'primary'} fullWidth={true} href={'/api/account/federation/cognito'}>{i18n.pages.settings.loginProviderName(Issuer.COGNITO)}</Button>
+      <Button iconSvg={<IssuerIcon issuer={Issuer.DISCORD} />} variant={'primary'} fullWidth={true} href={'/api/account/federation/discord'}>{i18n.pages.settings.loginProviderName(Issuer.DISCORD)}</Button>
     </ColumnLayout>
   );
 }

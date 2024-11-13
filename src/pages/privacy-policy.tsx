@@ -158,7 +158,7 @@ export function PrivacyPolicy() {
         <Box variant={'p'}>
           We use different login providers to offer our users a variety of options to create and login to their accounts. The privacy policies of our login providers can be viewed at:
         </Box>
-        <KeyValuePairs columns={3}>
+        <KeyValuePairs columns={4}>
           <ValueWithLabel label={'GitHub'}>
             <Link href={'https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement'} external={true}>https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement</Link>
           </ValueWithLabel>
@@ -169,6 +169,10 @@ export function PrivacyPolicy() {
 
           <ValueWithLabel label={'E-Mail & Password'}>
             This login provider is managed by AWS (Amazon Web Services) solely for us. The privacy policy of AWS can be viewed at <Link href={'https://aws.amazon.com/privacy'} external={true}>https://aws.amazon.com/privacy</Link>
+          </ValueWithLabel>
+
+          <ValueWithLabel label={'Discord'}>
+            <Link href={'https://discord.com/privacy'} external={true}>https://discord.com/privacy</Link>
           </ValueWithLabel>
         </KeyValuePairs>
       </Container>

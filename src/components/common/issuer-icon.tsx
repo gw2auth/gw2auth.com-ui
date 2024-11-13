@@ -1,4 +1,4 @@
-import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
+import { faDiscord, faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import { Issuer } from '../../lib/api/api.model';
@@ -9,5 +9,6 @@ export function IssuerIcon({ issuer }: { issuer: Issuer }) {
     [Issuer.GITHUB]: (<FontAwesomeIcon icon={faGithub} />),
     [Issuer.GOOGLE]: (<FontAwesomeIcon icon={faGoogle} />),
     [Issuer.COGNITO]: (<Gw2AuthLogo />),
+    [Issuer.DISCORD]: (<FontAwesomeIcon icon={faDiscord} />),
   }[issuer];
 }

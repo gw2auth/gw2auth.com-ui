@@ -24,6 +24,7 @@ export enum Issuer {
   GITHUB = 'github',
   GOOGLE = 'google',
   COGNITO = 'cognito',
+  DISCORD = 'discord',
 }
 
 export interface AuthInfo {

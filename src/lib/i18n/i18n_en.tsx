@@ -13,6 +13,7 @@ const COMMON = {
     [Issuer.GITHUB]: 'GitHub',
     [Issuer.GOOGLE]: 'Google',
     [Issuer.COGNITO]: 'E-Mail & Password',
+    [Issuer.DISCORD]: 'Discord',
   })[issuer] ?? 'unknown',
   copyrightGw2: [
     'This site is not affiliated with ArenaNet, Guild Wars 2, or any of their partners. All copyrights reserved to their respective owners.',

@@ -12,9 +12,10 @@ export default function Login() {
   const [previousIssuer] = usePreviousIssuer();
   const [alert, loginSelection] = useMemo(() => {
     const buttonByIssuer = {
-      [Issuer.GITHUB]: (<Button iconSvg={<IssuerIcon issuer={Issuer.GITHUB} /> } variant={'primary'} fullWidth={true} href={'/auth/oauth2/authorization/github'}>{i18n.components.login.loginWith(Issuer.GITHUB)}</Button>),
+      [Issuer.GITHUB]: (<Button iconSvg={<IssuerIcon issuer={Issuer.GITHUB} />} variant={'primary'} fullWidth={true} href={'/auth/oauth2/authorization/github'}>{i18n.components.login.loginWith(Issuer.GITHUB)}</Button>),
       [Issuer.GOOGLE]: (<Button iconSvg={<IssuerIcon issuer={Issuer.GOOGLE} />} variant={'primary'} fullWidth={true} href={'/auth/oauth2/authorization/google'}>{i18n.components.login.loginWith(Issuer.GOOGLE)}</Button>),
       [Issuer.COGNITO]: (<Button iconSvg={<IssuerIcon issuer={Issuer.COGNITO} />} variant={'primary'} fullWidth={true} href={'/auth/oauth2/authorization/cognito'}>{i18n.components.login.loginWith(Issuer.COGNITO)}</Button>),
+      [Issuer.DISCORD]: (<Button iconSvg={<IssuerIcon issuer={Issuer.DISCORD} />} variant={'primary'} fullWidth={true} href={'/auth/oauth2/authorization/discord'}>{i18n.components.login.loginWith(Issuer.DISCORD)}</Button>),
     };
 
     if (previousIssuer === null) {
@@ -31,6 +32,7 @@ export default function Login() {
             {buttonByIssuer[Issuer.GITHUB]}
             {buttonByIssuer[Issuer.GOOGLE]}
             {buttonByIssuer[Issuer.COGNITO]}
+            {buttonByIssuer[Issuer.DISCORD]}
           </ColumnLayout>
         ),
       ];
@@ -52,6 +54,7 @@ export default function Login() {
               {previousIssuer !== Issuer.GITHUB && buttonByIssuer[Issuer.GITHUB]}
               {previousIssuer !== Issuer.GOOGLE && buttonByIssuer[Issuer.GOOGLE]}
               {previousIssuer !== Issuer.COGNITO && buttonByIssuer[Issuer.COGNITO]}
+              {previousIssuer !== Issuer.DISCORD && buttonByIssuer[Issuer.DISCORD]}
             </ColumnLayout>
           </ExpandableSection>
         </ColumnLayout>
