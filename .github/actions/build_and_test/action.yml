@@ -21,7 +21,7 @@ runs:
     - name: 'Setup node'
       uses: actions/setup-node@v4
       with:
-        node-version: '20'
+        node-version: '22'
     - name: 'Install npm dependencies'
       working-directory: ${{ inputs.working-directory }}
       run: 'npm install'
