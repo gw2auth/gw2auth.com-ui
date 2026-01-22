@@ -395,7 +395,7 @@ export const I18N_EN = ({
       faq: 'FAQ',
       developerWiki: 'Developer Wiki',
       cookiePreferences: 'Cookie preferences',
-      copyrightGw2Auth: `© 2021-2025 Felix.9127`,
+      copyrightGw2Auth: `© 2021-2026 Felix.9127`,
       copyrightGw2: COMMON.copyrightGw2,
     },
     header: {
