@@ -183,8 +183,8 @@ function InternalBaseProviders({ children }: React.PropsWithChildren) {
   }, []);
 
   useEffect(() => {
-    applyMode(preferences.effectiveColorScheme === ColorScheme.LIGHT ? Mode.Light : Mode.Dark, document.documentElement);
-    applyDensity(preferences.uiDensity === UIDensity.COMFORTABLE ? Density.Comfortable : Density.Compact, document.documentElement);
+    applyMode(preferences.effectiveColorScheme === ColorScheme.LIGHT ? Mode.Light : Mode.Dark, document.body);
+    applyDensity(preferences.uiDensity === UIDensity.COMFORTABLE ? Density.Comfortable : Density.Compact, document.body);
   }, [preferences]);
 
   useEffect(() => {
