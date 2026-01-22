@@ -19,9 +19,9 @@ runs:
   using: 'composite'
   steps:
     - name: 'Setup node'
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
-        node-version: '22'
+        node-version: '24'
     - name: 'Install npm dependencies'
       working-directory: ${{ inputs.working-directory }}
       run: 'npm install'
