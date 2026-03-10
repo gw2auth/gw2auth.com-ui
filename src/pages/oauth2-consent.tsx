@@ -219,7 +219,13 @@ function ConsentForm({ consentInfo, setActiveWindow }: { consentInfo: OAuth2Cons
                   href={consentInfo.cancelUri}
                   disabled={authorizeLoading}
                   loading={cancelLoading}
-                  onFollow={() => setCancelLoading(true)}
+                  onFollow={(e) => {
+                    const { href } = e.detail;
+                    if (href) {
+                      setCancelLoading(true);
+                      window.location.href = href;
+                    }
+                  }}
                 >Cancel</Button>
 
                 <Button
